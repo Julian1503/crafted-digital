@@ -2,11 +2,8 @@
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import { cn } from "@/lib/utils";
 import {
-    MonitorSmartphone,
     Palette,
-    Rocket,
     Code2,
-    Layout,
     LineChart
 } from "lucide-react";
 
@@ -46,7 +43,7 @@ export function Services() {
                         Our Expertise
                     </h2>
                     <p className="text-xl text-muted-foreground">
-                        We don't just write code. We partner with you to build products that solve real business problems.
+                        We don&apos;t just write code. We partner with you to build products that solve real business problems.
                     </p>
                 </div>
 

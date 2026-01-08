@@ -43,8 +43,8 @@ export function SocialProof() {
                             </svg>
 
                             <blockquote className="text-lg font-medium leading-relaxed italic text-foreground/80">
-                                "Julian transformed our MVP into a fully scalable platform. His
-                                attention to detail in both code and design was exceptional."
+                                &quot;Julian transformed our MVP into a fully scalable platform. His
+                                attention to detail in both code and design was exceptional.&quot;
                             </blockquote>
 
                             <figcaption className="mt-4 flex items-center gap-3">
