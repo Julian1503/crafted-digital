@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Serif_Text, Fira_Sans } from "next/font/google";
 import "./globals.css";
+import {Providers} from "@/components/ui/providers";
 
-export const dmSerif = DM_Serif_Text({
+const dmSerif = DM_Serif_Text({
     subsets: ["latin"],
     weight: ["400"],
     style: ["normal", "italic"],
@@ -10,7 +11,7 @@ export const dmSerif = DM_Serif_Text({
     display: "swap",
 });
 
-export const firaSans = Fira_Sans({
+const firaSans = Fira_Sans({
     subsets: ["latin"],
     weight: ["300", "400", "500", "600", "700"],
     style: ["normal", "italic"],
@@ -26,14 +27,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    title: "Crafted Digital | Software Services Studio",
+    title: "Julian Delgado | Software Services Studio",
     description:
-        "Crafted Digital is a software services studio building premium digital experiences. We turn complex problems into elegant, crafted solutions.",
+        "Julian Delgado is a software engineer that brings services studio building premium digital experiences. We turn complex problems into elegant, crafted solutions.",
     icons: {
         icon: [{ url: "/favicon.png", type: "image/png" }],
     },
     openGraph: {
-        title: "Crafted Digital | Software Services Studio",
+        title: "Cr | Software Services Studio",
         description:
             "Premium software services studio. We build websites, apps, and digital products with craft and care.",
         type: "website",
@@ -57,7 +58,7 @@ export default function RootLayout({
       <body
         className={`${dmSerif.variable} ${firaSans.variable} antialiased`}
       >
-        {children}
+      <Providers>{children}</Providers>
       </body>
     </html>
   );
