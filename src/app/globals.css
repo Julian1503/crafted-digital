@@ -32,17 +32,53 @@
     --radius-lg: var(--radius);
 }
 
+.font-montserrat { font-family: 'Montserrat', sans-serif; }
+
+@media (max-width: 640px) {
+     [data-work-card] > div[style] {
+         transition-delay: var(--work-delay, 200ms);
+     }
+ }
+
 @keyframes blink {
-    0%, 50%, 100% {
+    0%, 100% {
         opacity: 1;
     }
-    25%, 75% {
+    50% {
         opacity: 0;
+    }
+}
+@keyframes techscroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@layer utilities {
+    .animate-techscroll {
+        animation: techscroll 22s linear infinite;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal-on-scroll {
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
     }
 }
 
 .animate-blink {
-    animation: blink 2s infinite;
+    animation: blink 1s step-end infinite;
+    @media (prefers-reduced-motion: reduce) {
+        .animate-techscroll {
+            animation: none;
+            transform: none;
+        }
+    }
 }
 
 :root {

@@ -18,30 +18,39 @@ export function TypewriterTitle({
                                     typingSpeed = 70,
                                     startDelay = 0,
                                 }: Props) {
-    const [i, setI] = useState(0);
-    const startedRef = useRef(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const timeoutRef = useRef<number | null>(null);
+    const prevTextRef = useRef(text);
+
+    const displayText = useMemo(() => text.slice(0, currentIndex), [text, currentIndex]);
 
     useEffect(() => {
-        if (startedRef.current) return;
-        startedRef.current = true;
+        if (prevTextRef.current !== text) {
+            prevTextRef.current = text;
+            setCurrentIndex(0);
+        }
+    }, [text]);
 
-        const tick = (nextI: number) => {
-            setI(nextI);
-            if (nextI >= text.length) return;
+    useEffect(() => {
+        if (timeoutRef.current) {
+            window.clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
 
-            timeoutRef.current = window.setTimeout(() => tick(nextI + 1), typingSpeed);
-        };
+        if (currentIndex >= text.length) return;
 
-        timeoutRef.current = window.setTimeout(() => tick(1), startDelay);
+        const delay = currentIndex === 0 ? startDelay : typingSpeed;
+
+        timeoutRef.current = window.setTimeout(() => {
+            setCurrentIndex((prev) => prev + 1);
+        }, delay);
 
         return () => {
             if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
         };
-    }, [text, typingSpeed, startDelay]);
+    }, [currentIndex, text.length, typingSpeed, startDelay]);
 
-    const displayed = useMemo(() => text.slice(0, i), [text, i]);
-    const done = i >= text.length;
+    const done = currentIndex >= text.length;
 
     return (
         <span className={cn("relative inline-block", className)}>
@@ -52,15 +61,15 @@ export function TypewriterTitle({
         </span>
       </span>
 
-            <span className="absolute inset-0">
-        {displayed}
-                <span
-                    className={cn(
-                        "ml-0.5 inline-block",
-                        done ? "animate-blink" : "",
-                        cursorClassName
-                    )}
-                >
+      <span className="absolute inset-0">
+        {displayText}
+          <span
+              className={cn(
+                  "ml-0.5 inline-block",
+                  done ? "animate-blink" : "",
+                  cursorClassName
+              )}
+          >
           _
         </span>
       </span>
