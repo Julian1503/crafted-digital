@@ -1,13 +1,13 @@
-import { Header } from "@/components/sections/Header";
+import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/sections/Hero";
-import { SocialProof } from "@/components/sections/SocialProof";
-import { Services } from "@/components/sections/Services";
-import { Work } from "@/components/sections/Work";
-import { Process } from "@/components/sections/Process";
-import { Pricing } from "@/components/sections/Pricing";
+import { Services } from "@/components/sections/Services/Services";
+import { Work } from "@/components/sections/Work/Work";
+import { Process } from "@/components/sections/Process/Process";
+import { Pricing } from "@/components/sections/Pricing/Pricing";
 import { FAQ } from "@/components/sections/FAQ";
-import { Contact } from "@/components/sections/Contact";
-import { Footer } from "@/components/sections/Footer";
+import { Contact } from "@/components/sections/Contact/Contact";
+import { Footer } from "@/components/layout/Footer";
+import TechStack from "@/components/sections/TechStack";
 
 export default function Home() {
   return (
@@ -15,9 +15,9 @@ export default function Home() {
         <Header />
         <main>
           <Hero />
-          <SocialProof />
-          <Services />
-          <Work />
+            <Work />
+          <Services/>
+            <TechStack/>
           <Process />
           <Pricing />
           <FAQ />
