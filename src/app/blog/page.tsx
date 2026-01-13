@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, User } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SkipLink } from "@/components/ui/skip-link";
 
 export const metadata: Metadata = {
     title: "Blog | Web Development Tips for Australian Businesses",
@@ -87,10 +88,11 @@ function formatDate(dateString: string): string {
 export default function BlogPage() {
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-secondary/30">
+            <SkipLink />
             <Header />
 
-            <main className="pt-24">
-                <section className="py-16 md:py-24">
+            <main id="main-content" className="pt-24">
+                <section className="py-16 md:py-24" aria-labelledby="blog-heading">
                     <div className="container mx-auto px-4 md:px-6">
                         {/* Header */}
                         <div className="max-w-3xl mb-16">
@@ -98,10 +100,10 @@ export default function BlogPage() {
                                 href="/"
                                 className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6"
                             >
-                                <ArrowLeft className="h-4 w-4" />
+                                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                                 Back to homepage
                             </Link>
-                            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+                            <h1 id="blog-heading" className="text-4xl md:text-5xl font-bold mb-6">
                                 Web Development Blog
                             </h1>
                             <p className="text-xl text-muted-foreground">

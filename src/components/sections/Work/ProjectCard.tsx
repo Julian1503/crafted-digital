@@ -1,6 +1,7 @@
 /**
  * @fileoverview Project card component for the Work section carousel.
  * Displays individual portfolio projects with hover effects and animations.
+ * Implements WCAG 2.x accessible card patterns.
  */
 import { cn } from "@/lib/utils";
 import { Project } from "@/components/sections/Work/work.types";
@@ -58,6 +59,7 @@ export default function ProjectCard({
         <a
             href={project.href}
             data-work-card
+            aria-label={`${project.title} - ${project.brand}. ${project.description}`}
             className={cn(
                 "group relative snap-center shrink-0",
                 "w-[88%] sm:w-[44%] lg:w-[35%] xl:w-[30%]",
@@ -86,7 +88,7 @@ export default function ProjectCard({
             >
                 {/* Progress bar */}
                 {activeIndex === index && (
-                    <div className="absolute left-5 right-5 top-5 z-40 pointer-events-none">
+                    <div className="absolute left-5 right-5 top-5 z-40 pointer-events-none" aria-hidden="true">
                         <div className="h-1.5 rounded-full bg-white/15 overflow-hidden">
                             <div
                                 ref={(el): void => {
@@ -103,12 +105,13 @@ export default function ProjectCard({
                 <div className="absolute inset-0">
                     <img
                         src={project.image}
-                        alt={project.title}
+                        alt=""
                         className="h-full w-full object-cover"
                         loading="lazy"
+                        aria-hidden="true"
                     />
-                    <div className="absolute inset-0  bg-linear-to-b from-black/0 via-black/35 to-black/85" />
-                    <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
+                    <div className="absolute inset-0  bg-linear-to-b from-black/0 via-black/35 to-black/85" aria-hidden="true" />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-white/10" aria-hidden="true" />
                 </div>
 
                 {/* Default content */}
@@ -129,6 +132,7 @@ export default function ProjectCard({
                         "opacity-0 group-hover:opacity-100 transition-opacity duration-300",
                         "bg-secondary/75 backdrop-blur-[2px]"
                     )}
+                    aria-hidden="true"
                 />
 
                 <div
@@ -138,6 +142,7 @@ export default function ProjectCard({
                         "group-hover:translate-y-0 group-hover:opacity-100",
                         "transition-all duration-300"
                     )}
+                    aria-hidden="true"
                 >
                     <div className="rounded-2xl border border-white/10 bg-black/80 p-5 group-hover:bg-black/30">
                         <p className="text-xs tracking-[0.28em] font-medium text-white/80">
@@ -153,7 +158,7 @@ export default function ProjectCard({
                         </p>
 
                         <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-white">
-                            Open case study <ArrowRight className="h-4 w-4" />
+                            Open case study <ArrowRight className="h-4 w-4" aria-hidden="true" />
                         </div>
                     </div>
                 </div>

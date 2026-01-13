@@ -262,15 +262,17 @@ export function Work() {
                             variant="outline"
                             className="rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
                             onClick={() => scrollByCard("left")}
+                            aria-label="Previous project"
                         >
-                            <ChevronLeft className="h-4 w-4" />
+                            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                         </Button>
                         <Button
                             variant="outline"
                             className="rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
                             onClick={() => scrollByCard("right")}
+                            aria-label="Next project"
                         >
-                            <ChevronRight className="h-4 w-4" />
+                            <ChevronRight className="h-4 w-4" aria-hidden="true" />
                         </Button>
                     </div>
                 </div>

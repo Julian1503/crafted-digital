@@ -30,7 +30,7 @@ const firaSans = Fira_Sans({
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
-    maximumScale: 1,
+    // Note: maximumScale removed to allow pinch-to-zoom for accessibility (WCAG 1.4.4)
     colorScheme: "light"
 };
 

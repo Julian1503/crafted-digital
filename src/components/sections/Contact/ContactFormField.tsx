@@ -1,6 +1,7 @@
 /**
  * @fileoverview Contact form fields component.
  * Renders all form inputs for the contact form with validation.
+ * Implements WCAG 2.x AAA accessible form patterns.
  */
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -51,7 +52,7 @@ const CONTACT_METHODS = ["Email", "Call"];
 export default function ContactFormFields({ form, onSubmit, isSubmitting }: ContactFormFieldsProps) {
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" noValidate>
                 <h3 className="text-2xl font-bold mb-6">Book a free call</h3>
 
                 <FormField
@@ -59,10 +60,15 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     name="name"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Name</FormLabel>
+                            <FormLabel>
+                                Name <span className="text-destructive" aria-hidden="true">*</span>
+                                <span className="sr-only">(required)</span>
+                            </FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder="John Doe"
+                                    autoComplete="name"
+                                    required
                                     {...field}
                                     className="h-12 bg-muted/20"
                                 />
@@ -77,10 +83,16 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     name="email"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>
+                                Email <span className="text-destructive" aria-hidden="true">*</span>
+                                <span className="sr-only">(required)</span>
+                            </FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder="john@example.com"
+                                    type="email"
+                                    autoComplete="email"
+                                    required
                                     {...field}
                                     className="h-12 bg-muted/20"
                                 />
@@ -96,7 +108,12 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                         <FormItem>
                             <FormLabel>Company (optional)</FormLabel>
                             <FormControl>
-                                <Input placeholder="Acme Pty Ltd" {...field} className="h-12 bg-muted/20"/>
+                                <Input
+                                    placeholder="Acme Pty Ltd"
+                                    autoComplete="organization"
+                                    {...field}
+                                    className="h-12 bg-muted/20"
+                                />
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -110,7 +127,13 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                         <FormItem>
                             <FormLabel>Website (optional)</FormLabel>
                             <FormControl>
-                                <Input placeholder="https://…" {...field} className="h-12 bg-muted/20"/>
+                                <Input
+                                    placeholder="https://…"
+                                    type="url"
+                                    autoComplete="url"
+                                    {...field}
+                                    className="h-12 bg-muted/20"
+                                />
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -122,16 +145,21 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     name="topics"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>What do you want to talk about?</FormLabel>
+                            <FormLabel id="topics-label">What do you want to talk about?</FormLabel>
                             <FormControl>
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-2 gap-2" role="group" aria-labelledby="topics-label">
                                     {PROJECT_TOPICS.map((t) => {
                                         const checked = field.value?.includes(t);
+                                        const checkboxId = `topic-${t.toLowerCase().replace(/\s+/g, '-')}`;
                                         return (
-                                            <label key={t}
-                                                   className="flex items-center gap-2 rounded-xl border bg-muted/10 px-3 py-2">
+                                            <label
+                                                key={t}
+                                                htmlFor={checkboxId}
+                                                className="flex items-center gap-2 rounded-xl border bg-muted/10 px-3 py-2 cursor-pointer hover:bg-muted/20 transition-colors"
+                                            >
                                                 <input
                                                     type="checkbox"
+                                                    id={checkboxId}
                                                     checked={checked}
                                                     onChange={(e) => {
                                                         const next = e.target.checked
@@ -139,6 +167,7 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                                                             : (field.value ?? []).filter((x: string) => x !== t);
                                                         field.onChange(next);
                                                     }}
+                                                    className="w-4 h-4 rounded border-border"
                                                 />
                                                 <span className="text-sm">{t}</span>
                                             </label>
@@ -156,9 +185,10 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     name="budget"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Budget</FormLabel>
+                            <FormLabel htmlFor="budget-select">Budget</FormLabel>
                             <FormControl>
                                 <select
+                                    id="budget-select"
                                     className="h-12 w-full rounded-md border bg-muted/20 px-3"
                                     value={field.value ?? ""}
                                     onChange={field.onChange}
@@ -180,9 +210,10 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     name="timeline"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Timeline</FormLabel>
+                            <FormLabel htmlFor="timeline-select">Timeline</FormLabel>
                             <FormControl>
                                 <select
+                                    id="timeline-select"
                                     className="h-12 w-full rounded-md border bg-muted/20 px-3"
                                     value={field.value ?? ""}
                                     onChange={field.onChange}
@@ -204,13 +235,15 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     name="contactMethod"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Preferred contact</FormLabel>
+                            <FormLabel id="contact-method-label">Preferred contact</FormLabel>
                             <FormControl>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2" role="radiogroup" aria-labelledby="contact-method-label">
                                     {CONTACT_METHODS.map((method) => (
                                         <button
                                             type="button"
                                             key={method}
+                                            role="radio"
+                                            aria-checked={field.value === method}
                                             onClick={() => field.onChange(method)}
                                             className={`px-4 py-2 rounded-xl border ${field.value === method ? "bg-foreground text-background" : "bg-muted/10"}`}
                                         >
@@ -224,17 +257,18 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     )}
                 />
 
-                {/* Honeypot field for spam prevention - hidden from users */}
+                {/* Honeypot field for spam prevention - hidden from users and screen readers */}
                 <FormField
                     control={form.control}
                     name="hp"
                     render={({field}) => (
-                        <input
-                            tabIndex={-1}
-                            autoComplete="off"
-                            className="hidden"
-                            {...field}
-                        />
+                        <div aria-hidden="true" className="absolute -left-[9999px]">
+                            <input
+                                tabIndex={-1}
+                                autoComplete="off"
+                                {...field}
+                            />
+                        </div>
                     )}
                 />
 
@@ -243,11 +277,15 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     name="message"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Message</FormLabel>
+                            <FormLabel>
+                                Message <span className="text-destructive" aria-hidden="true">*</span>
+                                <span className="sr-only">(required)</span>
+                            </FormLabel>
                             <FormControl>
                                 <Textarea
                                     placeholder="Tell me about your project..."
                                     className="resize-none min-h-30 bg-muted/20"
+                                    required
                                     {...field}
                                 />
                             </FormControl>
@@ -260,10 +298,11 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                     type="submit"
                     className="w-full h-12 text-lg rounded-xl shadow-lg shadow-primary/10 hover:shadow-primary/20 transition-all"
                     disabled={isSubmitting}
+                    aria-busy={isSubmitting}
                 >
                     {isSubmitting ? (
                         <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin"/>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                             Sending...
                         </>
                     ) : (

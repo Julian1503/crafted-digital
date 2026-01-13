@@ -40,8 +40,10 @@ export default function CarouselControls({ projects, scrollerRef, progressRefSet
                     "snap-x snap-mandatory",
                     "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                 )}
+                role="region"
                 tabIndex={0}
-                aria-label="Featured work carousel"
+                aria-label="Featured work carousel - use arrow keys to scroll"
+                aria-roledescription="carousel"
             >
                 {projects.map((p, i) => (
                     <ProjectCard key={p.title}
