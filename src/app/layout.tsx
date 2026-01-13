@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Serif_Text, Fira_Sans } from "next/font/google";
+import { DM_Serif_Text, Montserrat, Fira_Sans } from "next/font/google";
 import "./globals.css";
 import {Providers} from "@/components/ui/providers";
 
@@ -9,6 +9,13 @@ const dmSerif = DM_Serif_Text({
     style: ["normal", "italic"],
     variable: "--font-dm-serif",
     display: "swap",
+});
+
+const montserrat = Montserrat({
+    subsets: ["latin"],
+    weight: ["300", "400", "500", "600", "700"],
+    style: ["normal", "italic"],
+    variable: "--font-montserrat",
 });
 
 const firaSans = Fira_Sans({
@@ -56,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dmSerif.variable} ${firaSans.variable} antialiased`}
+        className={`${montserrat.variable} ${dmSerif.variable} ${firaSans.variable} antialiased`}
       >
       <Providers>{children}</Providers>
       </body>
