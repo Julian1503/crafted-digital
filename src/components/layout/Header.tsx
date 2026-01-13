@@ -60,16 +60,13 @@ export function Header() {
 
         const observer = new IntersectionObserver(
             (entries) => {
-                const visible = entries
-                    .filter((e) => e.isIntersecting)
-                    .sort((a, b) => (b.intersectionRatio ?? 0) - (a.intersectionRatio ?? 0))[0];
-
-                if (visible?.target?.id) setActiveSection(visible.target.id);
+                const hit = entries.find((e) => e.isIntersecting);
+                if (hit?.target?.id) setActiveSection(hit.target.id);
             },
             {
                 root: null,
-                threshold: [0.2, 0.35, 0.5, 0.65],
-                rootMargin: "-20% 0px -60% 0px",
+                threshold: 0,
+                rootMargin: "-50% 0px -50% 0px",
             }
         );
 
@@ -79,7 +76,6 @@ export function Header() {
 
     const navigateToSection = (id: string) => {
         setMobileMenuOpen(false);
-
         setActiveSection(id);
 
         if (isHome) {
