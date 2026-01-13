@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FaLinkedin, FaInstagram, FaTwitter } from "react-icons/fa";
+import { FaLinkedin, FaInstagram } from "react-icons/fa";
 import { scrollToId } from "@/lib/utils";
 
 type FooterItem =
