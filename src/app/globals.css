@@ -150,7 +150,16 @@
     }
 }
 
+@keyframes techscroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+
 @layer utilities {
+    .animate-techscroll {
+        animation: techscroll var(--techscroll-duration, 26s) linear infinite;
+    }
+
     .reveal-on-scroll {
         opacity: 0;
         transform: translateY(24px);
