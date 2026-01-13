@@ -23,6 +23,7 @@ type FooterItem =
 const FOOTER_LINKS: FooterItem[] = [
     { label: "Services", type: "section", id: "services" },
     { label: "Work", type: "section", id: "work" },
+    { label: "Case Studies", type: "route", href: "/case-studies" },
     { label: "Process", type: "section", id: "process" },
     { label: "Pricing", type: "section", id: "pricing" },
     { label: "FAQ", type: "section", id: "faq" },
