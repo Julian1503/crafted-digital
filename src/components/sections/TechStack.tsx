@@ -2,6 +2,7 @@
 
 import {TECH} from "@/lib/constants";
 import Image from "next/image";
+import RevealSection from "@/components/ui/RevealSection";
 
 function IconItem({ name, icon }: { name: string; icon: string }) {
     return (
@@ -46,7 +47,10 @@ function IconItem({ name, icon }: { name: string; icon: string }) {
 
 export default function TechStack() {
     return (
-        <section className="relative overflow-hidden bg-primary py-16 border-y border-primary-foreground/10">
+        <RevealSection
+            delay={100}
+            variant="scale"
+            className="relative overflow-hidden bg-primary py-16 border-y border-primary-foreground/10">
             {/* subtle glow */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_50%_at_50%_0%,hsl(var(--secondary)/0.18),transparent_60%)]" />
 
@@ -77,10 +81,10 @@ export default function TechStack() {
 
                 {/* Moving icons carousel */}
                 <div className="mt-8 relative">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-primary to-transparent" />
-                    <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-primary to-transparent" />
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-linear-to-r from-primary to-transparent" />
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-linear-to-l from-primary to-transparent" />
                     <div className="overflow-hidden py-2 group">
-                        <div className="flex gap-3 md:gap-4 w-max animate-techscroll group-hover:[animation-play-state:paused]"
+                        <div className="flex gap-3 md:gap-4 w-max animate-techscroll group-hover:paused"
                             style={{ ["--techscroll-duration" as string]: "26s" }}
                         >
                             {[...TECH, ...TECH].map((t, idx) => (
@@ -90,6 +94,6 @@ export default function TechStack() {
                     </div>
                 </div>
             </div>
-        </section>
+        </RevealSection>
     );
 }
