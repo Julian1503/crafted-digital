@@ -1,73 +1,97 @@
-import {cn} from "@/lib/utils";
-import {Project} from "@/components/sections/Work/work.types";
-import {CARD_MS, STAGGER_MS_DESKTOP} from "@/components/sections/Work/work-data";
-import {ArrowRight} from "lucide-react";
-import {RefObject, useRef} from "react";
+// ProjectCard.tsx
+import { cn } from "@/lib/utils";
+import { Project } from "@/components/sections/Work/work.types";
+import { CARD_MS, STAGGER_MS_DESKTOP } from "@/components/sections/Work/work-data";
+import { ArrowRight } from "lucide-react";
+import { RefObject, useRef } from "react";
 
 type ProjectCardProps = {
-    project: Project,
-    index: number,
-    hasRevealed: boolean,
+    project: Project;
+    index: number;
+    hasRevealed: boolean;
     progressRefSet: RefObject<(HTMLDivElement | null)[]>;
     activeIndex: number | undefined;
-}
+};
 
-export default function ProjectCard({project, index, progressRefSet, hasRevealed, activeIndex}: ProjectCardProps) {
+export default function ProjectCard({
+                                        project,
+                                        index,
+                                        progressRefSet,
+                                        hasRevealed = true,
+                                        activeIndex,
+                                    }: ProjectCardProps) {
     const progressRefs = useRef<(HTMLDivElement | null)[]>(progressRefSet?.current);
+
+    const dist = activeIndex == null ? 999 : Math.abs(activeIndex - index);
+
+    // Jerarquía (centro > adyacentes > resto)
+    const tier =
+        dist === 0 ? "center" : dist === 1 ? "near" : dist === 2 ? "far" : "rest";
+
+    const tierClass =
+        tier === "center"
+            ? "scale-100 opacity-100"
+            : tier === "near"
+                ? "scale-[0.93] opacity-95"
+                : tier === "far"
+                    ? "scale-[0.88] opacity-85"
+                    : "scale-[0.84] opacity-75";
 
     return (
         <a
-            key={project.title}
             href={project.href}
             data-work-card
             className={cn(
-                "group relative snap-start shrink-0",
-                "w-[78%] sm:w-[52%] lg:w-[36%] xl:w-[30%]",
-                "aspect-[3/4] rounded-[28px] overflow-hidden",
-                "border border-white/10 bg-background/5 backdrop-blur",
-                "transition-transform duration-500 hover:-translate-y-1"
+                "group relative snap-center shrink-0",
+                "w-[88%] sm:w-[44%] lg:w-[30%] xl:w-[20%]",
+                "aspect-3/4 rounded-[28px] overflow-hidden",
+                "bg-transparent",
+                "transition-transform duration-500 hover:-translate-y-1",
+                "will-change-transform",
+                tierClass
             )}
         >
-            {/* Inner wrapper = entrance animation (so hover transform stays on <a>) */}
+            {/* Inner wrapper = reveal + float */}
             <div
                 className={cn(
                     "absolute inset-0 will-change-[transform,opacity,filter]",
                     "transition-[transform,opacity,filter] ease-out",
-                    !hasRevealed && "opacity-0 translate-y-3 scale-[0.985] blur-[2px]",
-                    hasRevealed && "opacity-100 translate-y-0 scale-100 blur-0"
+                    !hasRevealed &&
+                    "opacity-0 translate-y-10 [transform:translateY(40px)_rotateX(55deg)_scale(0.98)] blur-[2px]",
+                    hasRevealed &&
+                    "opacity-100 translate-y-0 [transform:translateY(0px)_rotateX(0deg)_scale(1)] blur-0",
+                    "motion-safe:animate-[workFloat_6s_ease-in-out_infinite] motion-reduce:animate-none"
                 )}
                 style={{
                     transitionDuration: `${CARD_MS}ms`,
-                    transitionDelay: hasRevealed
-                        ? `${(index * STAGGER_MS_DESKTOP)}ms`
-                        : "0ms",
+                    transitionDelay: hasRevealed ? `${index * STAGGER_MS_DESKTOP}ms` : "0ms",
                 }}
             >
-                {/* Progress bar (solo para el card activo) */}
+                {/* Progress bar */}
                 {activeIndex === index && (
                     <div className="absolute left-5 right-5 top-5 z-40 pointer-events-none">
                         <div className="h-1.5 rounded-full bg-white/15 overflow-hidden">
                             <div
-                                ref={(el) => progressRefs.current[index] = el}
+                                ref={(el): void => {
+                                    progressRefs.current[index] = el;
+                                }}
                                 className="h-full w-full rounded-full bg-white/80 origin-left will-change-transform"
-                                style={{transform: "scaleX(0)"}}
+                                style={{ transform: "scaleX(0)" }}
                             />
                         </div>
                     </div>
                 )}
 
-
                 {/* Image */}
                 <div className="absolute inset-0">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                         src={project.image}
                         alt={project.title}
                         className="h-full w-full object-cover"
                         loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/35 to-black/85"/>
-                    <div className="absolute inset-0 ring-1 ring-inset ring-white/10"/>
+                    <div className="absolute inset-0  bg-gradient-to-b from-black/0 via-black/35 to-black/85" />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
                 </div>
 
                 {/* Default content */}
@@ -75,11 +99,9 @@ export default function ProjectCard({project, index, progressRefSet, hasRevealed
                     <p className="text-xs tracking-[0.28em] font-medium text-white/80">
                         {project.brand}
                     </p>
-
                     <h3 className="mt-2 text-2xl sm:text-3xl font-semibold leading-[1.05] tracking-tight text-white">
                         {project.title}
                     </h3>
-
                     <p className="mt-3 text-xs tracking-[0.22em] text-white/70">{project.readTime}</p>
                 </div>
 
@@ -114,7 +136,7 @@ export default function ProjectCard({project, index, progressRefSet, hasRevealed
                         </p>
 
                         <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-white">
-                            Open case study <ArrowRight className="h-4 w-4"/>
+                            Open case study <ArrowRight className="h-4 w-4" />
                         </div>
                     </div>
                 </div>
