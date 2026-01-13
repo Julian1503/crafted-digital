@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import {Header} from "@/components/layout/Header";
 import {Footer} from "@/components/layout/Footer";
 import RevealSection from "@/components/ui/RevealSection";
+import Image from "next/image";
+import {useEffect, useRef} from "react";
 
 const metrics = [
     {
@@ -72,6 +74,53 @@ const storyBlocks = [
 
 
 export default function About() {
+    const frameRef = useRef<HTMLDivElement | null>(null);
+    const imgRef = useRef<HTMLImageElement | null>(null);
+
+    useEffect(() => {
+        const frame = frameRef.current;
+        const img = imgRef.current;
+        if (!frame || !img) return;
+
+        let raf = 0;
+
+        const update = () => {
+            const frameRect = frame.getBoundingClientRect();
+            const imgRect = img.getBoundingClientRect();
+
+            const vh = window.innerHeight;
+
+            // 0..1 cuando el marco entra y sale
+            const progress = (vh - frameRect.top) / (vh + frameRect.height);
+            const t = Math.max(0, Math.min(1, progress));
+
+            // recorrido disponible (imagen más alta que el marco)
+            const extra = Math.max(0, imgRect.height - frameRect.height);
+
+            img.style.transform = `translateY(${-extra * t}px)`;
+        };
+
+        const onScroll = () => {
+            cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(update);
+        };
+
+        // Importante: recalcular cuando cargue la imagen
+        if (!img.complete) {
+            img.addEventListener("load", update, { once: true });
+        }
+
+        update();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", update);
+
+        return () => {
+            cancelAnimationFrame(raf);
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", update);
+        };
+    }, []);
+
     return (
         <div className="min-h-screen bg-background text-foreground selection:bg-secondary/30">
             <Header />
@@ -149,7 +198,7 @@ export default function About() {
                                             ))}
                                         </ul>
                                         <div className="rounded-2xl bg-muted/40 p-4 text-sm text-muted-foreground">
-                                            Currently based in Texas • Serving clients worldwide
+                                            Currently based in Toowoomba • Serving clients worldwide
                                         </div>
                                     </div>
                                 </div>
@@ -162,7 +211,7 @@ export default function About() {
                 <section className="bg-muted/20">
                     <div className="container mx-auto px-4 md:px-6 py-24">
                         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-                            <RevealSection className="space-y-6" variant="left">
+                            <RevealSection className="space-y-6 flex flex-col items-center" variant="left">
                                 <p className="uppercase text-sm tracking-[0.3em] text-muted-foreground">
                                     The story
                                 </p>
@@ -174,6 +223,18 @@ export default function About() {
                                     noise. My role is to translate your vision into an experience
                                     that feels confident, premium, and easy to trust.
                                 </p>
+                                <div
+                                    ref={frameRef}
+                                    className="relative w-[50%] max-w-[320px] aspect-[2/2] overflow-hidden rounded-3xl"
+                                >
+                                    <img
+                                        ref={imgRef}
+                                        src="/julian-profile.jpg"
+                                        alt="Julian Delgado"
+                                        className="absolute left-0 top-0 w-full h-[140%] object-cover will-change-transform"
+                                        loading="lazy"
+                                    />
+                                </div>
                             </RevealSection>
 
                             <div className="space-y-8">
