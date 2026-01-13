@@ -6,26 +6,7 @@ import { Button } from "@/components/ui/button";
 import {Header} from "@/components/layout/Header";
 import {Footer} from "@/components/layout/Footer";
 import RevealSection from "@/components/ui/RevealSection";
-import Image from "next/image";
 import {useEffect, useRef} from "react";
-
-const metrics = [
-    {
-        label: "Projects shipped",
-        value: "60+",
-        detail: "Launches across SaaS, fintech, and e-commerce.",
-    },
-    {
-        label: "Avg. performance lift",
-        value: "2.3×",
-        detail: "Measured improvements to Core Web Vitals.",
-    },
-    {
-        label: "Client partnerships",
-        value: "5+ yrs",
-        detail: "Long-term relationships built on trust.",
-    },
-];
 
 const principles = [
     {
@@ -90,11 +71,9 @@ export default function About() {
 
             const vh = window.innerHeight;
 
-            // 0..1 cuando el marco entra y sale
             const progress = (vh - frameRect.top) / (vh + frameRect.height);
             const t = Math.max(0, Math.min(1, progress));
 
-            // recorrido disponible (imagen más alta que el marco)
             const extra = Math.max(0, imgRect.height - frameRect.height);
 
             img.style.transform = `translateY(${-extra * t}px)`;
@@ -105,7 +84,6 @@ export default function About() {
             raf = requestAnimationFrame(update);
         };
 
-        // Importante: recalcular cuando cargue la imagen
         if (!img.complete) {
             img.addEventListener("load", update, { once: true });
         }

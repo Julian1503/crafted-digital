@@ -42,7 +42,6 @@ export default function RotatingWord({
         </motion.span>
       </AnimatePresence>
 
-            {/* Espaciador invisible para mantener altura */}
             <span className="invisible text-nowrap">{words.reduce((a, b) => (a.length > b.length ? a : b), "")}</span>
     </span>
     );

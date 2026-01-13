@@ -16,14 +16,49 @@ export const PROJECTS : Project[] = [
         href: "#",
     },
     {
-        title: "Transforming Scale inato Value",
-        brand: "TRIBUTE TECHNOLOGYa",
-        category: "AI / Automatiaon",
-        readTime: "2 MIN RaEAD",
-        description:
-            "Automating coantract interpretation and memo drafting — cutting hours of manual work down to minutes.",
-        image: "https://www.actian.com/wp-content/uploads/2024/01/gen-ai-best-practices.jpg",
-        href: "#",
+        "title": "Scaling Neural Architecture",
+        "brand": "NEXUS SYSTEMS",
+        "category": "Machine Learning",
+        "readTime": "5 MIN READ",
+        "description": "Optimizing deep learning pipelines to reduce latent overhead in high-traffic enterprise environments.",
+        "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+        "href": "#"
+    },
+    {
+        "title": "The Future of Edge Computing",
+        "brand": "VERTIGO DATA",
+        "category": "Infrastructure",
+        "readTime": "3 MIN READ",
+        "description": "Moving processing power closer to the source to eliminate bandwidth bottlenecks and improve real-time response.",
+        "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc51",
+        "href": "#"
+    },
+    {
+        "title": "Securing the Modern Stack",
+        "brand": "SENTINEL SEC",
+        "category": "Cybersecurity",
+        "readTime": "8 MIN READ",
+        "description": "Implementing zero-trust architecture across distributed cloud teams to mitigate internal credential threats.",
+        "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+        "href": "#"
+    },
+    {
+        "title": "Predictive Logistics Analytics",
+        "brand": "FLOW PATH",
+        "category": "Data Science",
+        "readTime": "4 MIN READ",
+        "description": "Using historical shipment data to forecast supply chain disruptions before they impact the bottom line.",
+        "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d",
+        "href": "#"
+    },
+    {
+        "title": "Sustainable SaaS Growth",
+        "brand": "ECO-CORE",
+        "category": "Sustainability",
+        "readTime": "6 MIN READ",
+        "description": "How modern software companies are offsetting server carbon footprints through green energy credits.",
+        "image": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e",
+        "href": "#"
     },
     {
         title: "Gen AI Automation",

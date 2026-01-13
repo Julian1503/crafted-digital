@@ -33,7 +33,7 @@ export default function HeroContent() {
                 </h1>
 
                 <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
-                    I build your custom software from start to finish. You dont need to know how to code—you just need a vision.
+                    I build your custom software from start to finish. You don&apos;t need to know how to code—you just need a vision.
                 </p>
             </div>
 

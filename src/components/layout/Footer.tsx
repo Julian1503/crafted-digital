@@ -54,7 +54,7 @@ export function Footer() {
                     {/* Brand */}
                     <div className="flex flex-col items-center md:items-start gap-2">
                         <Link
-                            href="/public"
+                            href="/"
                             onClick={(e) => {
                                 if (isHome) {
                                     e.preventDefault();
@@ -112,7 +112,7 @@ export function Footer() {
                             <FaLinkedin size={20} />
                         </a>
                         <a
-                            href="https://www.instagram.com/crafeddigital_/"
+                            href="https://www.instagram.com/crafteddigital_/"
                             target="_blank"
                             rel="noreferrer"
                             className="text-muted-foreground hover:text-secondary transition-colors"

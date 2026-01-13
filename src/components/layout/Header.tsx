@@ -125,7 +125,7 @@ export function Header() {
             <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
                 {/* Brand */}
                 <Link
-                    href="/public"
+                    href="/"
                     onClick={(e) => {
                         if (isHome) {
                             e.preventDefault();
