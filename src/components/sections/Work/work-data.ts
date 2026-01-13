@@ -30,7 +30,7 @@ export const PROJECTS : Project[] = [
         "category": "Infrastructure",
         "readTime": "3 MIN READ",
         "description": "Moving processing power closer to the source to eliminate bandwidth bottlenecks and improve real-time response.",
-        "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc51",
+        "image": "https://zpesystems.com/wp-content/uploads/2024/03/The-Future-of-Edge-Computing.jpg",
         "href": "#"
     },
     {
