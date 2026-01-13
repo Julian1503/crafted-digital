@@ -2,22 +2,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-sonner";
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
-import { Loader2, Send, Check } from "lucide-react";
+import { Send } from "lucide-react";
 import {formSchema} from "@/components/sections/Contact/contact-data";
 import ContactSuccessState from "@/components/sections/Contact/ContactSuccessState";
 import ContactFormFields from "@/components/sections/Contact/ContactFormField";
@@ -34,23 +23,37 @@ export function Contact() {
             name: "",
             email: "",
             message: "",
+            topics: [],
+            budget: "",
+            timeline: "",
+            company: "",
+            website: "",
+            hp: "",
+            contactMethod: undefined,
         },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values: z.infer<typeof formSchema>) {
         setIsSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
-            console.log(values);
-            setIsSubmitting(false);
-            setIsSuccess(true);
-            toast({
-                title: "Message sent!",
-                description: "I’ll get back to you within 24 hours.",
+        try {
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values),
             });
+
+            if (!res.ok) throw new Error("Request failed");
+
+            setIsSuccess(true);
+            toast({ title: "Message sent!", description: "I’ll get back to you within 24 hours." });
             form.reset();
-        }, 1500);
+        } catch {
+            toast({ title: "Something went wrong", description: "Please try again or email me directly." });
+        } finally {
+            setIsSubmitting(false);
+        }
     }
+
 
     return (
         <section id="contact" className="py-24 bg-foreground text-background">
@@ -80,7 +83,7 @@ export function Contact() {
                                 </div>
                                 <div>
                                     <div className="font-bold text-background">Email me directly</div>
-                                    <div className="text-secondary">julianedelgado@hotmail.com</div>
+                                    <a href="mailto:julianedelgado@hotmail.com" className="cursor-pointer text-secondary">julianedelgado@hotmail.com</a>
                                 </div>
                             </div>
                         </div>

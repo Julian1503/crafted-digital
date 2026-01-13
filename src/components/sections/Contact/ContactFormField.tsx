@@ -46,6 +46,154 @@ export default function ContactFormFields({form, onSubmit, isSubmitting}: Contac
                         </FormItem>
                     )}
                 />
+                <FormField
+                    control={form.control}
+                    name="company"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Company (optional)</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Acme Pty Ltd" {...field} className="h-12 bg-muted/20"/>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="website"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Website (optional)</FormLabel>
+                            <FormControl>
+                                <Input placeholder="https://…" {...field} className="h-12 bg-muted/20"/>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="topics"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>What do you want to talk about?</FormLabel>
+                            <FormControl>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {["New SaaS", "Landing page", "E-commerce", "Fix/maintenance", "Performance/SEO", "Integrations", "Other"].map((t) => {
+                                        const checked = field.value?.includes(t);
+                                        return (
+                                            <label key={t}
+                                                   className="flex items-center gap-2 rounded-xl border bg-muted/10 px-3 py-2">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={checked}
+                                                    onChange={(e) => {
+                                                        const next = e.target.checked
+                                                            ? [...(field.value ?? []), t]
+                                                            : (field.value ?? []).filter((x: string) => x !== t);
+                                                        field.onChange(next);
+                                                    }}
+                                                />
+                                                <span className="text-sm">{t}</span>
+                                            </label>
+                                        );
+                                    })}
+                                </div>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="budget"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Budget</FormLabel>
+                            <FormControl>
+                                <select
+                                    className="h-12 w-full rounded-md border bg-muted/20 px-3"
+                                    value={field.value ?? ""}
+                                    onChange={field.onChange}
+                                >
+                                    <option value="">Select…</option>
+                                    <option value="Under $2k">Under $2k</option>
+                                    <option value="$2k–$5k">$2k–$5k</option>
+                                    <option value="$5k–$10k">$5k–$10k</option>
+                                    <option value="$10k+">$10k+</option>
+                                </select>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="timeline"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Timeline</FormLabel>
+                            <FormControl>
+                                <select
+                                    className="h-12 w-full rounded-md border bg-muted/20 px-3"
+                                    value={field.value ?? ""}
+                                    onChange={field.onChange}
+                                >
+                                    <option value="">Select…</option>
+                                    <option value="ASAP">ASAP</option>
+                                    <option value="2–4 weeks">2–4 weeks</option>
+                                    <option value="1–2 months">1–2 months</option>
+                                    <option value="Flexible">Flexible</option>
+                                </select>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="contactMethod"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Preferred contact</FormLabel>
+                            <FormControl>
+                                <div className="flex gap-2">
+                                    {["Email", "Call"].map((m) => (
+                                        <button
+                                            type="button"
+                                            key={m}
+                                            onClick={() => field.onChange(m)}
+                                            className={`px-4 py-2 rounded-xl border ${field.value === m ? "bg-foreground text-background" : "bg-muted/10"}`}
+                                        >
+                                            {m}
+                                        </button>
+                                    ))}
+                                </div>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                {/* honeypot hidden */}
+                <FormField
+                    control={form.control}
+                    name="hp"
+                    render={({field}) => (
+                        <input
+                            tabIndex={-1}
+                            autoComplete="off"
+                            className="hidden"
+                            {...field}
+                        />
+                    )}
+                />
 
                 <FormField
                     control={form.control}
@@ -56,7 +204,7 @@ export default function ContactFormFields({form, onSubmit, isSubmitting}: Contac
                             <FormControl>
                                 <Textarea
                                     placeholder="Tell me about your project..."
-                                    className="resize-none min-h-[120px] bg-muted/20"
+                                    className="resize-none min-h-30 bg-muted/20"
                                     {...field}
                                 />
                             </FormControl>
