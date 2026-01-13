@@ -19,6 +19,7 @@ const NAV_ITEMS: NavItem[] = [
     { name: "Process", type: "section", id: "process" },
     { name: "Pricing", type: "section", id: "pricing" },
     { name: "FAQ", type: "section", id: "faq" },
+    { name: "Contact", type: "section", id: "contact" },
     { name: "About", type: "route", href: "/about-me" },
 ];
 

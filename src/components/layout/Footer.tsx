@@ -101,15 +101,7 @@ export function Footer() {
 
                     {/* Socials (use real URLs, open in new tab) */}
                     <div className="flex gap-4">
-                        <a
-                            href="https://twitter.com/"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-muted-foreground hover:text-secondary transition-colors"
-                            aria-label="Twitter"
-                        >
-                            <FaTwitter size={20} />
-                        </a>
+
                         <a
                             href="https://www.linkedin.com/in/julianedelgado/"
                             target="_blank"
@@ -120,7 +112,7 @@ export function Footer() {
                             <FaLinkedin size={20} />
                         </a>
                         <a
-                            href="https://www.instagram.com/"
+                            href="https://www.instagram.com/crafeddigital_/"
                             target="_blank"
                             rel="noreferrer"
                             className="text-muted-foreground hover:text-secondary transition-colors"

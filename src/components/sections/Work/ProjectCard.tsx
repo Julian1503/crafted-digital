@@ -24,7 +24,6 @@ export default function ProjectCard({
 
     const dist = activeIndex == null ? 999 : Math.abs(activeIndex - index);
 
-    // Jerarquía (centro > adyacentes > resto)
     const tier =
         dist === 0 ? "center" : dist === 1 ? "near" : dist === 2 ? "far" : "rest";
 
@@ -43,7 +42,7 @@ export default function ProjectCard({
             data-work-card
             className={cn(
                 "group relative snap-center shrink-0",
-                "w-[88%] sm:w-[44%] lg:w-[30%] xl:w-[20%]",
+                "w-[88%] sm:w-[44%] lg:w-[35%] xl:w-[30%]",
                 "aspect-3/4 rounded-[28px] overflow-hidden",
                 "bg-transparent",
                 "transition-transform duration-500 hover:-translate-y-1",
@@ -57,9 +56,9 @@ export default function ProjectCard({
                     "absolute inset-0 will-change-[transform,opacity,filter]",
                     "transition-[transform,opacity,filter] ease-out",
                     !hasRevealed &&
-                    "opacity-0 translate-y-10 [transform:translateY(40px)_rotateX(55deg)_scale(0.98)] blur-[2px]",
+                    "opacity-0 translate-y-10 transform-[translateY(40px)_rotateX(55deg)_scale(0.98)] blur-[2px]",
                     hasRevealed &&
-                    "opacity-100 translate-y-0 [transform:translateY(0px)_rotateX(0deg)_scale(1)] blur-0",
+                    "opacity-100 translate-y-0 transform-[translateY(0px)_rotateX(0deg)_scale(1)] blur-0",
                     "motion-safe:animate-[workFloat_6s_ease-in-out_infinite] motion-reduce:animate-none"
                 )}
                 style={{
@@ -90,7 +89,7 @@ export default function ProjectCard({
                         className="h-full w-full object-cover"
                         loading="lazy"
                     />
-                    <div className="absolute inset-0  bg-gradient-to-b from-black/0 via-black/35 to-black/85" />
+                    <div className="absolute inset-0  bg-linear-to-b from-black/0 via-black/35 to-black/85" />
                     <div className="absolute inset-0 ring-1 ring-inset ring-white/10" />
                 </div>
 
@@ -122,7 +121,7 @@ export default function ProjectCard({
                         "transition-all duration-300"
                     )}
                 >
-                    <div className="rounded-2xl border border-white/10 bg-black/45 p-5">
+                    <div className="rounded-2xl border border-white/10 bg-black/80 p-5 group-hover:bg-black/30">
                         <p className="text-xs tracking-[0.28em] font-medium text-white/80">
                             {project.category}
                         </p>

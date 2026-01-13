@@ -4,7 +4,7 @@ import HeroVisual from "@/components/sections/Hero/HeroVisual";
 
 export default function Hero() {
     return (
-        <section className="relative min-h-[100vh] flex items-center py-20 overflow-hidden bg-linear-to-b from-background/80 via-foreground/10 to-muted/30">
+        <section className="relative min-h-screen flex items-center py-20 overflow-hidden bg-linear-to-b from-background/80 via-foreground/10 to-muted/30">
             {/* Subtler background for a "Premium" feel */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-30">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-secondary/10 rounded-full blur-[120px]" />
