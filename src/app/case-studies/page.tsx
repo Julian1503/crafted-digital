@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -87,10 +88,12 @@ export default function CaseStudiesPage() {
                                     className="group rounded-3xl border border-border bg-card overflow-hidden transition-all hover:shadow-xl hover:border-secondary/50"
                                 >
                                     <div className="aspect-video relative overflow-hidden">
-                                        <img
+                                        <Image
                                             src={study.image}
                                             alt={study.title}
-                                            className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                            className="object-cover transition-transform group-hover:scale-105"
                                         />
                                         <div className="absolute top-4 left-4">
                                             <span className="px-3 py-1 rounded-full bg-background/90 text-xs font-medium">

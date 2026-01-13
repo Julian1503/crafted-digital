@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -209,11 +210,14 @@ export default async function CaseStudyPage({
                                 </p>
                             </div>
 
-                            <div className="rounded-3xl overflow-hidden">
-                                <img
+                            <div className="rounded-3xl overflow-hidden relative aspect-video">
+                                <Image
                                     src={study.image}
                                     alt={study.title}
-                                    className="w-full h-auto object-cover"
+                                    fill
+                                    sizes="(max-width: 1024px) 100vw, 50vw"
+                                    className="object-cover"
+                                    priority
                                 />
                             </div>
                         </div>
