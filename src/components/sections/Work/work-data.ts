@@ -16,6 +16,16 @@ export const PROJECTS : Project[] = [
         href: "#",
     },
     {
+        title: "Transforming Scale inato Value",
+        brand: "TRIBUTE TECHNOLOGYa",
+        category: "AI / Automatiaon",
+        readTime: "2 MIN RaEAD",
+        description:
+            "Automating coantract interpretation and memo drafting — cutting hours of manual work down to minutes.",
+        image: "https://www.actian.com/wp-content/uploads/2024/01/gen-ai-best-practices.jpg",
+        href: "#",
+    },
+    {
         title: "Gen AI Automation",
         brand: "CASE STUDY",
         category: "AI / Automation",

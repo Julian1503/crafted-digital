@@ -19,7 +19,6 @@ export function Work() {
     // autoplay config
     const AUTOPLAY_MS = 4500;
     const [activeIndex, setActiveIndex] = useState(0);
-    const [progress, setProgress] = useState(0); // 0..1
     const [paused, setPaused] = useState(false);
 
     const prefersReducedMotion = useMemo(() => {
@@ -53,20 +52,6 @@ export function Work() {
         return () => io.disconnect();
     }, [hasRevealed, prefersReducedMotion]);
 
-    const scrollByCard = useCallback((dir: "left" | "right") => {
-        const el = scrollerRef.current;
-        if (!el) return;
-
-        const card = el.querySelector<HTMLElement>("[data-work-card]");
-        const gap = 20;
-        const amount = card ? card.offsetWidth + gap : 520;
-
-        el.scrollBy({
-            left: dir === "left" ? -amount : amount,
-            behavior: "smooth",
-        });
-    }, []);
-
     const scrollToIndex = useCallback((index: number) => {
         const el = scrollerRef.current;
         if (!el) return;
@@ -75,8 +60,34 @@ export function Work() {
         const target = cards[index];
         if (!target) return;
 
-        el.scrollTo({ left: target.offsetLeft, behavior: "smooth" });
+        const left =
+            target.offsetLeft - (el.clientWidth - target.clientWidth) / 2;
+
+        el.scrollTo({ left, behavior: "smooth" });
     }, []);
+
+    const scrollByCard = useCallback(
+        (dir: "left" | "right") => {
+            const el = scrollerRef.current;
+            if (!el) return;
+
+            const cards = Array.from(el.querySelectorAll<HTMLElement>("[data-work-card]"));
+            if (!cards.length) return;
+
+            const nextIndex =
+                dir === "right"
+                    ? activeIndex === cards.length - 1
+                        ? 0
+                        : activeIndex + 1
+                    : activeIndex === 0
+                        ? cards.length - 1
+                        : activeIndex - 1;
+
+            scrollToIndex(nextIndex);
+            setActiveIndex(nextIndex);
+        },
+        [activeIndex, scrollToIndex]
+    );
 
     const computeActiveIndex = useCallback(() => {
         const el = scrollerRef.current;
@@ -113,14 +124,12 @@ export function Work() {
             raf = requestAnimationFrame(() => {
                 const idx = computeActiveIndex();
                 setActiveIndex(idx);
-                setProgress(0);
             });
         };
 
         const onResize = () => {
             const idx = computeActiveIndex();
             setActiveIndex(idx);
-            setProgress(0);
         };
 
         el.addEventListener("scroll", onScroll, { passive: true });
@@ -163,7 +172,6 @@ export function Work() {
                 else scrollToIndex(nextIndex);
 
                 setActiveIndex(nextIndex);
-                setProgress(0);
                 start = now;
             }
 
