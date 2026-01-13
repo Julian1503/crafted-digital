@@ -10,6 +10,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         'clinic-management-system',
     ];
 
+    // Blog post slugs for dynamic sitemap entries
+    const blogSlugs = [
+        'why-australian-businesses-need-custom-websites',
+        'nextjs-vs-wordpress-for-australian-businesses',
+        'how-to-improve-website-speed-for-australian-hosting',
+        'seo-basics-for-tradies-and-service-businesses',
+    ];
+
     const staticPages: MetadataRoute.Sitemap = [
         {
             url: baseUrl,
@@ -29,6 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
             changeFrequency: 'weekly',
             priority: 0.9,
         },
+        {
+            url: `${baseUrl}/blog`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.9,
+        },
     ];
 
     const caseStudyPages: MetadataRoute.Sitemap = caseStudySlugs.map((slug) => ({
@@ -38,5 +52,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.8,
     }));
 
-    return [...staticPages, ...caseStudyPages];
+    const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
+        url: `${baseUrl}/blog/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.7,
+    }));
+
+    return [...staticPages, ...caseStudyPages, ...blogPages];
 }
