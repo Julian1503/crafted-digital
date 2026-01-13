@@ -450,9 +450,10 @@ export default async function BlogPostPage({
                                     }
                                     if (paragraph.startsWith("- ")) {
                                         return (
-                                            <ul key={index} className="list-disc pl-6 mb-4 text-muted-foreground">
-                                                <li>{paragraph.replace("- ", "")}</li>
-                                            </ul>
+                                            <div key={index} className="flex items-start gap-2 text-muted-foreground mb-2 pl-4">
+                                                <span className="text-secondary mt-1.5">•</span>
+                                                <span>{paragraph.replace("- ", "")}</span>
+                                            </div>
                                         );
                                     }
                                     return (

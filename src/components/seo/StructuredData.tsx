@@ -15,7 +15,6 @@ export function LocalBusinessSchema() {
         description:
             "Web development and software solutions for Australian service businesses. Custom websites, web apps, and MVPs built to convert and scale.",
         url: "https://juliandelgado.com.au",
-        telephone: "",
         email: "julianedelgado@hotmail.com",
         address: {
             "@type": "PostalAddress",
@@ -86,13 +85,6 @@ export function WebDevelopmentServiceSchema() {
             name: "Australia",
         },
         serviceType: "Web Development",
-        offers: {
-            "@type": "Offer",
-            priceCurrency: "AUD",
-            price: "3000",
-            priceValidUntil: "2027-12-31",
-            availability: "https://schema.org/InStock",
-        },
     };
 
     return (
@@ -123,13 +115,6 @@ export function MVPDevelopmentServiceSchema() {
             name: "Australia",
         },
         serviceType: "Software Development",
-        offers: {
-            "@type": "Offer",
-            priceCurrency: "AUD",
-            price: "8000",
-            priceValidUntil: "2027-12-31",
-            availability: "https://schema.org/InStock",
-        },
     };
 
     return (

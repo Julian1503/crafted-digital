@@ -89,9 +89,6 @@ export const metadata: Metadata = {
     alternates: {
         canonical: "https://juliandelgado.com.au",
     },
-    verification: {
-        google: "your-google-verification-code",
-    },
 };
 
 export default function RootLayout({
