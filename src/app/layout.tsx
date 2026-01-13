@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Serif_Text, Montserrat, Fira_Sans } from "next/font/google";
 import "./globals.css";
 import {Providers} from "@/components/ui/providers";
+import {StructuredData} from "@/components/seo/StructuredData";
 
 const dmSerif = DM_Serif_Text({
     subsets: ["latin"],
@@ -34,24 +35,59 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    title: "Julian Delgado | Software Services Studio",
+    metadataBase: new URL("https://juliandelgado.com.au"),
+    title: {
+        default: "Julian Delgado | Web Development & Software Solutions for Australian Businesses",
+        template: "%s | Julian Delgado"
+    },
     description:
-        "Julian Delgado is a software engineer that brings services studio building premium digital experiences. We turn complex problems into elegant, crafted solutions.",
+        "Julian Delgado helps Australian service businesses launch custom websites, web apps, and MVPs. Based in Toowoomba, QLD — working with clients Australia-wide. Get a premium digital product built fast.",
+    keywords: [
+        "web developer Australia",
+        "software developer Queensland",
+        "Next.js developer",
+        "custom web application",
+        "MVP development Australia",
+        "website for tradies",
+        "business website Australia",
+        "React developer Australia",
+        "Toowoomba web developer"
+    ],
+    authors: [{ name: "Julian Delgado", url: "https://juliandelgado.com.au" }],
+    creator: "Julian Delgado",
+    publisher: "Julian Delgado",
     icons: {
         icon: [{ url: "/favicon.png", type: "image/png" }],
     },
     openGraph: {
-        title: "Cr | Software Services Studio",
+        title: "Julian Delgado | Web Development & Software Solutions for Australian Businesses",
         description:
-            "Premium software services studio. We build websites, apps, and digital products with craft and care.",
+            "Custom websites, web apps, and MVPs for Australian service businesses. Based in Toowoomba, QLD — working with clients Australia-wide.",
         type: "website",
-        url: "https://crafted-digital.replit.app",
+        url: "https://juliandelgado.com.au",
+        siteName: "Julian Delgado",
+        locale: "en_AU",
     },
     twitter: {
         card: "summary_large_image",
-        title: "Crafted Digital",
+        title: "Julian Delgado | Web Development for Australian Businesses",
         description:
-            "Premium software services studio. Building digital products with craft and care.",
+            "Custom websites and web apps for Australian service businesses. Based in Toowoomba, servicing Australia-wide.",
+        creator: "@juliandelgado",
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+        },
+    },
+    alternates: {
+        canonical: "https://juliandelgado.com.au",
     },
 };
 
@@ -61,7 +97,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en-AU">
+      <head>
+        <StructuredData />
+      </head>
       <body
         className={`${montserrat.variable} ${dmSerif.variable} ${firaSans.variable} antialiased`}
       >

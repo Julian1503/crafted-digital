@@ -5,6 +5,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
@@ -249,8 +250,10 @@ export function Work() {
                             Featured Work
                         </h2>
                         <p className="mt-4 text-lg text-muted-foreground/80">
-                            Case studies that show what you’ll get: a premium-looking product, built fast, ready
-                            to launch.
+                            Real examples of websites and web applications built for Australian businesses.{" "}
+                            <Link href="/case-studies" className="text-secondary hover:underline">
+                                View all case studies →
+                            </Link>
                         </p>
                     </div>
 

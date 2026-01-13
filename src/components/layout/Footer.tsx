@@ -23,9 +23,10 @@ type FooterItem =
 const FOOTER_LINKS: FooterItem[] = [
     { label: "Services", type: "section", id: "services" },
     { label: "Work", type: "section", id: "work" },
+    { label: "Case Studies", type: "route", href: "/case-studies" },
+    { label: "Blog", type: "route", href: "/blog" },
     { label: "Process", type: "section", id: "process" },
     { label: "Pricing", type: "section", id: "pricing" },
-    { label: "FAQ", type: "section", id: "faq" },
     { label: "Contact", type: "section", id: "contact" },
     { label: "About", type: "route", href: "/about-me" },
 ];
@@ -89,7 +90,10 @@ export function Footer() {
                         </Link>
 
                         <p className="text-muted-foreground text-sm">
-                            Premium software services for ambitious brands.
+                            Web development for Australian service businesses.
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                            Based in Toowoomba, QLD — Working with clients Australia-wide.
                         </p>
                     </div>
 

@@ -27,9 +27,10 @@ type NavItem =
 const NAV_ITEMS: NavItem[] = [
     { name: "Work", type: "section", id: "work" },
     { name: "Services", type: "section", id: "services" },
+    { name: "Case Studies", type: "route", href: "/case-studies" },
+    { name: "Blog", type: "route", href: "/blog" },
     { name: "Process", type: "section", id: "process" },
     { name: "Pricing", type: "section", id: "pricing" },
-    { name: "FAQ", type: "section", id: "faq" },
     { name: "Contact", type: "section", id: "contact" },
     { name: "About", type: "route", href: "/about-me" },
 ];

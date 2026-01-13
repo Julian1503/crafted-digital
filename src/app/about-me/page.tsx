@@ -176,7 +176,7 @@ export default function About() {
                                             ))}
                                         </ul>
                                         <div className="rounded-2xl bg-muted/40 p-4 text-sm text-muted-foreground">
-                                            Currently based in Toowoomba • Serving clients worldwide
+                                            Based in Toowoomba, QLD • Working with clients Australia-wide
                                         </div>
                                     </div>
                                 </div>

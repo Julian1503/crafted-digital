@@ -48,12 +48,15 @@ export function Services() {
         <section id="services" className="py-24 bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 {/* Header */}
-                <div className="mb-14 max-w-2xl">
+                <div className="mb-14 max-w-3xl">
                     <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
-                        Services built for teams that ship
+                        Web Development Services for Australian Businesses
                     </h2>
                     <p className="mt-4 text-lg md:text-xl text-muted-foreground">
-                        I don&apos;t just write code — I help you launch a product that solves a real problem, feels premium, and scales.
+                        I help service-based businesses across Australia — from tradies and consultants to clinics and agencies — build websites and web applications that convert visitors into customers.
+                    </p>
+                    <p className="mt-4 text-base text-muted-foreground">
+                        Based in Toowoomba, Queensland, I work with clients Australia-wide to deliver custom digital solutions that look premium, perform fast, and scale with your business.
                     </p>
                 </div>
 
