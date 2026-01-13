@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Hero content component with animated text and CTAs.
+ * Contains the main headline, rotating words, value propositions, and call-to-action buttons.
+ */
 "use client";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -5,6 +9,29 @@ import { ArrowRight, Play, CheckCircle } from "lucide-react";
 import RotatingWord from "@/components/ui/RotatingWord";
 import RevealSection from "@/components/ui/RevealSection";
 
+/** Value propositions displayed below the CTA buttons */
+const VALUE_PROPOSITIONS = [
+    "Launch-ready MVP in weeks",
+    "Clear fixed-price scope",
+    "Weekly visual demos",
+    "Post-launch support included",
+];
+
+/** Words that rotate in the headline animation */
+const ROTATING_WORDS = [
+    "Bring to life",
+    "Build and launch",
+    "Take to market",
+    "Validate and grow",
+    "Scale confidently",
+];
+
+/**
+ * Hero content component displaying the main headline and CTAs.
+ * Features animated entrance effects and a rotating word headline.
+ *
+ * @returns The rendered hero content with headline, CTAs, and value props
+ */
 export default function HeroContent() {
     return (
         <RevealSection delay={0} variant="left" className="flex flex-col space-y-8 text-left">
@@ -21,13 +48,7 @@ export default function HeroContent() {
                 <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1]">
                     Stop worrying about tech. <br />
                     <span className="text-secondary flex w-full">
-                        <RotatingWord words={[
-                            "Bring to life",
-                            "Build and launch",
-                            "Take to market",
-                            "Validate and grow",
-                            "Scale confidently",
-                        ]} />
+                        <RotatingWord words={ROTATING_WORDS} />
                     </span>{" "}
                     your idea.
                 </h1>
@@ -55,12 +76,7 @@ export default function HeroContent() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-                {[
-                    "Launch-ready MVP in weeks",
-                    "Clear fixed-price scope",
-                    "Weekly visual demos",
-                    "Post-launch support included",
-                ].map((text) => (
+                {VALUE_PROPOSITIONS.map((text) => (
                     <div key={text} className="flex items-center gap-2 text-muted-foreground">
                         <CheckCircle className="w-5 h-5 text-green-500" />
                         <span className="text-sm">{text}</span>
@@ -69,4 +85,4 @@ export default function HeroContent() {
             </div>
         </RevealSection>
     );
-};
+}

@@ -1,19 +1,36 @@
-import {cn} from "@/lib/utils";
-import {Project} from "@/components/sections/Work/work.types";
+/**
+ * @fileoverview Carousel controls component for the Work section.
+ * Renders the scrollable container with project cards.
+ */
+import { cn } from "@/lib/utils";
+import { Project } from "@/components/sections/Work/work.types";
 import ProjectCard from "@/components/sections/Work/ProjectCard";
-import {RefObject} from "react";
+import { RefObject } from "react";
 
-type CarouselControlsProps = {
-    projects: Project[],
-    scrollerRef: React.RefObject<HTMLDivElement | null>,
-    progressRefSet: RefObject<(HTMLDivElement | null)[]>,
-    activeIndex?: number
+/**
+ * Props for the CarouselControls component.
+ */
+interface CarouselControlsProps {
+    /** Array of projects to display */
+    projects: Project[];
+    /** Ref to the scroller container element */
+    scrollerRef: React.RefObject<HTMLDivElement | null>;
+    /** Ref to the progress bar elements array */
+    progressRefSet: RefObject<(HTMLDivElement | null)[]>;
+    /** Currently active/centered card index */
+    activeIndex?: number;
+    /** Whether the reveal animation has completed */
     hasRevealed: boolean;
 }
 
-
-
-export default function CarouselControls({projects, scrollerRef, progressRefSet, hasRevealed, activeIndex}: CarouselControlsProps) {
+/**
+ * Carousel controls component.
+ * Renders a horizontally scrollable container with project cards.
+ *
+ * @param props - Projects data and animation state
+ * @returns The rendered carousel container with cards
+ */
+export default function CarouselControls({ projects, scrollerRef, progressRefSet, hasRevealed, activeIndex }: CarouselControlsProps) {
     return (
         <div className="mt-10">
             <div

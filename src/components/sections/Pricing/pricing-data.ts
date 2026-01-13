@@ -1,6 +1,14 @@
-import {Pricing} from "@/components/sections/Pricing/pricing.types";
+/**
+ * @fileoverview Pricing plans data.
+ * Contains the pricing tier configurations displayed in the Pricing section.
+ */
+import { Pricing } from "@/components/sections/Pricing/pricing.types";
 
-export const plans : Pricing[] = [
+/**
+ * Available pricing plans/packages.
+ * Each plan includes name, price, timeline, features, and CTA configuration.
+ */
+export const plans: Pricing[] = [
     {
         name: "Starter Build",
         price: "AUD 3,000+",

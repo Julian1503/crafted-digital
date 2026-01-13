@@ -1,18 +1,36 @@
-// ProjectCard.tsx
+/**
+ * @fileoverview Project card component for the Work section carousel.
+ * Displays individual portfolio projects with hover effects and animations.
+ */
 import { cn } from "@/lib/utils";
 import { Project } from "@/components/sections/Work/work.types";
 import { CARD_MS, STAGGER_MS_DESKTOP } from "@/components/sections/Work/work-data";
 import { ArrowRight } from "lucide-react";
 import { RefObject, useRef } from "react";
 
-type ProjectCardProps = {
+/**
+ * Props for the ProjectCard component.
+ */
+interface ProjectCardProps {
+    /** Project data to display */
     project: Project;
+    /** Index of the card for stagger animation */
     index: number;
+    /** Whether the reveal animation has completed */
     hasRevealed: boolean;
+    /** Ref to the progress bar elements array */
     progressRefSet: RefObject<(HTMLDivElement | null)[]>;
+    /** Currently active/centered card index */
     activeIndex: number | undefined;
-};
+}
 
+/**
+ * Project card component displaying a portfolio project.
+ * Features hover effects, progress bar for autoplay, and tier-based scaling.
+ *
+ * @param props - Project data and animation state
+ * @returns The rendered project card
+ */
 export default function ProjectCard({
                                         project,
                                         index,

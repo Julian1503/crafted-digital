@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Pricing section component.
+ * Displays available pricing packages/plans with features and CTAs.
+ */
 "use client";
 
 import * as React from "react";
@@ -5,9 +9,14 @@ import { Sparkles, Timer, ShieldCheck } from "lucide-react";
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import { scrollToId } from "@/lib/utils";
 import PricingCard from "@/components/sections/Pricing/PricingCard";
-import {plans} from "@/components/sections/Pricing/pricing-data";
+import { plans } from "@/components/sections/Pricing/pricing-data";
 
-
+/**
+ * Pricing section component displaying available plans and pricing.
+ * Features a header with included benefits, pricing cards, and a CTA.
+ *
+ * @returns The rendered Pricing section
+ */
 export function Pricing() {
     const { ref, isVisible } = useScrollAnimation();
 

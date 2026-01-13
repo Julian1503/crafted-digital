@@ -1,37 +1,48 @@
+/**
+ * @fileoverview Work/Portfolio section showcasing featured projects.
+ * Implements an auto-playing carousel with accessibility features.
+ */
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import CarouselControls from "@/components/sections/Work/CarouselControls";
-import {HEADER_MS, PROJECTS} from "@/components/sections/Work/work-data";
+import { HEADER_MS, PROJECTS } from "@/components/sections/Work/work-data";
 
+/** Duration of the autoplay interval in milliseconds */
+const AUTOPLAY_MS = 4500;
 
+/**
+ * Checks if the user prefers reduced motion.
+ * @returns True if user prefers reduced motion, false otherwise.
+ */
+function getPrefersReducedMotion(): boolean {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+}
+
+/**
+ * Work section component displaying featured projects in a carousel.
+ * Features auto-play functionality, keyboard navigation, and reduced motion support.
+ *
+ * @returns The rendered Work section with project carousel
+ */
 export function Work() {
     const scrollerRef = useRef<HTMLDivElement | null>(null);
     const sectionRef = useRef<HTMLElement | null>(null);
     const progressRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-    // reveal-once
-    const [hasRevealed, setHasRevealed] = useState(false);
+    const prefersReducedMotion = useMemo(() => getPrefersReducedMotion(), []);
 
-    // autoplay config
-    const AUTOPLAY_MS = 4500;
+    // Initialize hasRevealed based on motion preference to avoid setState in effect
+    const [hasRevealed, setHasRevealed] = useState(prefersReducedMotion);
     const [activeIndex, setActiveIndex] = useState(0);
     const [paused, setPaused] = useState(false);
 
-    const prefersReducedMotion = useMemo(() => {
-        if (typeof window === "undefined") return false;
-        return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-    }, []);
-
     useEffect(() => {
-        if (prefersReducedMotion) {
-            setHasRevealed(true);
-            return;
-        }
-        if (hasRevealed) return;
+        if (prefersReducedMotion || hasRevealed) return;
 
         const el = sectionRef.current;
         if (!el) return;
@@ -44,7 +55,6 @@ export function Work() {
                     io.disconnect();
                 }
             },
-            // trigger slightly before it's fully in view
             { threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
         );
 
@@ -180,7 +190,7 @@ export function Work() {
 
         raf = requestAnimationFrame(loop);
         return () => cancelAnimationFrame(raf);
-    }, [AUTOPLAY_MS, activeIndex, paused, prefersReducedMotion, scrollToIndex]);
+    }, [activeIndex, paused, prefersReducedMotion, scrollToIndex]);
 
     // Pause interactions (hover / touch / focus)
     useEffect(() => {

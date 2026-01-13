@@ -1,14 +1,16 @@
+/**
+ * @fileoverview Services section component displaying available service offerings.
+ * Features scroll-triggered animations and a grid layout for service cards.
+ */
 "use client";
 
 import * as React from "react";
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import ServicesCard from "@/components/sections/Services/ServicesCard";
-import {Service} from "@/components/sections/Services/services.types";
-import {services} from "@/components/sections/Services/services-data";
+import { services } from "@/components/sections/Services/services-data";
 
-
-
-const addons = [
+/** Available service add-ons that can be included with main packages */
+const ADD_ONS = [
     "SEO Optimization",
     "Performance Audits",
     "CMS Integration",
@@ -16,10 +18,29 @@ const addons = [
     "Auth & Roles",
     "Monitoring & Alerts",
 ];
-type ServicesProps = {
-    services: Service[];
-}
 
+/** Process steps displayed below the service cards */
+const PROCESS_STEPS = [
+    {
+        title: "1) Discover",
+        desc: "Clarify scope, risks, and success metrics. Align on MVP or milestones.",
+    },
+    {
+        title: "2) Build",
+        desc: "Ship iteratively with weekly demos. Clean code, tests where needed, fast feedback.",
+    },
+    {
+        title: "3) Launch",
+        desc: "Deploy, monitor, and stabilize. Hand-off docs + next steps roadmap.",
+    },
+];
+
+/**
+ * Services section component displaying available software development services.
+ * Renders service cards, process steps, and available add-ons.
+ *
+ * @returns The rendered Services section
+ */
 export function Services() {
     const { ref, isVisible } = useScrollAnimation();
 
@@ -32,33 +53,20 @@ export function Services() {
                         Services built for teams that ship
                     </h2>
                     <p className="mt-4 text-lg md:text-xl text-muted-foreground">
-                        I don’t just write code — I help you launch a product that solves a real problem, feels premium, and scales.
+                        I don&apos;t just write code — I help you launch a product that solves a real problem, feels premium, and scales.
                     </p>
                 </div>
 
-                {/* Cards */}
+                {/* Service cards */}
                 <div ref={ref} className="grid md:grid-cols-3 gap-8 mb-14">
                     {services.map((service, index) => (
                         <ServicesCard key={service.title} index={index} isVisible={isVisible} service={service} />
                     ))}
                 </div>
 
-                {/* Process (adds “software services” credibility) */}
+                {/* Process steps section */}
                 <div className="grid gap-6 md:grid-cols-3 mb-14">
-                    {[
-                        {
-                            title: "1) Discover",
-                            desc: "Clarify scope, risks, and success metrics. Align on MVP or milestones.",
-                        },
-                        {
-                            title: "2) Build",
-                            desc: "Ship iteratively with weekly demos. Clean code, tests where needed, fast feedback.",
-                        },
-                        {
-                            title: "3) Launch",
-                            desc: "Deploy, monitor, and stabilize. Hand-off docs + next steps roadmap.",
-                        },
-                    ].map((step) => (
+                    {PROCESS_STEPS.map((step) => (
                         <div
                             key={step.title}
                             className="rounded-2xl border border-border/60 bg-muted/20 p-6"
@@ -69,23 +77,23 @@ export function Services() {
                     ))}
                 </div>
 
-                {/* Add-ons */}
+                {/* Add-ons section */}
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6 p-8 rounded-2xl bg-muted/30 border border-border/60">
                     <div className="flex flex-col">
                         <span className="font-semibold text-lg whitespace-nowrap">Add-ons</span>
                         <span className="text-sm text-muted-foreground">
-              Optional extras when you need more firepower.
-            </span>
+                            Optional extras when you need more firepower.
+                        </span>
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                        {addons.map((addon) => (
+                        {ADD_ONS.map((addon) => (
                             <span
                                 key={addon}
                                 className="px-4 py-2 rounded-full bg-background/60 border border-border/60 text-sm font-medium text-muted-foreground"
                             >
-                {addon}
-              </span>
+                                {addon}
+                            </span>
                         ))}
                     </div>
                 </div>

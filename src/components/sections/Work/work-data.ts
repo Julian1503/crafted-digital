@@ -1,10 +1,23 @@
-import {Project} from "@/components/sections/Work/work.types";
+/**
+ * @fileoverview Work/Portfolio data.
+ * Contains featured projects displayed in the Work section carousel.
+ */
+import { Project } from "@/components/sections/Work/work.types";
 
+/** Duration of the header reveal animation in milliseconds */
 export const HEADER_MS = 520;
+
+/** Stagger delay between cards on desktop in milliseconds */
 export const STAGGER_MS_DESKTOP = 90;
+
+/** Duration of the card reveal animation in milliseconds */
 export const CARD_MS = 620;
 
-export const PROJECTS : Project[] = [
+/**
+ * Featured portfolio projects.
+ * Each project includes title, brand, category, description, and image.
+ */
+export const PROJECTS: Project[] = [
     {
         title: "Transforming Scale into Value",
         brand: "TRIBUTE TECHNOLOGY",

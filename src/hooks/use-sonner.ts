@@ -1,20 +1,40 @@
+/**
+ * @fileoverview Toast notification hook using Sonner.
+ * Provides a standardized API for displaying toast notifications.
+ */
 "use client";
 
 import * as React from "react";
 import { toast as sonnerToast } from "sonner";
 import type { ToastActionElement } from "@/components/ui/sonner";
 
+/** Available toast variant styles */
 type ToastVariant = "default" | "success" | "error" | "warning" | "info" | "loading";
 
-export type ToastInput = {
+/**
+ * Configuration options for displaying a toast notification.
+ */
+export interface ToastInput {
+    /** Main title text of the toast */
     title?: React.ReactNode;
+    /** Additional description text below the title */
     description?: React.ReactNode;
+    /** Visual style variant. Default: "default" */
     variant?: ToastVariant;
+    /** Optional action button to display in the toast */
     action?: ToastActionElement;
+    /** Duration in milliseconds before auto-dismiss */
     duration?: number;
+    /** Unique identifier for the toast (used for updates) */
     id?: string | number;
-};
+}
 
+/**
+ * Displays a toast notification using the configured variant.
+ *
+ * @param options - Toast configuration options
+ * @returns The toast ID for later reference
+ */
 function showToast({ title, description, variant = "default", action, duration, id }: ToastInput) {
     const message = title ?? "";
     const options = {
@@ -40,7 +60,18 @@ function showToast({ title, description, variant = "default", action, duration, 
     }
 }
 
-// API parecida a shadcn viejo
+/**
+ * Creates and displays a toast notification with control methods.
+ *
+ * @param input - Toast configuration options
+ * @returns Object with toast ID, dismiss, and update methods
+ *
+ * @example
+ * ```tsx
+ * const { dismiss } = toast({ title: "Saved!", variant: "success" });
+ * // Later: dismiss();
+ * ```
+ */
 function toast(input: ToastInput) {
     const toastId = showToast(input);
 
@@ -50,12 +81,23 @@ function toast(input: ToastInput) {
         update: (next: ToastInput) =>
             showToast({
                 ...next,
-                id: toastId, // Sonner actualiza por id
+                id: toastId,
             }),
     };
 }
 
-// Si tenías código que hacía `const { toast } = useToast()`
+/**
+ * Hook providing toast notification functionality.
+ * Returns memoized toast and dismiss functions for efficient re-renders.
+ *
+ * @returns Object with toast and dismiss functions
+ *
+ * @example
+ * ```tsx
+ * const { toast } = useToast();
+ * toast({ title: "Hello!", description: "Welcome to the app" });
+ * ```
+ */
 function useToast() {
     return React.useMemo(
         () => ({

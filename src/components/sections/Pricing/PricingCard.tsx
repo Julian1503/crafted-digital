@@ -1,16 +1,33 @@
-import {Button} from "@/components/ui/button";
-import {Timer} from "lucide-react";
-import {cn, scrollToId} from "@/lib/utils";
-import {Pricing} from "@/components/sections/Pricing/pricing.types";
+/**
+ * @fileoverview Pricing card component.
+ * Displays a single pricing plan with features, pricing, and CTA.
+ */
+import { Button } from "@/components/ui/button";
+import { Timer } from "lucide-react";
+import { cn, scrollToId } from "@/lib/utils";
+import { Pricing } from "@/components/sections/Pricing/pricing.types";
 import PricingFeature from "@/components/sections/Pricing/PricingFeature";
 
+/**
+ * Props for the PricingCard component.
+ */
 interface PricingCardProps {
-    plan : Pricing;
+    /** Pricing plan data to display */
+    plan: Pricing;
+    /** Index for stagger animation delay */
     index: number;
+    /** Whether the card should be visible (for animation) */
     isVisible: boolean;
 }
 
-export default function PricingCard({plan, isVisible, index}: PricingCardProps) {
+/**
+ * Pricing card component displaying a single plan.
+ * Shows plan name, price, timeline, features, and call-to-action.
+ *
+ * @param props - Plan data, index, and visibility state
+ * @returns The rendered pricing card
+ */
+export default function PricingCard({ plan, isVisible, index }: PricingCardProps) {
     return (
         <div
             key={plan.name}

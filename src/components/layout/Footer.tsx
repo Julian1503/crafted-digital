@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Footer component.
+ * Provides site-wide footer with navigation, social links, and legal links.
+ */
 "use client";
 
 import * as React from "react";
@@ -6,10 +10,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { FaLinkedin, FaInstagram } from "react-icons/fa";
 import { scrollToId } from "@/lib/utils";
 
+/**
+ * Footer link item type - either a section anchor or a route link.
+ */
 type FooterItem =
     | { label: string; type: "section"; id: string }
     | { label: string; type: "route"; href: string };
 
+/**
+ * Navigation links displayed in the footer.
+ */
 const FOOTER_LINKS: FooterItem[] = [
     { label: "Services", type: "section", id: "services" },
     { label: "Work", type: "section", id: "work" },
@@ -20,14 +30,23 @@ const FOOTER_LINKS: FooterItem[] = [
     { label: "About", type: "route", href: "/about-me" },
 ];
 
+/**
+ * Cleans the URL by removing query parameters and hash fragments.
+ */
 function setUrlClean() {
     try {
         window.history.replaceState({}, "", window.location.pathname);
     } catch {
-        // ignore
+        // Silently fail if history API is not available
     }
 }
 
+/**
+ * Footer component with navigation, social links, and legal information.
+ * Supports both section scrolling (on homepage) and route navigation.
+ *
+ * @returns The rendered footer
+ */
 export function Footer() {
     const router = useRouter();
     const pathname = usePathname();

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Contact section component with form and submission handling.
+ * Provides a contact form with validation and email submission via API.
+ */
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -7,10 +11,16 @@ import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Send } from "lucide-react";
-import {formSchema} from "@/components/sections/Contact/contact-data";
+import { formSchema } from "@/components/sections/Contact/contact-data";
 import ContactSuccessState from "@/components/sections/Contact/ContactSuccessState";
 import ContactFormFields from "@/components/sections/Contact/ContactFormField";
 
+/**
+ * Contact section component with form and success state.
+ * Handles form submission, validation, and displays success/error feedback.
+ *
+ * @returns The rendered Contact section with form or success message
+ */
 export function Contact() {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);

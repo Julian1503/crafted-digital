@@ -1,7 +1,17 @@
+/**
+ * @fileoverview Hero visual component.
+ * Displays the video/image section of the hero with animated entrance.
+ */
 "use client";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 
-export default function HeroVisual () {
+/**
+ * Hero visual component displaying a promotional video with gradient overlays.
+ * Features entrance animation and a caption overlay.
+ *
+ * @returns The rendered hero visual with video and caption
+ */
+export default function HeroVisual() {
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
