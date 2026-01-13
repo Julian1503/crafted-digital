@@ -1,10 +1,19 @@
+/**
+ * @fileoverview Process section component.
+ * Displays the development process steps from discovery to launch.
+ */
 "use client";
 
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import { cn } from "@/lib/utils";
-import {steps} from "@/components/sections/Process/process-data";
+import { steps } from "@/components/sections/Process/process-data";
 
-
+/**
+ * Process section component displaying the development workflow.
+ * Shows each phase of the project lifecycle with details and deliverables.
+ *
+ * @returns The rendered Process section
+ */
 export function Process() {
     const { ref, isVisible } = useScrollAnimation();
 

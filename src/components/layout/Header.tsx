@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Header/Navigation component.
+ * Provides main navigation with scroll-to-section and route navigation support.
+ */
 "use client";
 
 import * as React from "react";
@@ -9,13 +13,20 @@ import { Menu, X } from "lucide-react";
 import { TypewriterTitle } from "@/components/ui/typewriter-title";
 import { scrollToId } from "@/lib/utils";
 
+/**
+ * Navigation item type - either a section anchor or a route link.
+ */
 type NavItem =
     | { name: string; type: "section"; id: string }
     | { name: string; type: "route"; href: string };
 
+/**
+ * Main navigation items for the header.
+ * Includes both section anchors (scroll on homepage) and route links.
+ */
 const NAV_ITEMS: NavItem[] = [
     { name: "Work", type: "section", id: "work" },
-    { name: "Services", type: "section" , id: "services" },
+    { name: "Services", type: "section", id: "services" },
     { name: "Process", type: "section", id: "process" },
     { name: "Pricing", type: "section", id: "pricing" },
     { name: "FAQ", type: "section", id: "faq" },
@@ -23,13 +34,25 @@ const NAV_ITEMS: NavItem[] = [
     { name: "About", type: "route", href: "/about-me" },
 ];
 
+/**
+ * Cleans the URL by removing query parameters and hash fragments.
+ * Used after smooth scrolling to keep URLs clean.
+ */
 function setUrlClean() {
     try {
         window.history.replaceState({}, "", window.location.pathname);
     } catch {
+        // Silently fail if history API is not available
     }
 }
 
+/**
+ * Header component with responsive navigation.
+ * Features scroll-aware styling, section navigation, mobile menu, and route navigation.
+ * Automatically detects which section is in view and highlights the corresponding nav item.
+ *
+ * @returns The rendered header with navigation
+ */
 export function Header() {
     const router = useRouter();
     const pathname = usePathname();

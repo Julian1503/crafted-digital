@@ -1,7 +1,15 @@
-import {Service} from "@/components/sections/Services/services.types";
+/**
+ * @fileoverview Service offerings data.
+ * Contains the list of services displayed in the Services section.
+ */
+import { Service } from "@/components/sections/Services/services.types";
 import { Palette, Code2, LineChart } from "lucide-react";
 
-export const services : Service[] = [
+/**
+ * List of available services offered.
+ * Each service includes title, description, outcome statement, and key deliverables.
+ */
+export const services: Service[] = [
     {
         title: "Web Apps (Next.js)",
         outcome: "Ship fast with a scalable foundation.",

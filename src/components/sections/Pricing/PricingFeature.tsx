@@ -1,10 +1,25 @@
-import {Check} from "lucide-react";
+/**
+ * @fileoverview Pricing feature list component.
+ * Displays a list of features included in a pricing plan.
+ */
+import { Check } from "lucide-react";
 
-type PricingFeatureProps = {
+/**
+ * Props for the PricingFeature component.
+ */
+interface PricingFeatureProps {
+    /** List of feature descriptions to display */
     features: string[];
 }
 
-export default function PricingFeature({features} : PricingFeatureProps) {
+/**
+ * Pricing feature list component.
+ * Renders a list of features with checkmark icons.
+ *
+ * @param props - Array of feature strings
+ * @returns An unordered list of features with icons
+ */
+export default function PricingFeature({ features }: PricingFeatureProps) {
     return(
         <ul className="flex-1 space-y-4 mb-8">
             {features.map((feature) => (

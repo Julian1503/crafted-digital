@@ -1,6 +1,14 @@
-import {PencilRuler, Search, Code2, Rocket} from "lucide-react";
-import {Process} from "@/components/sections/Process/process.types";
+/**
+ * @fileoverview Process steps data.
+ * Contains the list of development process phases displayed in the Process section.
+ */
+import { PencilRuler, Search, Code2, Rocket } from "lucide-react";
+import { Process } from "@/components/sections/Process/process.types";
 
+/**
+ * Development process steps from discovery through launch.
+ * Each step includes title, time range, description, and key deliverables.
+ */
 export const steps: Process[] = [
     {
         title: "Discover",

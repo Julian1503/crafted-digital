@@ -1,11 +1,54 @@
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
-import {Loader2} from "lucide-react";
-import {ContactFormFieldsProps} from "@/components/sections/Contact/contact.types";
+/**
+ * @fileoverview Contact form fields component.
+ * Renders all form inputs for the contact form with validation.
+ */
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
+import { ContactFormFieldsProps } from "@/components/sections/Contact/contact.types";
 
-export default function ContactFormFields({form, onSubmit, isSubmitting}: ContactFormFieldsProps) {
+/** Available project topics for selection */
+const PROJECT_TOPICS = [
+    "New SaaS",
+    "Landing page",
+    "E-commerce",
+    "Fix/maintenance",
+    "Performance/SEO",
+    "Integrations",
+    "Other",
+];
+
+/** Budget range options */
+const BUDGET_OPTIONS = [
+    { value: "", label: "Select…" },
+    { value: "Under $2k", label: "Under $2k" },
+    { value: "$2k–$5k", label: "$2k–$5k" },
+    { value: "$5k–$10k", label: "$5k–$10k" },
+    { value: "$10k+", label: "$10k+" },
+];
+
+/** Timeline options */
+const TIMELINE_OPTIONS = [
+    { value: "", label: "Select…" },
+    { value: "ASAP", label: "ASAP" },
+    { value: "2–4 weeks", label: "2–4 weeks" },
+    { value: "1–2 months", label: "1–2 months" },
+    { value: "Flexible", label: "Flexible" },
+];
+
+/** Contact method options */
+const CONTACT_METHODS = ["Email", "Call"];
+
+/**
+ * Contact form fields component.
+ * Renders the complete contact form with all input fields and validation.
+ *
+ * @param props - Form instance, submit handler, and loading state
+ * @returns The rendered form with all fields
+ */
+export default function ContactFormFields({ form, onSubmit, isSubmitting }: ContactFormFieldsProps) {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -82,7 +125,7 @@ export default function ContactFormFields({form, onSubmit, isSubmitting}: Contac
                             <FormLabel>What do you want to talk about?</FormLabel>
                             <FormControl>
                                 <div className="grid grid-cols-2 gap-2">
-                                    {["New SaaS", "Landing page", "E-commerce", "Fix/maintenance", "Performance/SEO", "Integrations", "Other"].map((t) => {
+                                    {PROJECT_TOPICS.map((t) => {
                                         const checked = field.value?.includes(t);
                                         return (
                                             <label key={t}
@@ -120,11 +163,11 @@ export default function ContactFormFields({form, onSubmit, isSubmitting}: Contac
                                     value={field.value ?? ""}
                                     onChange={field.onChange}
                                 >
-                                    <option value="">Select…</option>
-                                    <option value="Under $2k">Under $2k</option>
-                                    <option value="$2k–$5k">$2k–$5k</option>
-                                    <option value="$5k–$10k">$5k–$10k</option>
-                                    <option value="$10k+">$10k+</option>
+                                    {BUDGET_OPTIONS.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
                                 </select>
                             </FormControl>
                             <FormMessage/>
@@ -144,11 +187,11 @@ export default function ContactFormFields({form, onSubmit, isSubmitting}: Contac
                                     value={field.value ?? ""}
                                     onChange={field.onChange}
                                 >
-                                    <option value="">Select…</option>
-                                    <option value="ASAP">ASAP</option>
-                                    <option value="2–4 weeks">2–4 weeks</option>
-                                    <option value="1–2 months">1–2 months</option>
-                                    <option value="Flexible">Flexible</option>
+                                    {TIMELINE_OPTIONS.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
                                 </select>
                             </FormControl>
                             <FormMessage/>
@@ -164,14 +207,14 @@ export default function ContactFormFields({form, onSubmit, isSubmitting}: Contac
                             <FormLabel>Preferred contact</FormLabel>
                             <FormControl>
                                 <div className="flex gap-2">
-                                    {["Email", "Call"].map((m) => (
+                                    {CONTACT_METHODS.map((method) => (
                                         <button
                                             type="button"
-                                            key={m}
-                                            onClick={() => field.onChange(m)}
-                                            className={`px-4 py-2 rounded-xl border ${field.value === m ? "bg-foreground text-background" : "bg-muted/10"}`}
+                                            key={method}
+                                            onClick={() => field.onChange(method)}
+                                            className={`px-4 py-2 rounded-xl border ${field.value === method ? "bg-foreground text-background" : "bg-muted/10"}`}
                                         >
-                                            {m}
+                                            {method}
                                         </button>
                                     ))}
                                 </div>
@@ -181,7 +224,7 @@ export default function ContactFormFields({form, onSubmit, isSubmitting}: Contac
                     )}
                 />
 
-                {/* honeypot hidden */}
+                {/* Honeypot field for spam prevention - hidden from users */}
                 <FormField
                     control={form.control}
                     name="hp"

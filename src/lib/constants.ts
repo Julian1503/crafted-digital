@@ -1,4 +1,23 @@
-const TECH = [
+/**
+ * @fileoverview Technology stack constants.
+ * Contains the list of technologies and their icon URLs displayed in the TechStack section.
+ */
+
+/**
+ * Technology item with name and icon URL.
+ */
+interface TechItem {
+    /** Display name of the technology */
+    name: string;
+    /** URL to the technology's icon/logo */
+    icon: string;
+}
+
+/**
+ * List of technologies showcased in the tech stack section.
+ * Each item includes a display name and CDN-hosted icon URL.
+ */
+const TECH: TechItem[] = [
     { name: "Next.js", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original-wordmark.svg" },
     { name: "React", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" },
     { name: "TypeScript", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" },
@@ -14,3 +33,4 @@ const TECH = [
 ];
 
 export { TECH };
+export type { TechItem };

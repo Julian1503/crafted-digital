@@ -1,15 +1,39 @@
+/**
+ * @fileoverview Rotating word animation component.
+ * Displays words that cycle with a smooth animation effect.
+ */
 import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+/**
+ * Props for the RotatingWord component.
+ */
+interface RotatingWordProps {
+    /** Array of words to rotate through */
+    words: string[];
+    /** Interval between word changes in milliseconds. Default: 2000 */
+    intervalMs?: number;
+    /** Minimum width of the word slot in ch units. Default: 18 */
+    slotWidthCh?: number;
+}
+
+/**
+ * Animated rotating word component.
+ * Cycles through an array of words with a smooth fade and slide transition.
+ *
+ * @param props - Component configuration
+ * @returns A span with animated rotating words
+ *
+ * @example
+ * ```tsx
+ * <RotatingWord words={["Build", "Launch", "Scale"]} intervalMs={3000} />
+ * ```
+ */
 export default function RotatingWord({
                           words,
                           intervalMs = 2000,
                          slotWidthCh = 18,
-                      }: {
-    words: string[];
-    intervalMs?: number;
-    slotWidthCh?: number;
-}) {
+                      }: RotatingWordProps) {
     const [i, setI] = React.useState(0);
 
 

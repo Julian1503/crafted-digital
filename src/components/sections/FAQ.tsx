@@ -1,3 +1,7 @@
+/**
+ * @fileoverview FAQ section component.
+ * Displays frequently asked questions in an accordion format.
+ */
 "use client";
 import {
     Accordion,
@@ -8,7 +12,20 @@ import {
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import { cn } from "@/lib/utils";
 
-const faqs = [
+/**
+ * FAQ item structure.
+ */
+interface FAQItem {
+    /** The question text */
+    question: string;
+    /** The answer text */
+    answer: string;
+}
+
+/**
+ * List of frequently asked questions and answers.
+ */
+const FAQS: FAQItem[] = [
     {
         question: "What is your typical project timeline?",
         answer:
@@ -41,6 +58,12 @@ const faqs = [
     },
 ];
 
+/**
+ * FAQ section component displaying questions and answers in an accordion.
+ * Features scroll-triggered reveal animation.
+ *
+ * @returns The rendered FAQ section
+ */
 export function FAQ() {
     const { ref, isVisible } = useScrollAnimation();
 
@@ -58,7 +81,7 @@ export function FAQ() {
 
                 <div ref={ref} className={cn("reveal-on-scroll", isVisible && "is-visible")}>
                     <Accordion type="single" collapsible className="w-full">
-                        {faqs.map((faq, index) => (
+                        {FAQS.map((faq, index) => (
                             <AccordionItem
                                 key={index}
                                 value={`item-${index}`}
