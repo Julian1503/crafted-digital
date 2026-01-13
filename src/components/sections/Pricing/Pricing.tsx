@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { Sparkles, Timer, ShieldCheck } from "lucide-react";
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import { scrollToId } from "@/lib/utils";
@@ -90,9 +89,7 @@ export function Pricing() {
                     and I’ll help you choose.
                 </div>
 
-                <div className="sr-only">
-                    <Link href="/public#pricing">Pricing</Link>
-                </div>
+
             </div>
         </section>
     );
