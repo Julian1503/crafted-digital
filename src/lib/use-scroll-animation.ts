@@ -5,7 +5,7 @@
  */
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Configuration options for the scroll animation hook.
@@ -64,7 +64,8 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
         enabled = true,
     } = options;
 
-    const prefersReducedMotion = useMemo(() => getPrefersReducedMotion(), []);
+    // Check reduced motion preference once on mount
+    const prefersReducedMotion = getPrefersReducedMotion();
     const ref = useRef<T | null>(null);
     const [isVisible, setIsVisible] = useState(prefersReducedMotion);
 

@@ -24,6 +24,48 @@ interface TypewriterTitleProps {
 }
 
 /**
+ * Custom hook to manage typewriter animation state.
+ * Resets the animation when text changes.
+ *
+ * @param text - The text to animate
+ * @returns The current character index
+ */
+function useTypewriterIndex(text: string, typingSpeed: number, startDelay: number): number {
+    const [index, setIndex] = useState(0);
+    const [trackedText, setTrackedText] = useState(text);
+    const timeoutRef = useRef<number | null>(null);
+
+    // Track text changes and reset index synchronously during render
+    // This is the recommended React pattern for deriving state from props
+    if (trackedText !== text) {
+        setTrackedText(text);
+        setIndex(0);
+    }
+
+    const incrementIndex = useCallback(() => {
+        setIndex((prev) => prev + 1);
+    }, []);
+
+    useEffect(() => {
+        if (timeoutRef.current) {
+            window.clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
+
+        if (index >= text.length) return;
+
+        const delay = index === 0 ? startDelay : typingSpeed;
+        timeoutRef.current = window.setTimeout(incrementIndex, delay);
+
+        return () => {
+            if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+        };
+    }, [index, text.length, typingSpeed, startDelay, incrementIndex]);
+
+    return index;
+}
+
+/**
  * Typewriter-style animated title component.
  * Renders text character-by-character with a blinking cursor.
  *
@@ -42,40 +84,8 @@ export function TypewriterTitle({
     typingSpeed = 70,
     startDelay = 0,
 }: TypewriterTitleProps) {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [currentText, setCurrentText] = useState(text);
-    const timeoutRef = useRef<number | null>(null);
-
-    // Reset state when text prop changes
-    if (currentText !== text) {
-        setCurrentText(text);
-        setCurrentIndex(0);
-    }
-
+    const currentIndex = useTypewriterIndex(text, typingSpeed, startDelay);
     const displayText = useMemo(() => text.slice(0, currentIndex), [text, currentIndex]);
-
-    const incrementIndex = useCallback(() => {
-        setCurrentIndex((prev) => prev + 1);
-    }, []);
-
-    // Handle typing animation
-    useEffect(() => {
-        if (timeoutRef.current) {
-            window.clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-        }
-
-        if (currentIndex >= text.length) return;
-
-        const delay = currentIndex === 0 ? startDelay : typingSpeed;
-
-        timeoutRef.current = window.setTimeout(incrementIndex, delay);
-
-        return () => {
-            if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-        };
-    }, [currentIndex, text.length, typingSpeed, startDelay, incrementIndex]);
-
     const done = currentIndex >= text.length;
 
     return (
