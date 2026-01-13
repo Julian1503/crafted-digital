@@ -97,6 +97,14 @@ export function Contact() {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Service Area */}
+                        <div className="rounded-2xl border border-background/10 bg-background/5 p-6 mt-6">
+                            <h3 className="text-lg font-semibold text-background mb-2">Service Area</h3>
+                            <p className="text-sm text-muted-foreground/80">
+                                Based in <strong className="text-background">Toowoomba, Queensland</strong>, I work with clients across Australia. Whether you&apos;re in Sydney, Melbourne, Brisbane, Perth, or regional Australia — I deliver the same quality of work remotely.
+                            </p>
+                        </div>
                     </div>
 
                     <div className="bg-background text-foreground p-8 md:p-10 rounded-3xl shadow-2xl shadow-black/20">

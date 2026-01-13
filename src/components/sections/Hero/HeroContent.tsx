@@ -14,7 +14,7 @@ const VALUE_PROPOSITIONS = [
     "Launch-ready MVP in weeks",
     "Clear fixed-price scope",
     "Weekly visual demos",
-    "Post-launch support included",
+    "Australia-wide service",
 ];
 
 /** Words that rotate in the headline animation */

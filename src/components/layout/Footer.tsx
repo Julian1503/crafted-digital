@@ -89,7 +89,10 @@ export function Footer() {
                         </Link>
 
                         <p className="text-muted-foreground text-sm">
-                            Premium software services for ambitious brands.
+                            Web development for Australian service businesses.
+                        </p>
+                        <p className="text-muted-foreground text-xs">
+                            Based in Toowoomba, QLD — Working with clients Australia-wide.
                         </p>
                     </div>
 

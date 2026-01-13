@@ -11,27 +11,27 @@ import { Palette, Code2, LineChart } from "lucide-react";
  */
 export const services: Service[] = [
     {
-        title: "Web Apps (Next.js)",
-        outcome: "Ship fast with a scalable foundation.",
+        title: "Custom Websites & Web Apps",
+        outcome: "A fast, professional website that converts.",
         description:
-            "High-performance web apps built with Next.js, TypeScript, and a clean architecture.",
-        bullets: ["Dashboards & SaaS", "Integrations & APIs", "Performance & DX"],
+            "High-performance websites and web applications built with Next.js, React, and TypeScript. Ideal for Australian service businesses, tradies, and professionals who need a site that works hard for them.",
+        bullets: ["Business websites", "Lead generation sites", "Client portals & dashboards"],
         icon: Code2,
     },
     {
         title: "Product Design & UX",
-        outcome: "Polished UI that converts and feels premium.",
+        outcome: "Polished interfaces that build trust.",
         description:
-            "Design that balances aesthetics and usability — built to support product growth.",
-        bullets: ["UI systems", "Prototypes", "UX improvements"],
+            "User-focused design that balances aesthetics with usability. I create interfaces that feel intuitive and professional, helping your Australian business stand out from the competition.",
+        bullets: ["UI design systems", "Interactive prototypes", "UX improvements"],
         icon: Palette,
     },
     {
-        title: "Technical Strategy",
-        outcome: "Make smart decisions before you build.",
+        title: "MVP Development",
+        outcome: "Launch your idea faster with expert guidance.",
         description:
-            "CTO-style guidance on stack, architecture, and an execution plan that reduces risk.",
-        bullets: ["MVP roadmap", "Architecture review", "Delivery plan"],
+            "Strategic guidance and rapid development to help Australian startups and businesses validate ideas quickly. From initial concept to production-ready MVP.",
+        bullets: ["MVP roadmaps", "Architecture planning", "Scalable foundations"],
         icon: LineChart,
     },
 ];
