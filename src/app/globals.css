@@ -83,7 +83,7 @@
 
     /* Muted: Soft grey-blue */
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215 16% 47%;
+    --muted-foreground: 215 20% 35%;
 
     /* Accent: Subtle blue tint for hover states */
     --accent: 210 40% 96.1%;

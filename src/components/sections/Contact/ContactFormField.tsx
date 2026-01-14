@@ -188,6 +188,7 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                             <FormLabel htmlFor="budget-select" >Budget</FormLabel>
                             <FormControl>
                                 <select
+                                    id="budget-select"
                                     className="h-12 w-full rounded-md border bg-muted/20 px-3"
                                     value={field.value ?? ""}
                                     onChange={field.onChange}
@@ -212,6 +213,7 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                             <FormLabel htmlFor="timeline-select" >Timeline</FormLabel>
                             <FormControl>
                                 <select
+                                    id="timeline-select"
                                     className="h-12 w-full rounded-md border bg-muted/20 px-3"
                                     value={field.value ?? ""}
                                     onChange={field.onChange}

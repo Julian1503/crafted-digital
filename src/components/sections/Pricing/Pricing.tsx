@@ -37,7 +37,7 @@ export function Pricing() {
                     <h2 className="mt-5 text-4xl md:text-5xl font-semibold tracking-tight text-background">
                         Packages that fit how teams build
                     </h2>
-                    <p className="mt-4 text-lg md:text-xl text-muted-foreground/80">
+                    <p className="mt-4 text-lg md:text-xl text-background/70">
                         Straightforward starting points. Final pricing depends on scope,
                         complexity, and timelines.
                     </p>
@@ -52,7 +52,7 @@ export function Pricing() {
                                 <p className="text-sm font-medium text-background">
                                     Production-ready delivery
                                 </p>
-                                <p className="text-xs text-muted-foreground/80">
+                                <p className="text-xs text-background/70">
                                     Clean code, deploy, basic monitoring
                                 </p>
                             </div>
@@ -63,7 +63,7 @@ export function Pricing() {
                                 <p className="text-sm font-medium text-background">
                                     Weekly demos
                                 </p>
-                                <p className="text-xs text-muted-foreground/80">
+                                <p className="text-xs text-background/70">
                                     Fast feedback loops, no surprises
                                 </p>
                             </div>
@@ -72,7 +72,7 @@ export function Pricing() {
                             <Sparkles className="h-5 w-5 text-secondary" aria-hidden="true" />
                             <div>
                                 <p className="text-sm font-medium text-background">UX polish</p>
-                                <p className="text-xs text-muted-foreground/80">
+                                <p className="text-xs text-background/70">
                                     Responsive UI, performance-first
                                 </p>
                             </div>
@@ -87,7 +87,7 @@ export function Pricing() {
                     ))}
                 </div>
 
-                <div className="mt-12 text-center text-sm text-muted-foreground/80">
+                <div className="mt-12 text-center text-sm text-background/70">
                     Not sure which package fits?{" "}
                     <button
                         type="button"

@@ -83,7 +83,7 @@ export function Contact() {
                             Ready to build something{" "}
                             <span className="text-secondary">extraordinary?</span>
                         </h2>
-                        <p className="text-xl text-muted-foreground/80 leading-relaxed">
+                        <p className="text-xl text-background/70 leading-relaxed">
                             Whether you have a fully fleshed-out idea or just a spark of
                             inspiration, I’d love to hear from you. Tell me what you’re trying
                             to build, and I’ll help you map the best path forward.
@@ -104,7 +104,7 @@ export function Contact() {
                         {/* Service Area */}
                         <div className="rounded-2xl border border-background/10 bg-background/5 p-6 mt-6">
                             <h3 className="text-lg font-semibold text-background mb-2">Service Area</h3>
-                            <p className="text-sm text-muted-foreground/80">
+                            <p className="text-sm text-background/70">
                                 Based in <strong className="text-background">Toowoomba, Queensland</strong>, I work with clients across Australia. Whether you&apos;re in Sydney, Melbourne, Brisbane, Perth, or regional Australia — I deliver the same quality of work remotely.
                             </p>
                         </div>

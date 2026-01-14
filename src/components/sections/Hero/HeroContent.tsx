@@ -63,7 +63,7 @@ export default function HeroContent() {
             <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="h-14 px-8 text-lg rounded-full shadow-lg shadow-secondary/20">
                     Work with me
-                    <ArrowRight aria-hidden="true" className="ml-2 w-5 h-5" />
+                    <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true"/>
                 </Button>
                 {/*<div className="flex flex-col justify-center px-2">*/}
                 {/*    <div className="flex">*/}
