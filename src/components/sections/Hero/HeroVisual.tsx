@@ -35,7 +35,7 @@ export default function HeroVisual() {
                 <video
                     className="h-full w-full object-cover"
                     src="/hero.mp4"
-                    poster="/images/hero-poster.jpg"
+                    poster="/hero-poster.png"
                     autoPlay
                     muted
                     loop

@@ -5,55 +5,35 @@
  */
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-/**
- * Configuration options for the scroll animation hook.
- */
 interface UseScrollAnimationOptions {
-    /** Visibility threshold (0-1) for triggering animation. Default: 0.1 */
     threshold?: number;
-    /** Root margin for the Intersection Observer. Default: "0px 0px -50px 0px" */
     rootMargin?: string;
-    /** Whether to trigger animation only once. Default: true */
-    once?: boolean;
-    /** Whether the animation is enabled. Default: true */
+    once?:  boolean;
     enabled?: boolean;
 }
 
-/**
- * Return type for the scroll animation hook.
- */
 interface UseScrollAnimationResult<T extends HTMLElement> {
-    /** Ref to attach to the target element */
     ref: React.RefObject<T | null>;
-    /** Whether the element is currently visible in the viewport */
-    isVisible: boolean;
+    isVisible:  boolean;
 }
 
-/**
- * Checks if the user prefers reduced motion.
- * @returns True if user prefers reduced motion, false otherwise.
- */
-function getPrefersReducedMotion(): boolean {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function subscribeToReducedMotion(callback:  () => void): () => void {
+    if (typeof window === "undefined") return () => {};
+    const mql = window. matchMedia("(prefers-reduced-motion: reduce)");
+    mql.addEventListener("change", callback);
+    return () => mql.removeEventListener("change", callback);
 }
 
-/**
- * Custom hook for scroll-triggered reveal animations using Intersection Observer.
- * Automatically handles reduced motion preferences for accessibility.
- *
- * @template T - The HTML element type for the ref (defaults to HTMLDivElement)
- * @param options - Configuration options for the animation behavior
- * @returns Object containing the ref to attach and visibility state
- *
- * @example
- * ```tsx
- * const { ref, isVisible } = useScrollAnimation({ threshold: 0.2 });
- * return <div ref={ref} className={isVisible ? 'visible' : 'hidden'}>Content</div>;
- * ```
- */
+function getReducedMotionSnapshot(): boolean {
+    return window.matchMedia("(prefers-reduced-motion:  reduce)").matches;
+}
+
+function getReducedMotionServerSnapshot(): boolean {
+    return false;
+}
+
 export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
     options: UseScrollAnimationOptions = {}
 ): UseScrollAnimationResult<T> {
@@ -64,35 +44,52 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
         enabled = true,
     } = options;
 
-    // Check reduced motion preference once on mount
-    const prefersReducedMotion = getPrefersReducedMotion();
     const ref = useRef<T | null>(null);
-    const [isVisible, setIsVisible] = useState(prefersReducedMotion);
+
+    const prefersReducedMotion = useSyncExternalStore(
+        subscribeToReducedMotion,
+        getReducedMotionSnapshot,
+        getReducedMotionServerSnapshot
+    );
+
+    const [observerVisible, setObserverVisible] = useState(false);
 
     useEffect(() => {
-        if (!enabled || prefersReducedMotion) return;
+        if (prefersReducedMotion || !enabled) return;
 
         const el = ref.current;
-        if (!el) return;
+        if (! el) return;
+
+        let didUnobserve = false;
 
         const observer = new IntersectionObserver(
-            ([entry]) => {
+            (entries) => {
+                // ✅ setState in callback - responding to an external system
+                const entry = entries[0];
                 if (entry.isIntersecting) {
-                    setIsVisible(true);
-                    if (once) observer.unobserve(entry.target);
+                    setObserverVisible(true);
+                    if (once && !didUnobserve) {
+                        didUnobserve = true;
+                        observer.unobserve(entry.target);
+                    }
                 } else if (!once) {
-                    setIsVisible(false);
+                    setObserverVisible(false);
                 }
             },
             { threshold, rootMargin }
         );
 
+        // observe() will trigger the callback synchronously if an element
+        // is already intersecting (per IntersectionObserver spec).
+        // This handles the hard-refresh case correctly.
         observer.observe(el);
 
         return () => {
             observer.disconnect();
         };
     }, [threshold, rootMargin, once, enabled, prefersReducedMotion]);
+
+    const isVisible = prefersReducedMotion || observerVisible;
 
     return { ref, isVisible };
 }

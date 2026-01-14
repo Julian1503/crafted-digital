@@ -2,11 +2,13 @@
  * @fileoverview Scroll-triggered reveal animation wrapper component.
  * Applies entrance animations when elements scroll into view.
  */
+"use client";
+
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
-/** Available animation variants for reveal effect */
+/** Available animation variants for reveal the effect */
 type RevealVariant = "up" | "left" | "right" | "scale";
 
 /**
@@ -29,13 +31,6 @@ interface RevealSectionProps {
  *
  * @param props - Component configuration
  * @returns A div with reveal animation applied when scrolled into view
- *
- * @example
- * ```tsx
- * <RevealSection variant="left" delay={100}>
- *   <Card>Content appears from left</Card>
- * </RevealSection>
- * ```
  */
 export default function RevealSection({
                            children,
@@ -53,11 +48,40 @@ export default function RevealSection({
                     ? "reveal-scale"
                     : "";
 
+    // Runtime guard: Log if content stays hidden for too long (dev only)
+    useEffect(() => {
+        if (process.env.NODE_ENV !== 'development') return;
+
+        const el = ref.current;
+        if (!el) return;
+
+        const timeout = setTimeout(() => {
+            if (! isVisible) {
+                const rect = el.getBoundingClientRect();
+                const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+                if (isInViewport) {
+                    console.warn(
+                        '[RevealSection] Content is in viewport but not visible.  ' +
+                        'This may indicate a scroll animation bug.',
+                        { element: el, rect }
+                    );
+                }
+            }
+        }, 2000);
+
+        return () => clearTimeout(timeout);
+    }, [ref, isVisible]);
+
     return (
         <div
             ref={ref}
-            style={{ ["--reveal-delay" as never]: `${delay}ms` }}
-            className={cn("reveal-on-scroll", variantClass, isVisible && "is-visible", className)}
+            style={{ ["--reveal-delay" as string]: `${delay}ms` }}
+            className={cn(
+                "reveal-on-scroll",
+                variantClass,
+                isVisible && "is-visible",
+                className
+            )}
         >
             {children}
         </div>
