@@ -34,7 +34,7 @@ export const PROJECTS: Project[] = [
         "category": "Machine Learning",
         "readTime": "5 MIN READ",
         "description": "Optimizing deep learning pipelines to reduce latent overhead in high-traffic enterprise environments.",
-        "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+        "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80&fm=webp",
         "href": "#"
     },
     {
@@ -43,7 +43,7 @@ export const PROJECTS: Project[] = [
         "category": "Infrastructure",
         "readTime": "3 MIN READ",
         "description": "Moving processing power closer to the source to eliminate bandwidth bottlenecks and improve real-time response.",
-        "image": "https://zpesystems.com/wp-content/uploads/2024/03/The-Future-of-Edge-Computing.jpg",
+        "image": "https://zpesystems.com/wp-content/uploads/2024/03/The-Future-of-Edge-Computing.jpg?w=800&q=80&fm=webp",
         "href": "#"
     },
     {
@@ -52,7 +52,7 @@ export const PROJECTS: Project[] = [
         "category": "Cybersecurity",
         "readTime": "8 MIN READ",
         "description": "Implementing zero-trust architecture across distributed cloud teams to mitigate internal credential threats.",
-        "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+        "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80&fm=webp",
         "href": "#"
     },
     {
@@ -61,7 +61,7 @@ export const PROJECTS: Project[] = [
         "category": "Data Science",
         "readTime": "4 MIN READ",
         "description": "Using historical shipment data to forecast supply chain disruptions before they impact the bottom line.",
-        "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d",
+        "image": "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80&fm=webp",
         "href": "#"
     },
     {
@@ -70,7 +70,7 @@ export const PROJECTS: Project[] = [
         "category": "Sustainability",
         "readTime": "6 MIN READ",
         "description": "How modern software companies are offsetting server carbon footprints through green energy credits.",
-        "image": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e",
+        "image": "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80&fm=webp",
         "href": "#"
     },
     {
@@ -80,7 +80,7 @@ export const PROJECTS: Project[] = [
         readTime: "2 MIN READ",
         description:
             "A workflow that turns documents into structured decisions and drafts with a human-in-the-loop review.",
-        image: "https://www.actian.com/wp-content/uploads/2024/01/gen-ai-best-practices.jpg",
+        image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80&fm=webp",
         href: "#",
     },
     {
@@ -90,7 +90,7 @@ export const PROJECTS: Project[] = [
         readTime: "2 MIN READ",
         description:
             "A modern web experience designed to communicate complex products with clarity and trust.",
-        image: "https://www.actian.com/wp-content/uploads/2024/01/gen-ai-best-practices.jpg",
+        image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80&fm=webp",
         href: "#",
     },
     {
@@ -100,7 +100,7 @@ export const PROJECTS: Project[] = [
         readTime: "2 MIN READ",
         description:
             "Turning operational signals into insights — with a clean interface that teams actually use daily.",
-        image: "https://www.actian.com/wp-content/uploads/2024/01/gen-ai-best-practices.jpg",
+        image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&q=80&fm=webp",
         href: "#",
     },
 ];
