@@ -261,8 +261,8 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                                     {CONTACT_METHODS.map((method, index) => {
                                         const isSelected = field.value === method;
                                         const isFirst = index === 0;
-                                        // Only first or selected item should be in tab order
-                                        const shouldBeTabbable = isSelected || (!field.value && isFirst);
+                                        // Only first item (if none selected) or selected item should be in tab order
+                                        const shouldBeTabbable = isSelected || (isFirst && !CONTACT_METHODS.includes(field.value));
                                         return (
                                             <button
                                                 type="button"

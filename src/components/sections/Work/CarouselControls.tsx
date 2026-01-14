@@ -39,7 +39,9 @@ export default function CarouselControls({ projects, scrollerRef, progressRefSet
         const el = scrollerRef.current;
         if (!el) return;
 
-        const scrollAmount = 300; // pixels to scroll per key press
+        // Calculate scroll amount based on first card width for consistent behavior
+        const cards = el.querySelectorAll<HTMLElement>("[data-work-card]");
+        const scrollAmount = cards.length > 0 ? cards[0].offsetWidth + 20 : 300; // card width + gap
 
         if (e.key === "ArrowLeft") {
             e.preventDefault();
