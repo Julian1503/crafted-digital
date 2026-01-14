@@ -18,21 +18,21 @@ export default function ServicesCard({isVisible, service, index} : ServiceCardPr
         )}
         style={{ transitionDelay: `${index * 120}ms` }}
     >
-        <div className="h-14 w-14 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform duration-300">
-            <service.icon size={28} />
+        <div className="h-14 w-14 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary mb-6 group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
+            <service.icon size={28} aria-hidden="true" />
         </div>
 
         <h3 className="text-2xl font-semibold">{service.title}</h3>
         <p className="mt-2 text-sm text-secondary font-medium">{service.outcome}</p>
         <p className="mt-4 text-muted-foreground leading-relaxed">{service.description}</p>
 
-        <div className="mt-6 space-y-3">
+        <ul className="mt-6 space-y-3" aria-label={`Features of ${service.title}`}>
             {service.bullets.map((b) => (
-                <div key={b} className="flex items-center gap-2 text-sm text-foreground/80">
-                    <CheckCircle2 className="h-4 w-4 text-secondary" />
+                <li key={b} className="flex items-center gap-2 text-sm text-foreground/80">
+                    <CheckCircle2 className="h-4 w-4 text-secondary" aria-hidden="true" />
                     {b}
-                </div>
+                </li>
             ))}
-        </div>
+        </ul>
     </div>);
 }

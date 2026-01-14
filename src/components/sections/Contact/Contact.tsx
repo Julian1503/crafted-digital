@@ -66,7 +66,7 @@ export function Contact() {
 
 
     return (
-        <section id="contact" className="py-24 bg-foreground text-background">
+        <section id="contact" className="py-24 bg-foreground text-background" aria-labelledby="contact-heading">
             <div className="container mx-auto px-4 md:px-6">
                 <div
                     ref={ref}
@@ -76,7 +76,7 @@ export function Contact() {
                     )}
                 >
                     <div className="space-y-8">
-                        <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                        <h2 id="contact-heading" className="text-4xl md:text-5xl font-bold leading-tight">
                             Ready to build something{" "}
                             <span className="text-secondary">extraordinary?</span>
                         </h2>
