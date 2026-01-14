@@ -94,6 +94,14 @@ export default function RootLayout({
       <head>
         <StructuredData />
           <title>Julian Delgado</title>
+          {/* Preload the LCP hero image for faster discovery */}
+          <link
+              rel="preload"
+              href="/hero-poster.webp"
+              as="image"
+              type="image/webp"
+              fetchPriority="high"
+          />
       </head>
       <body
         className={`${dmSerif.variable} ${firaSans.variable} antialiased`}
