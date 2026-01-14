@@ -1,8 +1,25 @@
 import type { Metadata, Viewport } from "next";
+import { DM_Serif_Text, Fira_Sans } from "next/font/google";
 import "./globals.css";
 import {Providers} from "@/components/ui/providers";
 import {StructuredData} from "@/components/seo/StructuredData";
 import React from "react";
+
+const dmSerif = DM_Serif_Text({
+    subsets: ["latin"],
+    weight: ["400"],
+    style: ["normal", "italic"],
+    variable: "--font-dm-serif",
+    display: "swap",
+});
+
+const firaSans = Fira_Sans({
+    subsets: ["latin"],
+    weight: ["300", "400", "500", "600", "700"],
+    style: ["normal", "italic"],
+    variable: "--font-fira-sans",
+    display: "swap",
+});
 
 export const viewport: Viewport = {
     width: "device-width",
@@ -85,16 +102,9 @@ export default function RootLayout({
             type="image/webp"
             fetchPriority="high"
           />
-          {/* Load Google Fonts with preconnect for better performance */}
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-            rel="stylesheet"
-          />
       </head>
       <body
-        className="antialiased"
+        className={`${dmSerif.variable} ${firaSans.variable} antialiased`}
       >
       <Providers>{children}</Providers>
       </body>
