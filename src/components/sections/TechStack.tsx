@@ -32,7 +32,7 @@ function IconItem({ name, icon }: { name: string; icon: string }) {
             >
                 <Image
                     src={icon}
-                    alt=""
+                    alt={name}
                     loading="lazy"
                     draggable={false}
                     width={200}
