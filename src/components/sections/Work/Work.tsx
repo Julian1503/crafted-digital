@@ -1,10 +1,10 @@
 /**
  * @fileoverview Work/Portfolio section showcasing featured projects.
- * Implements an auto-playing carousel with accessibility features.
+ * Implements an autoplaying carousel with accessibility features.
  */
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -16,17 +16,8 @@ import { HEADER_MS, PROJECTS } from "@/components/sections/Work/work-data";
 const AUTOPLAY_MS = 4500;
 
 /**
- * Checks if the user prefers reduced motion.
- * @returns True if user prefers reduced motion, false otherwise.
- */
-function getPrefersReducedMotion(): boolean {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-}
-
-/**
  * Work section component displaying featured projects in a carousel.
- * Features auto-play functionality, keyboard navigation, and reduced motion support.
+ * Features autoplay functionality, keyboard navigation, and reduced motion support.
  *
  * @returns The rendered Work section with project carousel
  */
@@ -35,33 +26,45 @@ export function Work() {
     const sectionRef = useRef<HTMLElement | null>(null);
     const progressRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-    const prefersReducedMotion = useMemo(() => getPrefersReducedMotion(), []);
 
     // Initialize hasRevealed based on motion preference to avoid setState in effect
-    const [hasRevealed, setHasRevealed] = useState(prefersReducedMotion);
     const [activeIndex, setActiveIndex] = useState(0);
     const [paused, setPaused] = useState(false);
 
+    const [hasRevealed, setHasRevealed] = useState(true);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
     useEffect(() => {
-        if (prefersReducedMotion || hasRevealed) return;
+        const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const update = () => setPrefersReducedMotion(mq.matches);
+        update();
+
+        mq.addEventListener?.("change", update);
+        return () => mq.removeEventListener?.("change", update);
+    }, []);
+
+    useEffect(() => {
+        if (prefersReducedMotion) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setHasRevealed(true);
+            return;
+        }
+
+        setHasRevealed(false);
 
         const el = sectionRef.current;
         if (!el) return;
 
-        const io = new IntersectionObserver(
-            (entries) => {
-                const first = entries[0];
-                if (first?.isIntersecting) {
-                    setHasRevealed(true);
-                    io.disconnect();
-                }
-            },
-            { threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
-        );
+        const io = new IntersectionObserver((entries) => {
+            if (entries[0]?.isIntersecting) {
+                setHasRevealed(true);
+                io.disconnect();
+            }
+        }, { threshold: 0.2, rootMargin: "0px 0px -10% 0px" });
 
         io.observe(el);
         return () => io.disconnect();
-    }, [hasRevealed, prefersReducedMotion]);
+    }, [prefersReducedMotion]);
 
     const scrollToIndex = useCallback((index: number) => {
         const el = scrollerRef.current;
