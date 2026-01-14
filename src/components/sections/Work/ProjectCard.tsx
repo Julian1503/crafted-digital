@@ -108,11 +108,10 @@ export default function ProjectCard({
                         src={project.image}
                         alt=""
                         fill
-                        sizes="100vw, 50vw"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
                         className="object-cover"
                         loading="lazy"
                         aria-hidden="true"
-                        priority={false}
                     />
                     <div
                         className="absolute inset-0 bg-linear-to-b from-black/0 via-black/35 to-black/85"

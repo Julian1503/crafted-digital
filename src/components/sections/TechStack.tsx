@@ -35,8 +35,8 @@ function IconItem({ name, icon }: { name: string; icon: string }) {
                     alt={""}
                     loading="lazy"
                     draggable={false}
-                    width={200}
-                    height={200}
+                    width={48}
+                    height={48}
                     className="object-contain h-7 md:h-8 w-auto opacity-90 transition-opacity duration-200 hover:opacity-100"
                 />
             </div>

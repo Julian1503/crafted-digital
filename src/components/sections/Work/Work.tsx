@@ -237,14 +237,14 @@ export function Work() {
                 {/* Header */}
                 <div
                     className={cn(
-                        "flex flex-col md:flex-row md:items-end justify-between gap-6",
+                        "flex flex-col items-center justify-between gap-6",
                         "transition-all ease-out will-change-[transform,opacity,filter]",
                         !hasRevealed && "opacity-0 translate-y-3 blur-[2px]",
                         hasRevealed && "opacity-100 translate-y-0 blur-0"
                     )}
                     style={{ transitionDuration: `${HEADER_MS}ms` }}
                 >
-                    <div className="max-w-2xl">
+                    <div className="max-w-2xl flex flex-col items-center">
                         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/5 px-3 py-1 text-sm text-background/80 backdrop-blur">
                             <Sparkles className="h-4 w-4 text-secondary" aria-hidden="true" />
                             Selected projects · Built to ship
@@ -253,7 +253,7 @@ export function Work() {
                         <h2 id="work-heading"  className="mt-5 text-4xl md:text-5xl font-semibold tracking-tight text-background">
                             Featured Work
                         </h2>
-                        <p className="mt-4 text-lg text-background/70">
+                        <p className="mt-4 text-lg text-background/70 text-center md:text-left">
                             Real examples of websites and web applications built for Australian businesses.{" "}
                             <Link href="/case-studies" className="text-secondary hover:underline">
                                 View all case studies →
@@ -264,7 +264,7 @@ export function Work() {
                     <div className="flex items-center gap-3">
                         <Button
                             variant="outline"
-                            className="rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
+                            className="cursor-pointer rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
                             onClick={() => scrollByCard("left")}
                             aria-label="Previous project"
                         >
@@ -273,7 +273,7 @@ export function Work() {
                         </Button>
                         <Button
                             variant="outline"
-                            className="rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
+                            className="cursor-pointer rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
                             onClick={() => scrollByCard("right")}
                             aria-label="Next project"
                         >

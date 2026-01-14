@@ -106,7 +106,7 @@ export default function About() {
             <SkipLink />
             <Header />
 
-            <main id="main-content" className="pt-24">
+            <main id="main-content" className="pt-2 md:pt-24">
                 {/* Hero */}
                 <section className="relative overflow-hidden" aria-labelledby="about-heading">
                     <div className="absolute inset-0 -z-10" aria-hidden="true">
@@ -217,7 +217,7 @@ export default function About() {
                                             src="/julian-profile.jpg"
                                             alt="Julian Delgado"
                                             fill
-                                            sizes="50vw, 320px"
+                                            sizes="(max-width: 768px) 50vw, 320px"
                                             className="object-cover"
                                             loading="lazy"
                                         />
