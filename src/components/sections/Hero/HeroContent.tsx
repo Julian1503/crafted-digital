@@ -1,9 +1,10 @@
+
 /**
  * @fileoverview Hero content component with animated text and CTAs.
  * Contains the main headline, rotating words, value propositions, and call-to-action buttons.
  */
 "use client";
-import { motion } from "framer-motion";
+import { LazyMotion, domAnimation, m } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, CheckCircle } from "lucide-react";
 import RotatingWord from "@/components/ui/RotatingWord";
@@ -29,62 +30,55 @@ const ROTATING_WORDS = [
 /**
  * Hero content component displaying the main headline and CTAs.
  * Features animated entrance effects and a rotating word headline.
+ * Uses LazyMotion with domAnimation for reduced bundle size.
  *
  * @returns The rendered hero content with headline, CTAs, and value props
  */
 export default function HeroContent() {
     return (
-        <RevealSection delay={0} variant="left" className="flex flex-col space-y-8 text-left">
-            <div className="space-y-4">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="inline-flex items-center gap-2 px-3 py-1
-                    rounded-full bg-secondary/10 border border-secondary/20
-                    text-secondary text-sm font-medium"
-                >
-                    <Play className="w-3 h-3 fill-current" />
-                    <span>Launch your business in 14 days</span>
-                </motion.div>
+        <LazyMotion features={domAnimation} strict>
+            <RevealSection delay={0} variant="left" className="flex flex-col space-y-8 text-left">
+                <div className="space-y-4">
+                    <m.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="inline-flex items-center gap-2 px-3 py-1
+                        rounded-full bg-secondary/10 border border-secondary/20
+                        text-secondary text-sm font-medium"
+                    >
+                        <Play className="w-3 h-3 fill-current" />
+                        <span>Launch your business in 14 days</span>
+                    </m.div>
 
-                <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1]">
-                    Stop worrying about tech. <br />
-                    <span className="text-secondary flex w-full">
-                        <RotatingWord words={ROTATING_WORDS} />
-                    </span>{" "}
-                    your idea.
-                </h1>
+                    <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1]">
+                        Stop worrying about tech. <br />
+                        <span className="text-secondary flex w-full">
+                            <RotatingWord words={ROTATING_WORDS} />
+                        </span>{" "}
+                        your idea.
+                    </h1>
 
-                <p className="text-sm md:text-xl text-muted-foreground max-w-xl leading-relaxed">
-                    I build your custom software from start to finish. You don&apos;t need to know how to code—you just need a vision.
-                </p>
-            </div>
+                    <p className="text-sm md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+                        I build your custom software from start to finish. You don&apos;t need to know how to code—you just need a vision.
+                    </p>
+                </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="h-14 px-8 text-lg rounded-full shadow-lg shadow-secondary/20">
-                    Work with me
-                    <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true"/>
-                </Button>
-                {/*<div className="flex flex-col justify-center px-2">*/}
-                {/*    <div className="flex">*/}
-                {/*        {["SOVOS", "mDEVZ"].map(i => (*/}
-                {/*            <div key={i} className="h-8 w-8 rounded-full border-2 border-background bg-muted">*/}
-                {/*                <h1>{i}</h1>*/}
-                {/*            </div>*/}
-                {/*        ))}*/}
-                {/*    </div>*/}
-                {/*    <p className="text-xs text-muted-foreground mt-1 font-medium">Worked with this companies</p>*/}
-                {/*</div>*/}
-            </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <Button size="lg" className="h-14 px-8 text-lg rounded-full shadow-lg shadow-secondary/20">
+                        Work with me
+                        <ArrowRight className="ml-2 w-5 h-5" aria-hidden="true"/>
+                    </Button>
+                </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-                {VALUE_PROPOSITIONS.map((text) => (
-                    <div key={text} className="flex items-center justify-start gap-2 text-muted-foreground">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                        <span className="text-sm">{text}</span>
-                    </div>
-                ))}
-            </div>
-        </RevealSection>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                    {VALUE_PROPOSITIONS.map((text) => (
+                        <div key={text} className="flex items-center justify-start gap-2 text-muted-foreground">
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span className="text-sm">{text}</span>
+                        </div>
+                    ))}
+                </div>
+            </RevealSection>
+        </LazyMotion>
     );
 }
