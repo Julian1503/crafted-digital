@@ -5,17 +5,49 @@
  */
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Hero visual component displaying a promotional video with gradient overlays.
  * Features entrance animation and a caption overlay.
+ * Video loads lazily to improve LCP performance.
  *
  * @returns The rendered hero visual with video and caption
  */
 export default function HeroVisual() {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+
+    useEffect(() => {
+        const video = videoRef. current;
+        if (!video) return;
+
+        // Defer video loading until after the page has loaded
+        const loadVideo = () => {
+            // Start loading the video
+            video.load();
+
+            // Play when ready
+            video.addEventListener('canplaythrough', () => {
+                setIsVideoLoaded(true);
+                video.play().catch(() => {
+                    // Autoplay might be blocked, that's fine
+                    console.log('Autoplay was prevented');
+                });
+            }, { once: true });
+        };
+
+        // Use requestIdleCallback if available, otherwise setTimeout
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadVideo, { timeout: 2000 });
+        } else {
+            setTimeout(loadVideo, 100);
+        }
+    }, []);
+
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
+            initial={{ opacity:  0, scale:  0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative w-full max-w-[680px] lg:ml-auto"
@@ -30,25 +62,37 @@ export default function HeroVisual() {
             {/* Content Card */}
             <div className="relative overflow-hidden rounded-[2.25rem] border border-white/30 shadow-2xl aspect-[4/3]">
                 {/* Overlay */}
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" aria-hidden="true" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent z-10" aria-hidden="true" />
 
-                {/* Video */}
+                {/* Video - Lazy loaded */}
                 <video
-                    className="h-full w-full object-cover"
-                    poster="/hero-poster.webp"
-                    autoPlay
+                    ref={videoRef}
+                    className={`h-full w-full object-cover transition-opacity duration-500 ${
+                        isVideoLoaded ?  'opacity-100' : 'opacity-0'
+                    }`}
+                    poster="/hero-poster. webp"
                     muted
                     loop
                     playsInline
+                    preload="none"
                     aria-hidden="true"
                 >
                     <source src="/hero.webm" type="video/webm" />
-                    {/* Fallback text for browsers that don't support video */}
+                    <source src="/hero.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                 </video>
 
+                {/* Poster fallback visible while video loads */}
+                <div
+                    className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${
+                        isVideoLoaded ?  'opacity-0' : 'opacity-100'
+                    }`}
+                    style={{ backgroundImage: 'url(/hero-poster.webp)' }}
+                    aria-hidden="true"
+                />
+
                 {/* Caption */}
-                <div className="absolute bottom-0 left-0 p-8 text-white">
+                <div className="absolute bottom-0 left-0 p-8 text-white z-20">
                     <p className="font-semibold text-xl italic tracking-tight">
                         I&apos;ll help you launch your dream project.
                     </p>
@@ -57,4 +101,4 @@ export default function HeroVisual() {
             </div>
         </motion.div>
     );
-};
+}
