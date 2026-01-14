@@ -45,11 +45,11 @@ export function Services() {
     const { ref, isVisible } = useScrollAnimation();
 
     return (
-        <section id="services" className="py-24 bg-background">
+        <section id="services" className="py-24 bg-background" aria-labelledby="services-heading">
             <div className="container mx-auto px-4 md:px-6">
                 {/* Header */}
                 <div className="mb-14 max-w-3xl">
-                    <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
+                    <h2 id="services-heading" className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
                         Web Development Services for Australian Businesses
                     </h2>
                     <p className="mt-4 text-lg md:text-xl text-muted-foreground">

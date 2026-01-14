@@ -73,10 +73,10 @@ export function FAQ() {
     const { ref, isVisible } = useScrollAnimation();
 
     return (
-        <section id="faq" className="py-24 bg-background">
+        <section id="faq" className="py-24 bg-background" aria-labelledby="faq-heading">
             <div className="container mx-auto px-4 md:px-6 max-w-3xl">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl font-bold mb-4 text-foreground">
+                    <h2 id="faq-heading"  className="text-4xl font-bold mb-4 text-foreground">
                         Frequently Asked Questions
                     </h2>
                     <p className="text-xl text-muted-foreground">

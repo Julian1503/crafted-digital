@@ -18,11 +18,11 @@ export function Process() {
     const { ref, isVisible } = useScrollAnimation();
 
     return (
-        <section id="process" className="py-24 bg-background">
+        <section id="process" className="py-24 bg-background" aria-labelledby="process-heading">
             <div className="container mx-auto px-4 md:px-6">
                 {/* Header */}
                 <div className="mx-auto mb-14 max-w-2xl text-center">
-                    <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
+                    <h2 id="process-heading" className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
                         How I work
                     </h2>
                     <p className="mt-4 text-lg md:text-xl text-muted-foreground">
@@ -33,10 +33,10 @@ export function Process() {
                 {/* Steps */}
                 <div ref={ref} className="relative grid gap-6 md:grid-cols-4">
                     {/* Connector line (desktop) */}
-                    <div className="pointer-events-none hidden md:block absolute left-6 right-6 top-[28px] h-px bg-border/70" />
+                    <div aria-hidden="true"  className="pointer-events-none hidden md:block absolute left-6 right-6 top-[28px] h-px bg-border/70" />
 
                     {steps.map((step, index) => (
-                        <div
+                        <article
                             key={step.title}
                             className={cn(
                                 "relative rounded-3xl border border-border/70 bg-card p-7 transition-all duration-500 hover:border-secondary/50 hover:shadow-2xl hover:shadow-secondary/5 reveal-on-scroll",
@@ -45,9 +45,9 @@ export function Process() {
                             style={{ transitionDelay: `${index * 120}ms` }}
                         >
                             {/* Icon bubble pinned to connector */}
-                            <div className="relative mb-5">
+                            <div aria-hidden="true" className="relative mb-5">
                                 <div className="mx-auto md:mx-0 flex h-14 w-14 items-center justify-center rounded-2xl border border-border/70 bg-background/70 text-secondary shadow-sm">
-                                    <step.icon className="h-6 w-6" />
+                                    <step.icon aria-hidden="true" className="h-6 w-6" />
                                 </div>
 
                                 {/* Pin dot over connector (desktop) */}
@@ -65,14 +65,14 @@ export function Process() {
                                 {step.description}
                             </p>
 
-                            <div className="mt-5 space-y-2">
+                            <ul className="mt-5 space-y-2" aria-label={`Deliverables for ${step.title}`}>
                                 {step.bullets.map((b) => (
-                                    <div key={b} className="text-sm text-foreground/80">
+                                    <li key={b} className="text-sm text-foreground/80">
                                         • {b}
-                                    </div>
+                                    </li>
                                 ))}
-                            </div>
-                        </div>
+                            </ul>
+                        </article>
                     ))}
                 </div>
 

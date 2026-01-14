@@ -3,6 +3,7 @@ import { DM_Serif_Text, Montserrat, Fira_Sans } from "next/font/google";
 import "./globals.css";
 import {Providers} from "@/components/ui/providers";
 import {StructuredData} from "@/components/seo/StructuredData";
+import React from "react";
 
 const dmSerif = DM_Serif_Text({
     subsets: ["latin"],
@@ -30,7 +31,6 @@ const firaSans = Fira_Sans({
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
-    maximumScale: 1,
     colorScheme: "light"
 };
 
@@ -100,6 +100,7 @@ export default function RootLayout({
     <html lang="en-AU">
       <head>
         <StructuredData />
+          <title>Julian Delgado</title>
       </head>
       <body
         className={`${montserrat.variable} ${dmSerif.variable} ${firaSans.variable} antialiased`}

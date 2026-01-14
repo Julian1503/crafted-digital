@@ -66,7 +66,7 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
 
                 <div
                     className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/5 px-3 py-1 text-xs text-muted-foreground/80">
-                    <Timer className="h-3.5 w-3.5"/>
+                    <Timer className="h-3.5 w-3.5" aria-hidden="true"/>
                     Typical timeline:{" "}
                     <span className="font-medium text-background">
                     {plan.timeline}

@@ -52,7 +52,10 @@ export function Contact() {
                 body: JSON.stringify(values),
             });
 
-            if (!res.ok) throw new Error("Request failed");
+            if (!res.ok) {
+                const message = await res.text();
+                console.error("Error submitting contact form:", message);
+            }
 
             setIsSuccess(true);
             toast({ title: "Message sent!", description: "I’ll get back to you within 24 hours." });
@@ -66,7 +69,7 @@ export function Contact() {
 
 
     return (
-        <section id="contact" className="py-24 bg-foreground text-background">
+        <section id="contact" className="py-24 bg-foreground text-background" aria-labelledby="contact-heading">
             <div className="container mx-auto px-4 md:px-6">
                 <div
                     ref={ref}
@@ -76,7 +79,7 @@ export function Contact() {
                     )}
                 >
                     <div className="space-y-8">
-                        <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                        <h2 className="text-4xl md:text-5xl font-bold leading-tight" id="contact-heading" >
                             Ready to build something{" "}
                             <span className="text-secondary">extraordinary?</span>
                         </h2>
