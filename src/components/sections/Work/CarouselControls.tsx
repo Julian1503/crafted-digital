@@ -1,11 +1,14 @@
 /**
  * @fileoverview Carousel controls component for the Work section.
  * Renders the scrollable container with project cards.
+ * Implements WCAG 2.x accessible carousel patterns with keyboard navigation.
  */
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Project } from "@/components/sections/Work/work.types";
 import ProjectCard from "@/components/sections/Work/ProjectCard";
-import { RefObject } from "react";
+import { RefObject, useCallback, KeyboardEvent } from "react";
 
 /**
  * Props for the CarouselControls component.
@@ -26,11 +29,27 @@ interface CarouselControlsProps {
 /**
  * Carousel controls component.
  * Renders a horizontally scrollable container with project cards.
+ * Supports keyboard navigation with Left/Right arrow keys.
  *
  * @param props - Projects data and animation state
  * @returns The rendered carousel container with cards
  */
 export default function CarouselControls({ projects, scrollerRef, progressRefSet, hasRevealed, activeIndex }: CarouselControlsProps) {
+    const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
+        const el = scrollerRef.current;
+        if (!el) return;
+
+        const scrollAmount = 300; // pixels to scroll per key press
+
+        if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            el.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+        } else if (e.key === "ArrowRight") {
+            e.preventDefault();
+            el.scrollBy({ left: scrollAmount, behavior: "smooth" });
+        }
+    }, [scrollerRef]);
+
     return (
         <div className="mt-10">
             <div
@@ -44,6 +63,7 @@ export default function CarouselControls({ projects, scrollerRef, progressRefSet
                 tabIndex={0}
                 aria-label="Featured work carousel - use arrow keys to scroll"
                 aria-roledescription="carousel"
+                onKeyDown={handleKeyDown}
             >
                 {projects.map((p, i) => (
                     <ProjectCard key={p.title}

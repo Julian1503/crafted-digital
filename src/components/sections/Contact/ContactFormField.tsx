@@ -237,19 +237,46 @@ export default function ContactFormFields({ form, onSubmit, isSubmitting }: Cont
                         <FormItem>
                             <FormLabel id="contact-method-label">Preferred contact</FormLabel>
                             <FormControl>
-                                <div className="flex gap-2" role="radiogroup" aria-labelledby="contact-method-label">
-                                    {CONTACT_METHODS.map((method) => (
-                                        <button
-                                            type="button"
-                                            key={method}
-                                            role="radio"
-                                            aria-checked={field.value === method}
-                                            onClick={() => field.onChange(method)}
-                                            className={`px-4 py-2 rounded-xl border ${field.value === method ? "bg-foreground text-background" : "bg-muted/10"}`}
-                                        >
-                                            {method}
-                                        </button>
-                                    ))}
+                                <div 
+                                    className="flex gap-2" 
+                                    role="radiogroup" 
+                                    aria-labelledby="contact-method-label"
+                                    onKeyDown={(e) => {
+                                        if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+                                            e.preventDefault();
+                                            const currentIndex = CONTACT_METHODS.indexOf(field.value || "");
+                                            let nextIndex: number;
+                                            if (e.key === "ArrowRight") {
+                                                nextIndex = currentIndex < CONTACT_METHODS.length - 1 ? currentIndex + 1 : 0;
+                                            } else {
+                                                nextIndex = currentIndex > 0 ? currentIndex - 1 : CONTACT_METHODS.length - 1;
+                                            }
+                                            field.onChange(CONTACT_METHODS[nextIndex]);
+                                            // Focus the newly selected button
+                                            const buttons = e.currentTarget.querySelectorAll("button");
+                                            buttons[nextIndex]?.focus();
+                                        }
+                                    }}
+                                >
+                                    {CONTACT_METHODS.map((method, index) => {
+                                        const isSelected = field.value === method;
+                                        const isFirst = index === 0;
+                                        // Only first or selected item should be in tab order
+                                        const shouldBeTabbable = isSelected || (!field.value && isFirst);
+                                        return (
+                                            <button
+                                                type="button"
+                                                key={method}
+                                                role="radio"
+                                                aria-checked={isSelected}
+                                                tabIndex={shouldBeTabbable ? 0 : -1}
+                                                onClick={() => field.onChange(method)}
+                                                className={`px-4 py-2 rounded-xl border ${isSelected ? "bg-foreground text-background" : "bg-muted/10"}`}
+                                            >
+                                                {method}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </FormControl>
                             <FormMessage/>

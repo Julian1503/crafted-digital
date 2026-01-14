@@ -6,7 +6,7 @@ import RevealSection from "@/components/ui/RevealSection";
 
 function IconItem({ name, icon }: { name: string; icon: string }) {
     return (
-        <div className="flex items-center justify-center" role="listitem">
+        <div className="flex items-center justify-center">
             <div
                 className="
           relative
@@ -28,7 +28,7 @@ function IconItem({ name, icon }: { name: string; icon: string }) {
           hover:shadow-lg hover:shadow-black/20
           hover:scale-[1.03]
         "
-                aria-label={name}
+                title={name}
             >
                 <Image
                     src={icon}
@@ -38,7 +38,6 @@ function IconItem({ name, icon }: { name: string; icon: string }) {
                     width={200}
                     height={200}
                     className="object-contain h-7 md:h-8 w-auto opacity-90 transition-opacity duration-200 hover:opacity-100"
-                    aria-hidden="true"
                 />
             </div>
         </div>
@@ -88,8 +87,6 @@ export default function TechStack() {
                     <div className="overflow-hidden py-2 group">
                         <div className="flex gap-3 md:gap-4 w-max animate-techscroll group-hover:paused"
                             style={{ ["--techscroll-duration" as string]: "26s" }}
-                            role="list"
-                            aria-label="Technology icons carousel"
                         >
                             {[...TECH, ...TECH].map((t, idx) => (
                                 <IconItem key={`${t.name}-${idx}`} name={t.name} icon={t.icon} />

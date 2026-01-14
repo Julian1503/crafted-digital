@@ -42,7 +42,6 @@ export default function HeroVisual() {
                     loop
                     playsInline
                     aria-hidden="true"
-                    aria-label="Decorative background video showing digital design work"
                 >
                     {/* Fallback text for browsers that don't support video */}
                     Your browser does not support the video tag.
