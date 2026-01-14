@@ -8,12 +8,14 @@ import {FAQ} from "@/components/sections/FAQ";
 import {Contact} from "@/components/sections/Contact/Contact";
 import {Footer} from "@/components/layout/Footer";
 import TechStack from "@/components/sections/TechStack";
+import {SkipLink} from "@/components/ui/skip-link";
 
 export default function Home() {
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-secondary/30">
+            <SkipLink/>
             <Header/>
-            <main>
+            <main id="main-content">
                 <Hero/>
                 <Work/>
                 <Services/>

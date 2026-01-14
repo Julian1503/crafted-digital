@@ -1,6 +1,7 @@
 /**
  * @fileoverview Footer component.
  * Provides site-wide footer with navigation, social links, and legal links.
+ * Implements WCAG 2.x AAA accessible patterns.
  */
 "use client";
 
@@ -68,7 +69,7 @@ export function Footer() {
     };
 
     return (
-        <footer className="bg-background py-12 border-t border-border">
+        <footer className="bg-background py-12 border-t border-border" role="contentinfo">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-8">
                     {/* Brand */}
@@ -83,9 +84,10 @@ export function Footer() {
                                 }
                             }}
                             className="text-2xl font-semibold tracking-tight"
+                            aria-label="Julian Delgado - Return to top"
                         >
               <span className="font-serif font-bold">
-                Julian Delgado<span className="text-secondary">_</span>
+                Julian Delgado<span className="text-secondary" aria-hidden="true">_</span>
               </span>
                         </Link>
 
@@ -98,7 +100,7 @@ export function Footer() {
                     </div>
 
                     {/* Links (same logic as header: no hashes) */}
-                    <nav className="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-3 text-sm font-medium text-muted-foreground">
+                    <nav className="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-3 text-sm font-medium text-muted-foreground" aria-label="Footer navigation">
                         {FOOTER_LINKS.map((item) =>
                             item.type === "section" ? (
                                 <button
@@ -123,25 +125,24 @@ export function Footer() {
                     </nav>
 
                     {/* Socials (use real URLs, open in new tab) */}
-                    <div className="flex gap-4">
-
+                    <div className="flex gap-4" role="list" aria-label="Social media links">
                         <a
                             href="https://www.linkedin.com/in/julianedelgado/"
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="text-muted-foreground hover:text-secondary transition-colors"
-                            aria-label="LinkedIn"
+                            aria-label="LinkedIn (opens in new tab)"
                         >
-                            <FaLinkedin size={20} />
+                            <FaLinkedin size={20} aria-hidden="true" />
                         </a>
                         <a
                             href="https://www.instagram.com/crafteddigital_/"
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="text-muted-foreground hover:text-secondary transition-colors"
-                            aria-label="Instagram"
+                            aria-label="Instagram (opens in new tab)"
                         >
-                            <FaInstagram size={20} />
+                            <FaInstagram size={20} aria-hidden="true" />
                         </a>
                     </div>
                 </div>
@@ -149,14 +150,14 @@ export function Footer() {
                 <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
                     <p>&copy; {new Date().getFullYear()} Julian Delgado. All rights reserved.</p>
 
-                    <div className="flex gap-4">
+                    <nav className="flex gap-4" aria-label="Legal links">
                         <Link href="/privacy" className="hover:text-foreground">
                             Privacy Policy
                         </Link>
                         <Link href="/terms" className="hover:text-foreground">
                             Terms of Service
                         </Link>
-                    </div>
+                    </nav>
                 </div>
             </div>
         </footer>

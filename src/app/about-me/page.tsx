@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import {Header} from "@/components/layout/Header";
 import {Footer} from "@/components/layout/Footer";
 import RevealSection from "@/components/ui/RevealSection";
+import {SkipLink} from "@/components/ui/skip-link";
 import {useEffect, useRef} from "react";
+import Image from "next/image";
 
 const principles = [
     {
@@ -101,12 +103,13 @@ export default function About() {
 
     return (
         <div className="min-h-screen bg-background text-foreground selection:bg-secondary/30">
+            <SkipLink />
             <Header />
 
-            <main className="pt-24">
+            <main id="main-content" className="pt-24">
                 {/* Hero */}
-                <section className="relative overflow-hidden">
-                    <div className="absolute inset-0 -z-10">
+                <section className="relative overflow-hidden" aria-labelledby="about-heading">
+                    <div className="absolute inset-0 -z-10" aria-hidden="true">
                         <div className="absolute -top-40 right-0 h-96 w-96 rounded-full bg-secondary/10 blur-[120px] animate-float-slow" />
                         <div className="absolute bottom-10 left-10 h-72 w-72 rounded-full bg-primary/5 blur-[100px] animate-float-slow" />
                     </div>
@@ -120,7 +123,7 @@ export default function About() {
                                     </p>
                                 </RevealSection>
                                 <RevealSection delay={80} variant="left">
-                                    <h1 className="text-5xl md:text-6xl font-bold leading-[1.05] text-balance">
+                                    <h1 id="about-heading" className="text-5xl md:text-6xl font-bold leading-[1.05] text-balance">
                                         Crafting digital experiences that feel human and perform
                                         like they should.
                                     </h1>
@@ -193,25 +196,32 @@ export default function About() {
                                 <p className="uppercase text-sm tracking-[0.3em] text-muted-foreground">
                                     The story
                                 </p>
+
                                 <h2 className="text-4xl font-bold">
                                     Calm, collaborative, and focused on outcomes.
                                 </h2>
+
                                 <p className="text-lg text-muted-foreground leading-relaxed">
-                                    I build digital products for teams that value clarity over
-                                    noise. My role is to translate your vision into an experience
-                                    that feels confident, premium, and easy to trust.
+                                    I build digital products for teams that value clarity over noise. My role is to translate your
+                                    vision into an experience that feels confident, premium, and easy to trust.
                                 </p>
                                 <div
                                     ref={frameRef}
                                     className="relative w-[50%] max-w-[320px] aspect-[2/2] overflow-hidden rounded-3xl"
                                 >
-                                    <img
+                                    <div
                                         ref={imgRef}
-                                        src="/julian-profile.jpg"
-                                        alt="Julian Delgado"
-                                        className="absolute left-0 top-0 w-full h-[140%] object-cover will-change-transform"
-                                        loading="lazy"
-                                    />
+                                        className="absolute left-0 top-0 w-full h-[140%] will-change-transform"
+                                    >
+                                        <Image
+                                            src="/julian-profile.jpg"
+                                            alt="Julian Delgado"
+                                            fill
+                                            sizes="50vw, 320px"
+                                            className="object-cover"
+                                            loading="lazy"
+                                        />
+                                    </div>
                                 </div>
                             </RevealSection>
 

@@ -39,13 +39,15 @@ export default function HeroContent() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-sm font-medium"
+                    className="inline-flex items-center gap-2 px-3 py-1
+                    rounded-full bg-secondary/10 border border-secondary/20
+                    text-secondary text-sm font-medium"
                 >
                     <Play className="w-3 h-3 fill-current" />
                     <span>Launch your business in 14 days</span>
                 </motion.div>
 
-                <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1]">
+                <h1 className="text-4xl md:text-7xl font-extrabold tracking-tight text-foreground leading-[1.1]">
                     Stop worrying about tech. <br />
                     <span className="text-secondary flex w-full">
                         <RotatingWord words={ROTATING_WORDS} />
@@ -53,7 +55,7 @@ export default function HeroContent() {
                     your idea.
                 </h1>
 
-                <p className="text-lg md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+                <p className="text-sm md:text-xl text-muted-foreground max-w-xl leading-relaxed">
                     I build your custom software from start to finish. You don&apos;t need to know how to code—you just need a vision.
                 </p>
             </div>
@@ -61,7 +63,7 @@ export default function HeroContent() {
             <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="h-14 px-8 text-lg rounded-full shadow-lg shadow-secondary/20">
                     Work with me
-                    <ArrowRight className="ml-2 w-5 h-5" />
+                    <ArrowRight aria-hidden="true" className="ml-2 w-5 h-5" />
                 </Button>
                 {/*<div className="flex flex-col justify-center px-2">*/}
                 {/*    <div className="flex">*/}
@@ -77,7 +79,7 @@ export default function HeroContent() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                 {VALUE_PROPOSITIONS.map((text) => (
-                    <div key={text} className="flex items-center gap-2 text-muted-foreground">
+                    <div key={text} className="flex items-center justify-start gap-2 text-muted-foreground">
                         <CheckCircle className="w-5 h-5 text-green-500" />
                         <span className="text-sm">{text}</span>
                     </div>

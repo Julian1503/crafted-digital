@@ -231,6 +231,7 @@ export function Work() {
             ref={sectionRef}
             id="work"
             className="py-24 bg-foreground text-background overflow-hidden"
+            aria-labelledby="work-heading"
         >
             <div className="container mx-auto px-4 md:px-6">
                 {/* Header */}
@@ -245,11 +246,11 @@ export function Work() {
                 >
                     <div className="max-w-2xl">
                         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/5 px-3 py-1 text-sm text-background/80 backdrop-blur">
-                            <Sparkles className="h-4 w-4 text-secondary" />
+                            <Sparkles className="h-4 w-4 text-secondary" aria-hidden="true" />
                             Selected projects · Built to ship
                         </div>
 
-                        <h2 className="mt-5 text-4xl md:text-5xl font-semibold tracking-tight text-background">
+                        <h2 id="work-heading"  className="mt-5 text-4xl md:text-5xl font-semibold tracking-tight text-background">
                             Featured Work
                         </h2>
                         <p className="mt-4 text-lg text-muted-foreground/80">
@@ -265,15 +266,16 @@ export function Work() {
                             variant="outline"
                             className="rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
                             onClick={() => scrollByCard("left")}
+                            aria-label="Previous project"
                         >
-                            <ChevronLeft className="h-4 w-4" />
+                            <ChevronLeft className="h-4 w-4"  aria-hidden="true" />
                         </Button>
                         <Button
                             variant="outline"
                             className="rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
                             onClick={() => scrollByCard("right")}
                         >
-                            <ChevronRight className="h-4 w-4" />
+                            <ChevronRight className="h-4 w-4" aria-hidden="true" />
                         </Button>
                     </div>
                 </div>

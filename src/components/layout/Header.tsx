@@ -1,6 +1,7 @@
 /**
  * @fileoverview Header/Navigation component.
  * Provides main navigation with scroll-to-section and route navigation support.
+ * Implements WCAG 2.x AAA accessible navigation patterns.
  */
 "use client";
 
@@ -62,6 +63,32 @@ export function Header() {
     const [isScrolled, setIsScrolled] = React.useState(false);
     const [activeSection, setActiveSection] = React.useState<string>("");
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+    const mobileMenuRef = React.useRef<HTMLDivElement>(null);
+    const mobileMenuButtonRef = React.useRef<HTMLButtonElement>(null);
+
+    // Close mobile menu on Escape key and implement focus trap
+    React.useEffect(() => {
+        if (!mobileMenuOpen) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setMobileMenuOpen(false);
+                mobileMenuButtonRef.current?.focus();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, [mobileMenuOpen]);
+
+    // Focus first menu item when menu opens
+    React.useEffect(() => {
+        if (mobileMenuOpen && mobileMenuRef.current) {
+            const firstButton = mobileMenuRef.current.querySelector("button");
+            firstButton?.focus();
+        }
+    }, [mobileMenuOpen]);
+
 
     React.useEffect(() => {
         const onScroll = () => setIsScrolled(window.scrollY > 12);
@@ -164,11 +191,12 @@ export function Header() {
                         text="Julian Delgado"
                         className="text-foreground"
                         cursorClassName="text-secondary"
+                        aria-label="Julian Delgado - Home"
                     />
                 </Link>
 
                 {/* Desktop Nav */}
-                <nav className="hidden md:flex items-center gap-7">
+                <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
                     {NAV_ITEMS.map((item) => {
                         const active = isItemActive(item);
 
@@ -182,10 +210,11 @@ export function Header() {
                                         "text-sm font-medium transition-colors hover:text-secondary relative",
                                         active ? "text-secondary" : "text-muted-foreground"
                                     )}
+                                    aria-current={active ? "true" : undefined}
                                 >
                                     {item.name}
                                     {active && (
-                                        <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-secondary rounded-full" />
+                                        <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-secondary rounded-full" aria-hidden="true" />
                                     )}
                                 </button>
                             );
@@ -200,6 +229,7 @@ export function Header() {
                                     "text-sm font-medium transition-colors hover:text-secondary relative",
                                     active ? "text-secondary" : "text-muted-foreground"
                                 )}
+                                aria-current={active ? "page" : undefined}
                             >
                                 {item.name}
                             </button>
@@ -219,24 +249,33 @@ export function Header() {
 
                 {/* Mobile Toggle */}
                 <button
+                    ref={mobileMenuButtonRef}
                     className="md:hidden p-2 text-foreground"
                     onClick={() => setMobileMenuOpen((v) => !v)}
-                    aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                    aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
                     aria-expanded={mobileMenuOpen}
+                    aria-controls="mobile-menu"
+                    aria-haspopup="true"
                 >
-                    {mobileMenuOpen ? <X /> : <Menu />}
+                    {mobileMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
                 </button>
             </div>
 
             {/* Mobile Menu */}
             {mobileMenuOpen && (
-                <div className="absolute top-full left-0 right-0 bg-background border-b border-border p-4 md:hidden flex flex-col gap-3 shadow-xl animate-in slide-in-from-top-5">
-                    {NAV_ITEMS.map((item) => {
+                <div
+                    ref={mobileMenuRef}
+                    id="mobile-menu"
+                    role="menu"
+                    aria-label="Mobile navigation"
+                    className="absolute top-full left-0 right-0 bg-background border-b border-border p-4 md:hidden flex flex-col gap-3 shadow-xl animate-in slide-in-from-top-5"
+                >                    {NAV_ITEMS.map((item) => {
                         const active = isItemActive(item);
 
                         return (
                             <button
                                 key={item.type === "section" ? item.id : item.href}
+                                role="menuitem"
                                 onClick={() =>
                                     item.type === "section"
                                         ? navigateToSection(item.id)
@@ -246,6 +285,7 @@ export function Header() {
                                     "text-left text-lg font-medium py-2 border-b border-border/50 last:border-0",
                                     active ? "text-secondary" : "text-foreground"
                                 )}
+                                aria-current={active ? (item.type === "route" ? "page" : "true") : undefined}
                             >
                                 {item.name}
                             </button>
@@ -253,6 +293,7 @@ export function Header() {
                     })}
 
                     <Button
+                        role="menuitem"
                         onClick={() => navigateToSection("contact")}
                         className="w-full mt-2 rounded-full"
                     >
