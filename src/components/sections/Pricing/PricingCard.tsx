@@ -51,10 +51,10 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
                 <h3 className="text-2xl font-semibold text-background">
                     {plan.name}
                 </h3>
-                <p className="text-sm text-muted-foreground/80">{plan.tagline}</p>
+                <p className="text-sm text-background/70">{plan.tagline}</p>
 
                 <div className="pt-2">
-                    <p className="text-xs uppercase tracking-wider text-muted-foreground/80">
+                    <p className="text-xs uppercase tracking-wider text-background/70">
                         Starting at
                     </p>
                     <div className="text-4xl font-semibold text-background">
@@ -62,10 +62,10 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
                     </div>
                 </div>
 
-                <p className="text-muted-foreground/80">{plan.description}</p>
+                <p className="text-background/70">{plan.description}</p>
 
                 <div
-                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/5 px-3 py-1 text-xs text-muted-foreground/80">
+                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/5 px-3 py-1 text-xs text-background/70">
                     <Timer className="h-3.5 w-3.5" aria-hidden="true"/>
                     Typical timeline:{" "}
                     <span className="font-medium text-background">
@@ -90,7 +90,7 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
                 {plan.cta}
             </Button>
 
-            <p className="mt-3 text-center text-xs text-muted-foreground/80">
+            <p className="mt-3 text-center text-xs text-background/70">
                 No commitment · 20 min call
             </p>
         </div>

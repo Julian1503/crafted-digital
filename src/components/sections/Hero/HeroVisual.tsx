@@ -35,14 +35,14 @@ export default function HeroVisual() {
                 {/* Video */}
                 <video
                     className="h-full w-full object-cover"
-                    src="/hero.mp4"
-                    poster="/hero-poster.png"
+                    poster="/hero-poster.webp"
                     autoPlay
                     muted
                     loop
                     playsInline
                     aria-hidden="true"
                 >
+                    <source src="/hero.webm" type="video/webm" />
                     {/* Fallback text for browsers that don't support video */}
                     Your browser does not support the video tag.
                 </video>

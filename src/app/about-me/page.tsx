@@ -144,7 +144,7 @@ export default function About() {
                                         >
                                             <Link href="/#contact">
                                                 Book a discovery call
-                                                <ArrowRight className="ml-2 h-4 w-4" />
+                                                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true"/>
                                             </Link>
                                         </Button>
                                         <Button
@@ -343,7 +343,7 @@ export default function About() {
                                 >
                                     <Link href="/#contact">
                                         Start a project
-                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                        <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                                     </Link>
                                 </Button>
                                 <Button

@@ -311,7 +311,7 @@ export default async function CaseStudyPage({
                                 </blockquote>
                                 <div>
                                     <p className="font-semibold">{study.testimonial.author}</p>
-                                    <p className="text-muted-foreground/80">{study.testimonial.role}</p>
+                                    <p className="text-background/70">{study.testimonial.role}</p>
                                 </div>
                             </div>
                         </div>

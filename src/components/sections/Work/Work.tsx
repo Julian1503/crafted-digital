@@ -253,7 +253,7 @@ export function Work() {
                         <h2 id="work-heading"  className="mt-5 text-4xl md:text-5xl font-semibold tracking-tight text-background">
                             Featured Work
                         </h2>
-                        <p className="mt-4 text-lg text-muted-foreground/80">
+                        <p className="mt-4 text-lg text-background/70">
                             Real examples of websites and web applications built for Australian businesses.{" "}
                             <Link href="/case-studies" className="text-secondary hover:underline">
                                 View all case studies →
@@ -268,13 +268,16 @@ export function Work() {
                             onClick={() => scrollByCard("left")}
                             aria-label="Previous project"
                         >
+                            <p className="sr-only">Previous Project</p>
                             <ChevronLeft className="h-4 w-4"  aria-hidden="true" />
                         </Button>
                         <Button
                             variant="outline"
                             className="rounded-full text-background border-white/20 bg-transparent hover:bg-background/10"
                             onClick={() => scrollByCard("right")}
+                            aria-label="Next project"
                         >
+                            <p className="sr-only">Next Project</p>
                             <ChevronRight className="h-4 w-4" aria-hidden="true" />
                         </Button>
                     </div>
