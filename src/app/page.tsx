@@ -1,14 +1,38 @@
+import dynamic from "next/dynamic";
 import {Header} from "@/components/layout/Header";
 import Hero from "@/components/sections/Hero/Hero";
-import {Services} from "@/components/sections/Services/Services";
 import {Work} from "@/components/sections/Work/Work";
-import {Process} from "@/components/sections/Process/Process";
-import {Pricing} from "@/components/sections/Pricing/Pricing";
-import {FAQ} from "@/components/sections/FAQ";
-import {Contact} from "@/components/sections/Contact/Contact";
-import {Footer} from "@/components/layout/Footer";
-import TechStack from "@/components/sections/TechStack";
 import {SkipLink} from "@/components/ui/skip-link";
+
+// Dynamically import below-the-fold components to reduce initial JS bundle
+// These components are not visible on initial load and can be loaded asynchronously
+const Services = dynamic(() => import("@/components/sections/Services/Services").then(mod => ({ default: mod.Services })), {
+    loading: () => <section className="py-24 bg-muted/30" aria-hidden="true" />,
+});
+
+const TechStack = dynamic(() => import("@/components/sections/TechStack"), {
+    loading: () => <section className="py-16 bg-primary" aria-hidden="true" />,
+});
+
+const Process = dynamic(() => import("@/components/sections/Process/Process").then(mod => ({ default: mod.Process })), {
+    loading: () => <section className="py-24 bg-background" aria-hidden="true" />,
+});
+
+const Pricing = dynamic(() => import("@/components/sections/Pricing/Pricing").then(mod => ({ default: mod.Pricing })), {
+    loading: () => <section className="py-24 bg-muted/30" aria-hidden="true" />,
+});
+
+const FAQ = dynamic(() => import("@/components/sections/FAQ").then(mod => ({ default: mod.FAQ })), {
+    loading: () => <section className="py-24 bg-background" aria-hidden="true" />,
+});
+
+const Contact = dynamic(() => import("@/components/sections/Contact/Contact").then(mod => ({ default: mod.Contact })), {
+    loading: () => <section className="py-24 bg-muted/30" aria-hidden="true" />,
+});
+
+const Footer = dynamic(() => import("@/components/layout/Footer").then(mod => ({ default: mod.Footer })), {
+    loading: () => <footer className="py-16 bg-foreground" aria-hidden="true" />,
+});
 
 export default function Home() {
     return (

@@ -3,7 +3,7 @@
  * Displays words that cycle with a smooth animation effect.
  */
 import * as React from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LazyMotion, domAnimation, m } from "framer-motion";
 
 /**
  * Props for the RotatingWord component.
@@ -20,6 +20,7 @@ interface RotatingWordProps {
 /**
  * Animated rotating word component.
  * Cycles through an array of words with a smooth fade and slide transition.
+ * Uses LazyMotion with domAnimation for reduced bundle size.
  *
  * @param props - Component configuration
  * @returns A span with animated rotating words
@@ -48,25 +49,27 @@ export default function RotatingWord({
     const word = words[i];
 
     return (
-        <span
-            className="relative inline-flex align-baseline justify-center"
-            style={{ minWidth: `${slotWidthCh}ch` }}
-            aria-live="polite"
-        >
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.span
-            key={word}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="absolute left-0 right-0 text-left"
-        >
-          {word}
-        </motion.span>
-      </AnimatePresence>
+        <LazyMotion features={domAnimation} strict>
+            <span
+                className="relative inline-flex align-baseline justify-center"
+                style={{ minWidth: `${slotWidthCh}ch` }}
+                aria-live="polite"
+            >
+          <AnimatePresence mode="popLayout" initial={false}>
+            <m.span
+                key={word}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="absolute left-0 right-0 text-left"
+            >
+              {word}
+            </m.span>
+          </AnimatePresence>
 
-            <span className="invisible text-nowrap">{words.reduce((a, b) => (a.length > b.length ? a : b), "")}</span>
-    </span>
+                <span className="invisible text-nowrap">{words.reduce((a, b) => (a.length > b.length ? a : b), "")}</span>
+        </span>
+        </LazyMotion>
     );
 }
