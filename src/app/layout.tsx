@@ -30,7 +30,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
     metadataBase: new URL("https://juliandelgado.com.au"),
     title: {
-        default: "Julian Delgado | Web Development & Software Solutions for Australian Businesses",
+        default: "Custom Web Development for Australian Businesses | Julian Delgado",
         template: "%s | Julian Delgado"
     },
     description:
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Julian Delgado | Web Development & Software Solutions for Australian Businesses",
         description:
-            "Custom websites, web apps, and MVPs for Australian service businesses. Based in Toowoomba, QLD — working with clients Australia-wide.",
+            "Full-stack web developer based in Toowoomba, QLD, building high-performance websites, web apps & MVPs for service businesses across Australia. Get a premium digital product that loads fast, ranks high, and converts visitors into clients.",
         type: "website",
         url: "https://juliandelgado.com.au",
         siteName: "Julian Delgado",
@@ -93,7 +93,7 @@ export default function RootLayout({
     <html lang="en-AU">
       <head>
         <StructuredData />
-          <title>Julian Delgado</title>
+          <title>Custom Web Development for Australian Businesses | Julian Delgado</title>
           {/* Preload the LCP hero image for faster discovery */}
           <link
               rel="preload"
@@ -101,6 +101,11 @@ export default function RootLayout({
               as="image"
               type="image/webp"
               fetchPriority="high"
+          />
+          <link
+              rel="preconnect"
+              href="https://images.unsplash.com"
+              crossOrigin=""
           />
       </head>
       <body

@@ -106,7 +106,7 @@ export default function ProjectCard({
                 <div className="absolute inset-0">
                     <Image
                         src={project.image}
-                        alt=""
+                        alt={`${project.title} - ${project.description} case study screenshot`}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px"
                         className="object-cover"
