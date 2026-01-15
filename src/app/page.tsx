@@ -3,6 +3,7 @@ import Hero from "@/components/sections/Hero/Hero";
 import {Work} from "@/components/sections/Work/Work";
 import {SkipLink} from "@/components/ui/skip-link";
 import dynamic from "next/dynamic";
+import {FAQSchema} from "@/components/seo/FAQSchema";
 
 export default function Home() {
     // Dynamically import below-the-fold components to reduce initial JS bundle
@@ -41,6 +42,7 @@ export default function Home() {
             <SkipLink/>
             <Header/>
             <main id="main-content">
+                <FAQSchema />
                 <Hero/>
                 <Work/>
                 <Services/>

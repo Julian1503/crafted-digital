@@ -81,11 +81,11 @@ export function Header() {
         return () => document.removeEventListener("keydown", handleKeyDown);
     }, [mobileMenuOpen]);
 
-    // Focus first menu item when menu opens
+    // Focus first menu item when a menu opens
     React.useEffect(() => {
         if (mobileMenuOpen && mobileMenuRef.current) {
-            const firstButton = mobileMenuRef.current.querySelector("button");
-            firstButton?.focus();
+            const firstItem = mobileMenuRef.current.querySelector<HTMLElement>("a, button");
+            firstItem?.focus();
         }
     }, [mobileMenuOpen]);
 
@@ -139,12 +139,7 @@ export function Header() {
         router.push(`/?section=${encodeURIComponent(id)}`);
     };
 
-    const navigateToRoute = (href: string) => {
-        setMobileMenuOpen(false);
-        router.push(href);
-    };
-
-        React.useEffect(() => {
+    React.useEffect(() => {
         if (!isHome) return;
 
         const url = new URL(window.location.href);
@@ -197,16 +192,21 @@ export function Header() {
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex items-center gap-7" aria-label="Main navigation">
-                    {NAV_ITEMS.map((item) => {
+                    {NAV_ITEMS.map((item : NavItem) => {
                         const active = isItemActive(item);
-
                         // Section items: we avoid hash usage
                         if (item.type === "section") {
+                            const sectionHref = `/#${item.id}`;
                             return (
-                                <button
+                                <a
                                     key={item.id}
-                                    onClick={() => navigateToSection(item.id)}
-                                    className={cn(
+                                    href={sectionHref}
+                                    onClick={(event) => {
+                                        if (isHome) {
+                                            event.preventDefault();
+                                            navigateToSection(item.id);
+                                        }
+                                    }}                                    className={cn(
                                         "text-sm font-medium transition-colors hover:text-secondary relative",
                                         active ? "text-secondary" : "text-muted-foreground"
                                     )}
@@ -216,15 +216,16 @@ export function Header() {
                                     {active && (
                                         <span className="absolute -bottom-2 left-0 right-0 h-0.5 bg-secondary rounded-full" aria-hidden="true" />
                                     )}
-                                </button>
+                                </a>
                             );
                         }
 
                         // Route items: normal navigation
                         return (
-                            <button
+                            <Link
                                 key={item.href}
-                                onClick={() => navigateToRoute(item.href)}
+                                href={item.href}
+                                onClick={() => setMobileMenuOpen(false)}
                                 className={cn(
                                     "text-sm font-medium transition-colors hover:text-secondary relative",
                                     active ? "text-secondary" : "text-muted-foreground"
@@ -232,7 +233,7 @@ export function Header() {
                                 aria-current={active ? "page" : undefined}
                             >
                                 {item.name}
-                            </button>
+                            </Link>
                         );
                     })}
                 </nav>
@@ -268,27 +269,47 @@ export function Header() {
                     id="mobile-menu"
                     role="menu"
                     aria-label="Mobile navigation"
-                    className="absolute top-full left-0 right-0 bg-background border-b border-border p-4 md:hidden flex flex-col gap-3 shadow-xl animate-in slide-in-from-top-5"
-                >                    {NAV_ITEMS.map((item) => {
+                    className="absolute top-full left-0 right-0 bg-background border-b border-border p-4 md:hidden flex flex-col gap-3 shadow-xl animate-in slide-in-from-top-5">
+                    {NAV_ITEMS.map((item) => {
                         const active = isItemActive(item);
+                        if (item.type === "section") {
+                            const sectionHref = `/#${item.id}`;
+                            return (
+                                <a
+                                    key={item.id}
+                                    role="menuitem"
+                                    href={sectionHref}
+                                    onClick={(event) => {
+                                        if (isHome) {
+                                            event.preventDefault();
+                                            navigateToSection(item.id);
+                                        }
+                                    }}
+                                    className={cn(
+                                        "text-left text-lg font-medium py-2 border-b border-border/50 last:border-0",
+                                        active ? "text-secondary" : "text-foreground"
+                                    )}
+                                    aria-current={active ? "true" : undefined}
+                                >
+                                    {item.name}
+                                </a>
+                            );
+                        }
 
                         return (
-                            <button
-                                key={item.type === "section" ? item.id : item.href}
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={() => setMobileMenuOpen(false)}
                                 role="menuitem"
-                                onClick={() =>
-                                    item.type === "section"
-                                        ? navigateToSection(item.id)
-                                        : navigateToRoute(item.href)
-                                }
+                                aria-current={active ? "page" : undefined}
                                 className={cn(
                                     "text-left text-lg font-medium py-2 border-b border-border/50 last:border-0",
                                     active ? "text-secondary" : "text-foreground"
                                 )}
-                                aria-current={active ? (item.type === "route" ? "page" : "true") : undefined}
                             >
                                 {item.name}
-                            </button>
+                            </Link>
                         );
                     })}
 

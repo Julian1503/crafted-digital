@@ -90,7 +90,7 @@ export default function HeroVisual() {
                         This replaces the CSS background-image approach for better browser preload scanning */}
                     <Image
                         src="/hero-poster.webp"
-                        alt=""
+                        alt="Software Engineer, web developer, presenting software solution in Toowoomba"
                         fill
                         sizes="(max-width: 768px) 100vw, 680px"
                         className={`object-cover transition-opacity duration-500 ${

@@ -64,10 +64,6 @@ export function Footer() {
         router.push(`/?section=${encodeURIComponent(id)}`);
     };
 
-    const navigateToRoute = (href: string) => {
-        router.push(href);
-    };
-
     return (
         <footer className="bg-background py-12 border-t border-border" role="contentinfo">
             <div className="container mx-auto px-4 md:px-6">
@@ -101,27 +97,36 @@ export function Footer() {
 
                     {/* Links (same logic as header: no hashes) */}
                     <nav className="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-3 text-sm font-medium text-muted-foreground" aria-label="Footer navigation">
-                        {FOOTER_LINKS.map((item) =>
-                            item.type === "section" ? (
-                                <button
-                                    key={item.id}
-                                    type="button"
-                                    onClick={() => navigateToSection(item.id)}
-                                    className="hover:text-foreground transition-colors"
-                                >
-                                    {item.label}
-                                </button>
-                            ) : (
-                                <button
+                        {FOOTER_LINKS.map((item) => {
+                            if (item.type === "section") {
+                                const sectionHref = `/#${item.id}`;
+                                return (
+                                    <a
+                                        key={item.id}
+                                        href={sectionHref}
+                                        onClick={(event) => {
+                                            if (isHome) {
+                                                event.preventDefault();
+                                                navigateToSection(item.id);
+                                            }
+                                        }}
+                                        className="hover:text-foreground transition-colors"
+                                    >
+                                        {item.label}
+                                    </a>
+                                );
+                            }
+
+                            return (
+                                <Link
                                     key={item.href}
-                                    type="button"
-                                    onClick={() => navigateToRoute(item.href)}
+                                    href={item.href}
                                     className="hover:text-foreground transition-colors"
                                 >
                                     {item.label}
-                                </button>
-                            )
-                        )}
+                            </Link>
+                            );
+                        })}
                     </nav>
 
                     {/* Socials (use real URLs, open in new tab) */}

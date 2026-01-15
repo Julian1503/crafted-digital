@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Calendar, Clock, User } from "lucide-react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import {ReactNode} from "react";
 
 /**
  * Blog post data structure.
@@ -381,6 +382,87 @@ export default async function BlogPostPage({
     const currentIndex = blogPosts.findIndex((p) => p.slug === slug);
     const prevPost = currentIndex > 0 ? blogPosts[currentIndex - 1] : null;
     const nextPost = currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null;
+    const canonicalUrl = `https://juliandelgado.com.au/blog/${post.slug}`;
+    const articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: post.title,
+        description: post.excerpt,
+        datePublished: post.publishedAt,
+        author: {
+            "@type": "Person",
+            name: post.author,
+        },
+        publisher: {
+            "@type": "Person",
+            name: "Julian Delgado",
+            url: "https://juliandelgado.com.au",
+        },
+        mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": canonicalUrl,
+        },
+    };
+
+    const renderContent = () => {
+        const elements: ReactNode[] = [];
+        let listItems: string[] = [];
+        let listStartIndex = 0;
+
+        const flushList = (keyIndex: number) => {
+            if (!listItems.length) return;
+            elements.push(
+                <ul
+                    key={`list-${keyIndex}`}
+                    className="list-disc pl-6 mb-4 text-muted-foreground"
+                >
+                    {listItems.map((item, itemIndex) => (
+                        <li key={`list-${keyIndex}-item-${itemIndex}`}>{item}</li>
+                    ))}
+                </ul>
+            );
+            listItems = [];
+        };
+
+        post.content.forEach((paragraph, index) => {
+            if (paragraph.startsWith("- ")) {
+                if (!listItems.length) {
+                    listStartIndex = index;
+                }
+                listItems.push(paragraph.replace("- ", ""));
+                return;
+            }
+
+            flushList(listStartIndex);
+
+            if (paragraph.startsWith("## ")) {
+                elements.push(
+                    <h2 key={index} className="text-2xl font-bold mt-10 mb-4 text-foreground">
+                        {paragraph.replace("## ", "")}
+                    </h2>
+                );
+                return;
+            }
+
+            if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
+                elements.push(
+                    <h3 key={index} className="text-xl font-semibold mt-6 mb-2 text-foreground">
+                        {paragraph.replace(/\*\*/g, "")}
+                    </h3>
+                );
+                return;
+            }
+
+            elements.push(
+                <p key={index} className="text-muted-foreground leading-relaxed mb-4">
+                    {paragraph}
+                </p>
+            );
+        });
+
+        flushList(listStartIndex);
+        return elements;
+    };
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-secondary/30">
@@ -433,36 +515,13 @@ export default async function BlogPostPage({
 
                             {/* Article content */}
                             <div className="prose prose-lg max-w-none">
-                                {post.content.map((paragraph, index) => {
-                                    if (paragraph.startsWith("## ")) {
-                                        return (
-                                            <h2 key={index} className="text-2xl font-bold mt-10 mb-4 text-foreground">
-                                                {paragraph.replace("## ", "")}
-                                            </h2>
-                                        );
-                                    }
-                                    if (paragraph.startsWith("**") && paragraph.endsWith("**")) {
-                                        return (
-                                            <p key={index} className="font-semibold text-foreground mb-2">
-                                                {paragraph.replace(/\*\*/g, "")}
-                                            </p>
-                                        );
-                                    }
-                                    if (paragraph.startsWith("- ")) {
-                                        return (
-                                            <div key={index} className="flex items-start gap-2 text-muted-foreground mb-2 pl-4">
-                                                <span className="text-secondary mt-1.5">•</span>
-                                                <span>{paragraph.replace("- ", "")}</span>
-                                            </div>
-                                        );
-                                    }
-                                    return (
-                                        <p key={index} className="text-muted-foreground leading-relaxed mb-4">
-                                            {paragraph}
-                                        </p>
-                                    );
-                                })}
+                                {renderContent()}
                             </div>
+
+                            <script
+                                type="application/ld+json"
+                                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+                            />
 
                             {/* Related content */}
                             <div className="mt-12 pt-8 border-t border-border">
