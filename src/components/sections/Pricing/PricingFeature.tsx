@@ -25,7 +25,7 @@ export default function PricingFeature({ features }: PricingFeatureProps) {
             {features.map((feature) => (
                 <li key={feature} className="flex items-start gap-3 text-sm">
                     <Check className="h-5 w-5 text-secondary shrink-0"/>
-                    <span className="text-background/80">{feature}</span>
+                    <span className="text-section-muted">{feature}</span>
                 </li>
             ))}
         </ul>
