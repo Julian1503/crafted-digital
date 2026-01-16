@@ -62,7 +62,7 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
                     </div>
                 </div>
 
-                <p className="text-background/70">{plan.description}</p>
+                <p className="text-section-muted">{plan.description}</p>
 
                 <div
                     className="mt-3 inline-flex items-center gap-2 rounded-full border border-section-border bg-section-pill px-3 py-1 text-xs text-section-muted">
