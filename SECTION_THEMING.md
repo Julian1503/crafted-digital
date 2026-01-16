@@ -8,7 +8,7 @@ This document describes the section-level theming system that allows individual 
 
 - **Single class toggle**: Change theme by adding `.section-theme-light` or `.section-theme-dark` to a section
 - **Semantic tokens**: Use consistent naming (bg, fg, muted, card, border, pill) instead of raw colors
-- **Independent of global theme**: Works regardless of the overall page theme setting
+- **Independent of global theme**: Works regardless of the overall page theme setting.
 - **Tailwind v4 compatible**: Uses CSS variables with HSL values and `@theme inline` 
 
 ## CSS Variables

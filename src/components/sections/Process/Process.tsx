@@ -33,7 +33,7 @@ export function Process() {
                 {/* Steps */}
                 <div ref={ref} className="relative grid gap-6 md:grid-cols-4">
                     {/* Connector line (desktop) */}
-                    <div aria-hidden="true"  className="pointer-events-none hidden md:block absolute left-6 right-6 top-[28px] h-px bg-section-border" />
+                    <div aria-hidden="true" className="pointer-events-none hidden md:block absolute left-6 right-6 top-[28px] h-px bg-section-border" />
 
                     {steps.map((step, index) => (
                         <article
