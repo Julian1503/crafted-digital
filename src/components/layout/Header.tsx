@@ -224,6 +224,7 @@ export function Header() {
                         return (
                             <Link
                                 key={item.href}
+                                role="listitem"
                                 href={item.href}
                                 onClick={() => setMobileMenuOpen(false)}
                                 className={cn(
