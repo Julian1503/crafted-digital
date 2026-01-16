@@ -46,7 +46,6 @@ export default function Home() {
                 <Hero/>
                 <Work/>
                 <Services/>
-                <TechStack/>
                 <Process/>
                 <Pricing/>
                 <FAQ/>
