@@ -80,7 +80,7 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
                 type="button"
                 variant={plan.featured ? "default" : "outline"}
                 className={cn(
-                    "w-full rounded-full hover:bg-section-pill",
+                    "w-full rounded-full",
                     !plan.featured &&
                     "text-section-fg border-section-border bg-transparent hover:bg-section-pill",
                     plan.featured && "shadow-lg shadow-primary/15"

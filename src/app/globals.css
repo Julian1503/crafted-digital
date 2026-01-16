@@ -107,6 +107,15 @@
     --ring: 222 47% 11%;
 
     --radius: 0.5rem;
+
+    /* Default section theme tokens (defaults to light theme) */
+    /* These provide fallbacks when no section theme class is applied */
+    --section-bg: 210 20% 98%;           /* Very light background */
+    --section-fg: 222 47% 11%;           /* Deep navy text */
+    --section-muted: 215 20% 35%;        /* Muted text for secondary content */
+    --section-card: 0 0% 100%;           /* Pure white cards */
+    --section-border: 214 32% 91% / 0.7; /* Subtle borders with opacity */
+    --section-pill: 210 40% 96.1% / 0.2; /* Light pill/badge backgrounds */
 }
 
 .dark {
