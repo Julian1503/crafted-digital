@@ -24,6 +24,14 @@
     --color-input: hsl(var(--input));
     --color-ring: hsl(var(--ring));
 
+    /* Section-level theme tokens */
+    --color-section-bg: hsl(var(--section-bg));
+    --color-section-fg: hsl(var(--section-fg));
+    --color-section-muted: hsl(var(--section-muted));
+    --color-section-card: hsl(var(--section-card));
+    --color-section-border: hsl(var(--section-border));
+    --color-section-pill: hsl(var(--section-pill));
+
     --font-sans: 'Fira Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --font-serif: 'DM Serif Text', Georgia, 'Times New Roman', Times, serif;
 
@@ -130,6 +138,28 @@
     --border: 217 32% 17%;
     --input: 217 32% 17%;
     --ring: 212.7 26.8% 83.9%;
+}
+
+/* Section-level theming system */
+/* These classes can be applied to any section to switch its theme independently */
+.section-theme-light {
+    /* Light section theme - uses standard light colors */
+    --section-bg: 210 20% 98%;           /* Very light background */
+    --section-fg: 222 47% 11%;           /* Deep navy text */
+    --section-muted: 215 20% 35%;        /* Muted text for secondary content */
+    --section-card: 0 0% 100%;           /* Pure white cards */
+    --section-border: 214 32% 91% / 0.7; /* Subtle borders with opacity */
+    --section-pill: 210 40% 96.1% / 0.2; /* Light pill/badge backgrounds */
+}
+
+.section-theme-dark {
+    /* Dark section theme - inverted colors for dark sections */
+    --section-bg: 222 47% 11%;           /* Deep navy background */
+    --section-fg: 210 40% 98%;           /* Light text */
+    --section-muted: 210 40% 98% / 0.7;  /* Muted light text */
+    --section-card: 210 40% 98% / 0.05;  /* Subtle card surfaces */
+    --section-border: 0 0% 100% / 0.1;   /* Subtle white borders */
+    --section-pill: 210 40% 98% / 0.05;  /* Light pill/badge backgrounds */
 }
 
 @keyframes workFloat {

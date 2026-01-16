@@ -33,7 +33,7 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
             key={plan.name}
             className={cn(
                 "relative flex flex-col p-8 rounded-3xl border transition-all duration-300 reveal-on-scroll",
-                "bg-background/5 border-white/10 ",
+                "bg-section-card border-section-border ",
                 plan.featured &&
                 "border-secondary shadow-2xl shadow-secondary/10 -translate-y-1 z-10",
                 isVisible && "is-visible"
@@ -48,16 +48,16 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
             )}
 
             <div className="mb-6 space-y-2">
-                <h3 className="text-2xl font-semibold text-background">
+                <h3 className="text-2xl font-semibold text-section-fg">
                     {plan.name}
                 </h3>
-                <p className="text-sm text-background/70">{plan.tagline}</p>
+                <p className="text-sm text-section-muted">{plan.tagline}</p>
 
                 <div className="pt-2">
-                    <p className="text-xs uppercase tracking-wider text-background/70">
+                    <p className="text-xs uppercase tracking-wider text-section-muted">
                         Starting at
                     </p>
-                    <div className="text-4xl font-semibold text-background">
+                    <div className="text-4xl font-semibold text-section-fg">
                         {plan.price}
                     </div>
                 </div>
@@ -65,10 +65,10 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
                 <p className="text-background/70">{plan.description}</p>
 
                 <div
-                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/5 px-3 py-1 text-xs text-background/70">
+                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-section-border bg-section-pill px-3 py-1 text-xs text-section-muted">
                     <Timer className="h-3.5 w-3.5" aria-hidden="true"/>
                     Typical timeline:{" "}
-                    <span className="font-medium text-background">
+                    <span className="font-medium text-section-fg">
                     {plan.timeline}
                   </span>
                 </div>
@@ -80,9 +80,9 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
                 type="button"
                 variant={plan.featured ? "default" : "outline"}
                 className={cn(
-                    "w-full rounded-full hover:bg-background/10",
+                    "w-full rounded-full hover:bg-section-pill",
                     !plan.featured &&
-                    "text-background border-white/20 bg-transparent hover:bg-background/10",
+                    "text-section-fg border-section-border bg-transparent hover:bg-section-pill",
                     plan.featured && "shadow-lg shadow-primary/15"
                 )}
                 onClick={() => scrollToId("contact")}
@@ -90,7 +90,7 @@ export default function PricingCard({ plan, isVisible, index }: PricingCardProps
                 {plan.cta}
             </Button>
 
-            <p className="mt-3 text-center text-xs text-background/70">
+            <p className="mt-3 text-center text-xs text-section-muted">
                 No commitment · 20 min call
             </p>
         </div>
