@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Serif_Text, Fira_Sans } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from '@next/third-parties/google'
 import {Providers} from "@/components/ui/providers";
 import {StructuredData} from "@/components/seo/StructuredData";
 import React from "react";
@@ -89,30 +90,32 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en-AU">
-      <head>
-        <StructuredData />
-          <title>Custom Web Development for Australian Businesses | Julian Delgado</title>
-          {/* Preload the LCP hero image for faster discovery */}
-          <link
-              rel="preload"
-              href="/hero-poster.webp"
-              as="image"
-              type="image/webp"
-              fetchPriority="high"
-          />
-          <link
-              rel="preconnect"
-              href="https://images.unsplash.com"
-              crossOrigin=""
-          />
-      </head>
-      <body
-        className={`${dmSerif.variable} ${firaSans.variable} antialiased`}
-      >
-      <Providers>{children}</Providers>
-      </body>
-    </html>
-  );
+    const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || '';
+    return (
+        <html lang="en-AU">
+            <head>
+                <StructuredData />
+                <title>Custom Web Development for Australian Businesses | Julian Delgado</title>
+                {/* Preload the LCP hero image for faster discovery */}
+                <link
+                    rel="preload"
+                    href="/hero-poster.webp"
+                    as="image"
+                    type="image/webp"
+                    fetchPriority="high"
+                />
+                <link
+                    rel="preconnect"
+                    href="https://images.unsplash.com"
+                    crossOrigin=""
+                />
+            </head>
+            <body
+                className={`${dmSerif.variable} ${firaSans.variable} antialiased`}
+            >
+                <Providers>{children}</Providers>
+                <GoogleAnalytics gaId={googleAnalyticsId} />
+            </body>
+        </html>
+    );
 }
