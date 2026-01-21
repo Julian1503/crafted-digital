@@ -477,7 +477,7 @@ export default async function BlogPostPage({
                                 href="/blog"
                                 className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8"
                             >
-                                <ArrowLeft className="h-4 w-4" />
+                                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                                 All articles
                             </Link>
 
@@ -486,7 +486,7 @@ export default async function BlogPostPage({
                                     {post.category}
                                 </span>
                                 <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                                    <Clock className="h-4 w-4" />
+                                    <Clock className="h-4 w-4" aria-hidden="true" />
                                     {post.readTime}
                                 </span>
                             </div>
@@ -502,11 +502,11 @@ export default async function BlogPostPage({
                             {/* Author and date */}
                             <div className="flex items-center gap-6 pb-8 border-b border-border mb-8">
                                 <div className="flex items-center gap-2">
-                                    <User className="h-5 w-5 text-muted-foreground" />
+                                    <User className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                                     <span className="font-medium">{post.author}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-muted-foreground">
-                                    <Calendar className="h-5 w-5" />
+                                    <Calendar className="h-5 w-5" aria-hidden="true"/>
                                     <time dateTime={post.publishedAt}>
                                         {formatDate(post.publishedAt)}
                                     </time>

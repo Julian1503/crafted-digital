@@ -131,24 +131,26 @@ export function Footer() {
 
                     {/* Socials (use real URLs, open in new tab) */}
                     <div className="flex gap-4" role="list" aria-label="Social media links">
-                        <a
+                        <Link
                             href="https://www.linkedin.com/in/julianedelgado/"
+                            role="listitem"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-muted-foreground hover:text-secondary transition-colors"
                             aria-label="LinkedIn (opens in new tab)"
                         >
                             <FaLinkedin size={20} aria-hidden="true" />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             href="https://www.instagram.com/crafteddigital_/"
+                            role="listitem"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-muted-foreground hover:text-secondary transition-colors"
                             aria-label="Instagram (opens in new tab)"
                         >
                             <FaInstagram size={20} aria-hidden="true" />
-                        </a>
+                        </Link>
                     </div>
                 </div>
 

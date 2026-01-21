@@ -70,6 +70,7 @@ export default function TechStack() {
                     <div className="mt-4 md:mt-0 flex flex-wrap gap-2" role="list" aria-label="Technologies">
                         {TECH.map((t) => (
                             <span
+                                role="listitem"
                                 key={t.name}
                                 className="rounded-full border border-primary-foreground/15 bg-primary-foreground/5 px-3 py-1 text-xs font-medium text-primary-foreground/80"
                             >
