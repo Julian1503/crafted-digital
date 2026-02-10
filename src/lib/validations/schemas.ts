@@ -234,18 +234,23 @@ export const planUpdateSchema = z.object({
 
 // ─── COUPONS ────────────────────────────────────────────────────────
 
-export const couponCreateSchema = z.object({
-  code: z
-    .string()
-    .min(1, "Coupon code is required")
-    .max(50)
-    .regex(/^[A-Z0-9_-]+$/, "Code must be uppercase alphanumeric with hyphens/underscores"),
-  type: z.enum(["percent", "fixed"]).default("percent"),
-  amount: z.number().min(0, "Amount must be non-negative"),
-  maxRedemptions: z.number().int().min(1).optional(),
-  expiresAt: z.coerce.date().optional(),
-  active: z.boolean().default(true),
-});
+export const couponCreateSchema = z
+  .object({
+    code: z
+      .string()
+      .min(1, "Coupon code is required")
+      .max(50)
+      .regex(/^[A-Z0-9_-]+$/, "Code must be uppercase alphanumeric with hyphens/underscores"),
+    type: z.enum(["percent", "fixed"]).default("percent"),
+    amount: z.number().min(0, "Amount must be non-negative"),
+    maxRedemptions: z.number().int().min(1).optional(),
+    expiresAt: z.coerce.date().optional(),
+    active: z.boolean().default(true),
+  })
+  .refine((data) => !(data.type === "percent" && data.amount > 100), {
+    message: "Percentage discount cannot exceed 100",
+    path: ["amount"],
+  });
 
 export const couponUpdateSchema = z.object({
   code: z
