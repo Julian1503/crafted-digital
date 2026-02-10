@@ -1,0 +1,353 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── AUTH / RBAC ─────────────────────────────────────────────────────
+
+model User {
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  hashedPassword String?
+  image          String?
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts     Account[]
+  sessions     Session[]
+  roleAssigns  UserRole[]
+  blogPosts    BlogPost[]
+  caseStudies  CaseStudy[]
+  mediaAssets  MediaAsset[]
+  auditLogs    AuditLog[]
+  leadNotes    LeadNote[]
+  bookingNotes BookingNote[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  permissions RolePermission[]
+  userRoles   UserRole[]
+}
+
+model Permission {
+  id     String @id @default(cuid())
+  module String // e.g., "content", "crm", "billing", "system"
+  action String // e.g., "read", "create", "update", "delete"
+
+  rolePermissions RolePermission[]
+
+  @@unique([module, action])
+}
+
+model RolePermission {
+  id           String @id @default(cuid())
+  roleId       String
+  permissionId String
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+// ─── AUDIT LOGGING ───────────────────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String?
+  metadata  String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+  @@index([actorId])
+  @@index([createdAt])
+}
+
+// ─── CONTENT: BLOG ───────────────────────────────────────────────────
+
+model BlogPost {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?
+  content     String
+  coverImage  String?
+  status      String    @default("draft")
+  publishedAt DateTime?
+  sortOrder   Int       @default(0)
+  tags        String?
+  categories  String?
+  metaTitle   String?
+  metaDesc    String?
+  ogImage     String?
+  authorId    String?
+  deleted     Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([slug])
+  @@index([sortOrder])
+}
+
+// ─── CONTENT: CASE STUDIES ───────────────────────────────────────────
+
+model CaseStudy {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  summary     String?
+  body        String
+  coverImage  String?
+  gallery     String?
+  status      String    @default("draft")
+  publishedAt DateTime?
+  featured    Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  metaTitle   String?
+  metaDesc    String?
+  ogImage     String?
+  authorId    String?
+  deleted     Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([slug])
+  @@index([sortOrder])
+}
+
+// ─── CONTENT BLOCKS ──────────────────────────────────────────────────
+
+model ContentBlock {
+  id        String   @id @default(cuid())
+  section   String
+  title     String?
+  content   String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([section])
+  @@index([sortOrder])
+}
+
+// ─── MEDIA LIBRARY ───────────────────────────────────────────────────
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  url       String
+  filename  String
+  mimeType  String
+  size      Int      @default(0)
+  width     Int?
+  height    Int?
+  alt       String?
+  title     String?
+  tags      String?
+  folder    String   @default("general")
+  createdBy String?
+  deleted   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creator User? @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([folder])
+  @@index([mimeType])
+}
+
+// ─── CRM ─────────────────────────────────────────────────────────────
+
+model Lead {
+  id        String   @id @default(cuid())
+  source    String   @default("website")
+  name      String
+  email     String
+  phone     String?
+  message   String?
+  status    String   @default("new")
+  tags      String?
+  deleted   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notes LeadNote[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model LeadNote {
+  id        String   @id @default(cuid())
+  leadId    String
+  authorId  String?
+  content   String
+  createdAt DateTime @default(now())
+
+  lead   Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+}
+
+model Booking {
+  id            String   @id @default(cuid())
+  customerName  String
+  customerEmail String
+  customerPhone String?
+  date          DateTime
+  duration      Int?
+  status        String   @default("pending")
+  notes         String?
+  deleted       Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  bookingNotes BookingNote[]
+
+  @@index([status])
+  @@index([date])
+}
+
+model BookingNote {
+  id        String   @id @default(cuid())
+  bookingId String
+  authorId  String?
+  content   String
+  createdAt DateTime @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  author  User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+}
+
+// ─── BILLING ─────────────────────────────────────────────────────────
+
+model Plan {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float    @default(0)
+  currency    String   @default("AUD")
+  interval    String   @default("one-time")
+  features    String?
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  highlighted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Coupon {
+  id             String    @id @default(cuid())
+  code           String    @unique
+  type           String    @default("percent")
+  amount         Float     @default(0)
+  maxRedemptions Int?
+  timesRedeemed  Int       @default(0)
+  expiresAt      DateTime?
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([code])
+}
+
+// ─── INTEGRATIONS ────────────────────────────────────────────────────
+
+model Integration {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  enabled   Boolean   @default(false)
+  config    String?
+  lastSync  DateTime?
+  status    String    @default("disconnected")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// ─── SETTINGS ────────────────────────────────────────────────────────
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  group String @default("general")
+
+  @@index([group])
+}
