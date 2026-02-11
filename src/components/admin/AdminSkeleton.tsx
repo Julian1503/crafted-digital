@@ -83,17 +83,3 @@ export function FormSkeleton({
     </div>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/*  Inline keyframes                                                  */
-/* ------------------------------------------------------------------ */
-
-const shimmerStyle = `
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}`;
-
-export function ShimmerStyles() {
-  return <style>{shimmerStyle}</style>;
-}

@@ -39,7 +39,7 @@ export async function updateRole(
   data: { name?: string; description?: string; permissionIds?: string[] },
   actorId?: string
 ) {
-  const role = await prisma.$transaction(async (tx: typeof prisma) => {
+  const role = await prisma.$transaction(async (tx) => {
     if (data.permissionIds) {
       await tx.rolePermission.deleteMany({ where: { roleId: id } });
       if (data.permissionIds.length > 0) {
@@ -73,7 +73,7 @@ export async function getPermissions() {
 }
 
 export async function assignRolesToUser(userId: string, roleIds: string[], actorId?: string) {
-  await prisma.$transaction(async (tx: typeof prisma) => {
+  await prisma.$transaction(async (tx) => {
     await tx.userRole.deleteMany({ where: { userId } });
     if (roleIds.length > 0) {
       await tx.userRole.createMany({
