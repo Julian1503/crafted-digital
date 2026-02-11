@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   Image,
   Upload,
@@ -155,15 +155,6 @@ export default function MediaPage() {
   const [uploadFiles, setUploadFiles] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<Record<string, { status: "pending" | "uploading" | "done" | "error"; progress: number; url?: string }>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Memoize object URLs and revoke them on cleanup
-  const previewUrls = useMemo(
-    () => uploadFiles.map((f) => URL.createObjectURL(f)),
-    [uploadFiles]
-  );
-  useEffect(() => {
-    return () => { previewUrls.forEach((url) => URL.revokeObjectURL(url)); };
-  }, [previewUrls]);
 
   // Edit dialog state
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -635,7 +626,7 @@ export default function MediaPage() {
                       className="flex items-center gap-3 rounded-md border p-2"
                     >
                       <img
-                        src={previewUrls[i]}
+                        src={URL.createObjectURL(file)}
                         alt={file.name}
                         className="size-10 rounded object-cover"
                       />
