@@ -95,7 +95,7 @@ export async function updateUser(
   if (data.active !== undefined) updateData.active = data.active;
   if (data.password) updateData.hashedPassword = await bcrypt.hash(data.password, 10);
 
-  const user = await prisma.$transaction(async (tx: typeof prisma) => {
+  const user = await prisma.$transaction(async (tx) => {
     if (data.roleIds) {
       await tx.userRole.deleteMany({ where: { userId: id } });
       if (data.roleIds.length > 0) {

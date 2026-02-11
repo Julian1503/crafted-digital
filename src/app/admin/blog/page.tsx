@@ -953,13 +953,6 @@ export default function BlogPage() {
           </Button>
         </div>
       </Dialog>
-
-      <style>{`
-        @keyframes dialogIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
     </div>
   );
 }

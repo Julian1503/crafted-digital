@@ -535,13 +535,6 @@ export default function RolesPage() {
         description={`Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`}
         loading={deleting}
       />
-
-      <style>{`
-        @keyframes dialogIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
     </div>
   );
 }

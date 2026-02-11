@@ -837,17 +837,6 @@ export default function LeadsPage() {
           </div>
         </div>
       </Dialog>
-
-      <style>{`
-        @keyframes dialogIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to   { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideIn {
-          from { transform: translateX(100%); }
-          to   { transform: translateX(0); }
-        }
-      `}</style>
     </div>
   );
 }

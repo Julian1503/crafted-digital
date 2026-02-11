@@ -1,8 +1,7 @@
-// proxy.ts
 import { auth } from "@/lib/auth/auth";
 import { NextResponse } from "next/server";
 
-export const proxy = auth((req) => {
+export default auth((req) => {
   const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
   const isApiAdminRoute = req.nextUrl.pathname.startsWith("/api/admin");
   const isLoginPage = req.nextUrl.pathname === "/login";
