@@ -233,3 +233,44 @@
         text-wrap: balance;
     }
 }
+
+/* ─── Admin animations ───────────────────────────────────────────── */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out both;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out both;
+}
+
+.animate-shimmer {
+    background: linear-gradient(90deg, transparent 25%, rgba(0,0,0,0.04) 50%, transparent 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes dialogIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+}
