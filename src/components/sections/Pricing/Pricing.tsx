@@ -23,36 +23,36 @@ export function Pricing() {
     return (
         <section
             id="pricing"
-            className="py-24 bg-foreground text-background overflow-hidden"
+            className="section-theme-dark py-24 bg-section-bg text-section-fg overflow-hidden"
             aria-labelledby="pricing-heading"
         >
             <div className="container mx-auto px-4 md:px-6">
                 {/* Header */}
                 <div className="mx-auto mb-14 max-w-2xl text-center">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-background/5 px-3 py-1 text-sm text-background/80 backdrop-blur">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-section-border bg-section-pill px-3 py-1 text-sm text-section-muted backdrop-blur">
                         <Sparkles className="h-4 w-4 text-secondary" aria-hidden="true" />
                         Simple packages · Custom scope if needed
                     </div>
 
-                    <h2 className="mt-5 text-4xl md:text-5xl font-semibold tracking-tight text-background">
+                    <h2 className="mt-5 text-4xl md:text-5xl font-semibold tracking-tight text-section-fg">
                         Packages that fit how teams build
                     </h2>
-                    <p className="mt-4 text-lg md:text-xl text-background/70">
+                    <p className="mt-4 text-lg md:text-xl text-section-muted">
                         Straightforward starting points. Final pricing depends on scope,
                         complexity, and timelines.
                     </p>
                 </div>
 
                 {/* “What’s included” bar */}
-                <div className="mx-auto mb-10 max-w-6xl rounded-2xl border border-white/10 bg-background/5 p-5 backdrop-blur">
+                <div className="mx-auto mb-10 max-w-6xl rounded-2xl border border-section-border bg-section-pill p-5 backdrop-blur">
                     <div className="grid gap-3 md:grid-cols-3">
                         <div className="flex items-center gap-3">
                             <ShieldCheck className="h-5 w-5 text-secondary" />
                             <div>
-                                <p className="text-sm font-medium text-background">
+                                <p className="text-sm font-medium text-section-fg">
                                     Production-ready delivery
                                 </p>
-                                <p className="text-xs text-background/70">
+                                <p className="text-xs text-section-muted">
                                     Clean code, deploy, basic monitoring
                                 </p>
                             </div>
@@ -60,10 +60,10 @@ export function Pricing() {
                         <div className="flex items-center gap-3">
                             <Timer className="h-5 w-5 text-secondary" aria-hidden="true" />
                             <div>
-                                <p className="text-sm font-medium text-background">
+                                <p className="text-sm font-medium text-section-fg">
                                     Weekly demos
                                 </p>
-                                <p className="text-xs text-background/70">
+                                <p className="text-xs text-section-muted">
                                     Fast feedback loops, no surprises
                                 </p>
                             </div>
@@ -71,8 +71,8 @@ export function Pricing() {
                         <div className="flex items-center gap-3">
                             <Sparkles className="h-5 w-5 text-secondary" aria-hidden="true" />
                             <div>
-                                <p className="text-sm font-medium text-background">UX polish</p>
-                                <p className="text-xs text-background/70">
+                                <p className="text-sm font-medium text-section-fg">UX polish</p>
+                                <p className="text-xs text-section-muted">
                                     Responsive UI, performance-first
                                 </p>
                             </div>
@@ -87,7 +87,7 @@ export function Pricing() {
                     ))}
                 </div>
 
-                <div className="mt-12 text-center text-sm text-background/70">
+                <div className="mt-12 text-center text-sm text-section-muted">
                     Not sure which package fits?{" "}
                     <button
                         type="button"
