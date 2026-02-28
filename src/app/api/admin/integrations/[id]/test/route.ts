@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { id } = await params;
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || []; // eslint-disable-line @typescript-eslint/no-explicit-any
+    const roles = session.roles || [];
     if (!checkApiAuth(roles, ["admin"]))
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

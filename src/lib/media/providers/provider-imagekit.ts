@@ -11,7 +11,7 @@ export async function uploadImageKit(input: ProviderUploadInput): Promise<Provid
     const folder = input.folder || process.env.IMAGEKIT_FOLDER || "crafted-digital";
 
     // ImageKit server SDK acepta Buffer
-    const res: any = await imagekit.upload({
+    const res = await imagekit.upload({
         file: input.fileBuffer,
         fileName: input.originalName,
         folder: `/${folder}`,

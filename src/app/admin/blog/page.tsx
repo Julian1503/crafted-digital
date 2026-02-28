@@ -42,7 +42,7 @@ interface BlogPost {
   author: string | null;
   sortOrder: number;
   metaTitle: string | null;
-  metaDescription: string | null;
+  metaDesc: string | null;
   ogImage: string | null;
   createdAt: string;
   updatedAt: string;
@@ -187,7 +187,7 @@ export default function BlogPage() {
   const [formTags, setFormTags] = useState("");
   const [formCategories, setFormCategories] = useState("");
   const [formMetaTitle, setFormMetaTitle] = useState("");
-  const [formMetaDescription, setFormMetaDescription] = useState("");
+  const [formmetaDesc, setFormmetaDesc] = useState("");
   const [formOgImage, setFormOgImage] = useState("");
   const [seoOpen, setSeoOpen] = useState(false);
 
@@ -252,7 +252,7 @@ export default function BlogPage() {
     setFormTags(post?.tags ?? "");
     setFormCategories(post?.categories ?? "");
     setFormMetaTitle(post?.metaTitle ?? "");
-    setFormMetaDescription(post?.metaDescription ?? "");
+    setFormmetaDesc(post?.metaDesc ?? "");
     setFormOgImage(post?.ogImage ?? "");
     setSeoOpen(false);
   };
@@ -297,7 +297,7 @@ export default function BlogPage() {
         tags: formTags || null,
         categories: formCategories || null,
         metaTitle: formMetaTitle || null,
-        metaDescription: formMetaDescription || null,
+        metaDesc: formmetaDesc || null,
         ogImage: formOgImage || null,
       };
 
@@ -365,7 +365,7 @@ export default function BlogPage() {
           categories: post.categories,
           coverImage: post.coverImage,
           metaTitle: post.metaTitle,
-          metaDescription: post.metaDescription,
+          metaDesc: post.metaDesc,
           ogImage: post.ogImage,
         }),
       });
@@ -906,8 +906,8 @@ export default function BlogPage() {
                 <textarea
                   id="post-meta-desc"
                   rows={2}
-                  value={formMetaDescription}
-                  onChange={(e) => setFormMetaDescription(e.target.value)}
+                  value={formmetaDesc}
+                  onChange={(e) => setFormmetaDesc(e.target.value)}
                   className="w-full rounded-md border bg-background px-3 py-2 text-sm"
                   placeholder="SEO description"
                 />

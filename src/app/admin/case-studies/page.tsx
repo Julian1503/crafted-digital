@@ -41,7 +41,7 @@ interface CaseStudy {
   gallery: string | null;
   sortOrder: number;
   metaTitle: string | null;
-  metaDescription: string | null;
+  metaDesc: string | null;
   ogImage: string | null;
   createdAt: string;
   updatedAt: string;
@@ -186,7 +186,7 @@ export default function CaseStudiesPage() {
   const [formPublishedAt, setFormPublishedAt] = useState("");
   const [formFeatured, setFormFeatured] = useState(false);
   const [formMetaTitle, setFormMetaTitle] = useState("");
-  const [formMetaDescription, setFormMetaDescription] = useState("");
+  const [formmetaDesc, setFormmetaDesc] = useState("");
   const [formOgImage, setFormOgImage] = useState("");
   const [seoOpen, setSeoOpen] = useState(false);
   const [coverAsset, setCoverAsset] = useState<MediaAsset[]>([]);
@@ -290,7 +290,7 @@ export default function CaseStudiesPage() {
     );
     setFormFeatured(study?.featured ?? false);
     setFormMetaTitle(study?.metaTitle ?? "");
-    setFormMetaDescription(study?.metaDescription ?? "");
+    setFormmetaDesc(study?.metaDesc ?? "");
     setFormOgImage(study?.ogImage ?? "");
     const coverUrl = (study?.coverImage ?? "").trim();
     setCoverAsset(coverUrl ? [makePseudoAssetFromUrl(coverUrl)] : []);
@@ -340,7 +340,7 @@ export default function CaseStudiesPage() {
         gallery: galleryAssets.length ? galleryAssets.map(a => a.url).join(", ") : null,
         featured: formFeatured,
         metaTitle: formMetaTitle || null,
-        metaDescription: formMetaDescription || null,
+        metaDesc: formmetaDesc || null,
         ogImage: formOgImage || null,
       };
 
@@ -847,8 +847,8 @@ export default function CaseStudiesPage() {
                 <textarea
                   id="cs-meta-desc"
                   rows={2}
-                  value={formMetaDescription}
-                  onChange={(e) => setFormMetaDescription(e.target.value)}
+                  value={formmetaDesc}
+                  onChange={(e) => setFormmetaDesc(e.target.value)}
                   className="w-full rounded-md border bg-background px-3 py-2 text-sm"
                   placeholder="SEO description"
                 />
