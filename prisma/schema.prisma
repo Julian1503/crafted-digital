@@ -209,18 +209,29 @@ model ContentBlock {
 
 // ─── MEDIA LIBRARY ───────────────────────────────────────────────────
 
+enum MediaProvider {
+  cloudinary
+  imagekit
+}
+
 model MediaAsset {
-  id        String   @id @default(cuid())
-  url       String
-  filename  String
-  mimeType  String
-  size      Int      @default(0)
-  width     Int?
-  height    Int?
-  alt       String?
-  title     String?
-  tags      String?
-  folder    String   @default("general")
+  id       String  @id @default(cuid())
+  url      String
+  filename String
+  mimeType String
+  size     Int     @default(0)
+  width    Int?
+  height   Int?
+  alt      String?
+  title    String?
+  tags     String?
+  folder   String  @default("general")
+
+  provider       MediaProvider @default(cloudinary)
+  providerFileId String?
+  providerPath   String?
+  thumbnailUrl   String?
+
   createdBy String?
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -230,6 +241,8 @@ model MediaAsset {
 
   @@index([folder])
   @@index([mimeType])
+  @@index([provider])
+  @@index([providerFileId])
 }
 
 // ─── CRM ─────────────────────────────────────────────────────────────

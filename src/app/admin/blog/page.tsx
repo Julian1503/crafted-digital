@@ -155,8 +155,8 @@ export default function BlogPage() {
   const [statusFilter, setStatusFilter] = useState<
     "all" | "draft" | "published" | "scheduled"
   >("all");
-  const [sortBy, setSortBy] = useState<"created" | "updated" | "title">(
-    "created"
+  const [sortBy, setSortBy] = useState<"createdAt" | "updatedAt" | "title">(
+    "createdAt"
   );
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
@@ -536,14 +536,14 @@ export default function BlogPage() {
                 value={sortBy}
                 onChange={(e) => {
                   setSortBy(
-                    e.target.value as "created" | "updated" | "title"
+                    e.target.value as "createdAt" | "updatedAt" | "title"
                   );
                   setPage(1);
                 }}
                 className="h-9 rounded-md border bg-background px-3 text-sm"
               >
-                <option value="created">Sort: Created</option>
-                <option value="updated">Sort: Updated</option>
+                <option value="createdAt">Sort: Created</option>
+                <option value="updatedAt">Sort: Updated</option>
                 <option value="title">Sort: Title</option>
               </select>
             </div>

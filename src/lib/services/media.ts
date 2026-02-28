@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { logAudit } from "@/lib/services/audit";
+import {MediaProvider} from "@/generated/prisma/enums";
+import { normalizeFolder } from "@/lib/media/normalize-folders";
 
 interface MediaPaginationParams {
   page?: number;
@@ -44,20 +46,36 @@ export async function getMediaAsset(id: string) {
 }
 
 export async function createMediaAsset(
-  data: {
-    url: string;
-    filename: string;
-    mimeType: string;
-    size?: number;
-    width?: number;
-    height?: number;
-    alt?: string;
-    title?: string;
-    tags?: string;
-    folder?: string;
-  },
-  actorId?: string
+    data: {
+      url: string;
+      filename: string;
+      mimeType: string;
+      size?: number;
+      width?: number;
+      height?: number;
+      alt?: string;
+      title?: string;
+      tags?: string;
+      folder?: string;
+      provider?: string;
+      providerFileId?: string;
+      providerPath?: string;
+      thumbnailUrl?: string;
+    },
+    actorId?: string
 ) {
+  const folder = normalizeFolder(data.folder) || "general";
+  const provider = (data.provider ?? "cloudinary") as MediaProvider;
+
+  let createdBy: string | undefined = undefined;
+  if (actorId) {
+    const exists = await prisma.user.findUnique({
+      where: { id: actorId },
+      select: { id: true },
+    });
+    if (exists?.id) createdBy = exists.id;
+  }
+
   const asset = await prisma.mediaAsset.create({
     data: {
       url: data.url,
@@ -69,8 +87,12 @@ export async function createMediaAsset(
       alt: data.alt,
       title: data.title,
       tags: data.tags,
-      folder: data.folder ?? "general",
-      createdBy: actorId,
+      folder,
+      createdBy,
+      provider,
+      providerFileId: data.providerFileId,
+      providerPath: data.providerPath,
+      thumbnailUrl: data.thumbnailUrl,
     },
   });
 
@@ -79,18 +101,24 @@ export async function createMediaAsset(
 }
 
 export async function updateMediaAsset(
-  id: string,
-  data: { alt?: string; title?: string; tags?: string; folder?: string },
-  actorId?: string
+    id: string,
+    data: { alt?: string; title?: string; tags?: string; folder?: string },
+    actorId?: string
 ) {
+  const nextData = {
+    ...data,
+    ...(data.folder !== undefined ? { folder: normalizeFolder(data.folder) || "general" } : {}),
+  };
+
   const asset = await prisma.mediaAsset.update({
     where: { id },
-    data,
+    data: nextData,
   });
 
   await logAudit({ actorId, action: "update", entity: "MediaAsset", entityId: id });
   return asset;
 }
+
 
 export async function deleteMediaAsset(id: string, actorId?: string) {
   const asset = await prisma.mediaAsset.update({

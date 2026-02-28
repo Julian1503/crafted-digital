@@ -8,7 +8,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const { id } = await params;
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = (session as any).roles || [];
+    const roles = session.roles || [];
     if (!checkApiAuth(roles, ["admin", "editor"]))
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

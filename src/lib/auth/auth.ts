@@ -38,7 +38,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           include: { roleAssigns: { include: { role: true } } },
         });
         if (dbUser) {
-          token.roles = dbUser.roleAssigns.map((ra: any) => ra.role.name);
+          token.roles = dbUser.roleAssigns.map((ra) => ra.role.name);
           token.active = dbUser.active;
         }
       }
@@ -47,8 +47,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
-        (session as any).roles = (token.roles as string[]) || [];
-        (session as any).active = token.active as boolean;
+        session.roles = (token.roles as string[]) || [];
+        session.active = token.active as boolean;
       }
       return session;
     },

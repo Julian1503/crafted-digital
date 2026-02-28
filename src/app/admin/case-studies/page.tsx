@@ -22,6 +22,7 @@ import SortableList, {
 } from "@/components/admin/SortableList";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
+import { MediaPicker, type MediaAsset } from "@/components/admin/MediaPicker";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -38,13 +39,17 @@ interface CaseStudy {
   publishedAt: string | null;
   coverImage: string | null;
   gallery: string | null;
-  author: string | null;
   sortOrder: number;
   metaTitle: string | null;
   metaDescription: string | null;
   ogImage: string | null;
   createdAt: string;
   updatedAt: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+  }
 }
 
 interface PaginatedCaseStudies {
@@ -109,7 +114,7 @@ function Dialog({
       document.removeEventListener("keydown", onKey);
       clearTimeout(timer);
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
@@ -179,13 +184,13 @@ export default function CaseStudiesPage() {
     "draft" | "published" | "scheduled"
   >("draft");
   const [formPublishedAt, setFormPublishedAt] = useState("");
-  const [formCoverImage, setFormCoverImage] = useState("");
-  const [formGallery, setFormGallery] = useState("");
   const [formFeatured, setFormFeatured] = useState(false);
   const [formMetaTitle, setFormMetaTitle] = useState("");
   const [formMetaDescription, setFormMetaDescription] = useState("");
   const [formOgImage, setFormOgImage] = useState("");
   const [seoOpen, setSeoOpen] = useState(false);
+  const [coverAsset, setCoverAsset] = useState<MediaAsset[]>([]);
+  const [galleryAssets, setGalleryAssets] = useState<MediaAsset[]>([]);
 
   /* ---------- Fetch ---------- */
 
@@ -228,6 +233,49 @@ export default function CaseStudiesPage() {
     }, 400);
   };
 
+  const makePseudoAssetFromUrl = (url: string): MediaAsset => {
+    const clean = url.trim();
+    const filename = (() => {
+      try {
+        const u = new URL(clean);
+        return decodeURIComponent(u.pathname.split("/").pop() || clean);
+      } catch {
+        return clean.split("/").pop() || clean;
+      }
+    })();
+
+    return {
+      id: clean,
+      url: clean,
+      filename,
+      mimeType: "image/*",
+      size: 0,
+      width: null,
+      height: null,
+      alt: null,
+      title: null,
+      tags: null,
+      folder: "unknown",
+      createdBy: null,
+      deleted: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      provider: undefined,
+      providerFileId: undefined,
+      providerPath: undefined,
+      thumbnailUrl: undefined,
+    };
+  };
+
+  const parseGalleryUrls = (gallery: string | null | undefined): string[] => {
+    if (!gallery) return [];
+    return gallery
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .filter((u, i, arr) => arr.indexOf(u) === i); // dedupe
+  };
+
   /* ---------- Dialog helpers ---------- */
 
   const resetForm = (study?: CaseStudy) => {
@@ -240,12 +288,15 @@ export default function CaseStudiesPage() {
     setFormPublishedAt(
       study?.publishedAt ? study.publishedAt.substring(0, 10) : ""
     );
-    setFormCoverImage(study?.coverImage ?? "");
-    setFormGallery(study?.gallery ?? "");
     setFormFeatured(study?.featured ?? false);
     setFormMetaTitle(study?.metaTitle ?? "");
     setFormMetaDescription(study?.metaDescription ?? "");
     setFormOgImage(study?.ogImage ?? "");
+    const coverUrl = (study?.coverImage ?? "").trim();
+    setCoverAsset(coverUrl ? [makePseudoAssetFromUrl(coverUrl)] : []);
+
+    const galleryUrls = parseGalleryUrls(study?.gallery);
+    setGalleryAssets(galleryUrls.map(makePseudoAssetFromUrl));
     setSeoOpen(false);
   };
 
@@ -285,8 +336,8 @@ export default function CaseStudiesPage() {
         body: formBody || null,
         status: formStatus,
         publishedAt: formPublishedAt || null,
-        coverImage: formCoverImage || null,
-        gallery: formGallery || null,
+        coverImage: coverAsset[0]?.url ?? null,
+        gallery: galleryAssets.length ? galleryAssets.map(a => a.url).join(", ") : null,
         featured: formFeatured,
         metaTitle: formMetaTitle || null,
         metaDescription: formMetaDescription || null,
@@ -297,7 +348,6 @@ export default function CaseStudiesPage() {
         ? `/api/admin/case-studies/${editingStudy.id}`
         : "/api/admin/case-studies";
       const method = editingStudy ? "PATCH" : "POST";
-
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -306,8 +356,9 @@ export default function CaseStudiesPage() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => null);
+        console.log(err.error)
         throw new Error(
-          typeof err?.error === "string" ? err.error : "Request failed"
+          typeof err?.error != null ? err.error.messages : "Request failed"
         );
       }
 
@@ -574,7 +625,7 @@ export default function CaseStudiesPage() {
                           </button>
                         </td>
                         <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">
-                          {study.author ?? "—"}
+                          {study.author?.name ?? "—"}
                         </td>
                         <td className="whitespace-nowrap px-4 py-3 text-center text-muted-foreground">
                           {study.sortOrder}
@@ -731,25 +782,19 @@ export default function CaseStudiesPage() {
               />
             </div>
             <div>
-              <label htmlFor="cs-cover" className="mb-1 block text-sm font-medium">
-                Cover Image URL
-              </label>
-              <Input
-                id="cs-cover"
-                value={formCoverImage}
-                onChange={(e) => setFormCoverImage(e.target.value)}
-                placeholder="https://…"
+              <MediaPicker
+                  label="Cover Image"
+                  mode="single"
+                  value={coverAsset}
+                  onChange={setCoverAsset}
               />
             </div>
             <div>
-              <label htmlFor="cs-gallery" className="mb-1 block text-sm font-medium">
-                Gallery
-              </label>
-              <Input
-                id="cs-gallery"
-                value={formGallery}
-                onChange={(e) => setFormGallery(e.target.value)}
-                placeholder="url1, url2, url3"
+              <MediaPicker
+                  label="Gallery"
+                  mode="multi"
+                  value={galleryAssets}
+                  onChange={setGalleryAssets}
               />
             </div>
             <div className="flex items-center gap-2">

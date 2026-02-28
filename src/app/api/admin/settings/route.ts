@@ -3,13 +3,13 @@ import { z } from "zod";
 import { auth } from "@/lib/auth/auth";
 import { checkApiAuth } from "@/lib/auth/rbac";
 import { getSettings, bulkUpsertSettings } from "@/lib/services/settings";
-import { siteSettingSchema } from "@/lib/validations/schemas";
+import { siteSettingSchema } from "@/lib/validations";
 
 export async function GET(req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = (session as any).roles || [];
+    const roles = session.roles || [];
     if (!checkApiAuth(roles, ["admin"]))
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = (session as any).roles || [];
+    const roles = session.roles || [];
     if (!checkApiAuth(roles, ["admin"]))
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

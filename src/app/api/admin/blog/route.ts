@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { checkApiAuth } from "@/lib/auth/rbac";
 import { getBlogPosts, createBlogPost } from "@/lib/services/blog";
-import { paginationSchema, blogPostCreateSchema } from "@/lib/validations/schemas";
+import { paginationSchema, blogPostCreateSchema } from "@/lib/validations";
 
 export async function GET(req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = (session as any).roles || [];
+    const roles = session.roles || [];
     if (!checkApiAuth(roles, ["admin", "editor", "viewer"]))
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = (session as any).roles || [];
+    const roles = session.roles || [];
     if (!checkApiAuth(roles, ["admin", "editor"]))
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

@@ -11,7 +11,7 @@ export async function requireAuth() {
 
 export async function requireRole(allowedRoles: UserRole[]) {
   const session = await requireAuth();
-  const roles = ((session as any).roles as string[]) || [];
+  const roles = (session.roles as string[]) || [];
   const hasRole = roles.some((r) => allowedRoles.includes(r as UserRole));
   if (!hasRole) redirect("/admin?error=forbidden");
   return session;
@@ -20,7 +20,7 @@ export async function requireRole(allowedRoles: UserRole[]) {
 export async function getUserRoles(): Promise<string[]> {
   const session = await auth();
   if (!session) return [];
-  return (session as any).roles || [];
+  return session.roles || [];
 }
 
 export async function hasPermission(requiredRole: UserRole): Promise<boolean> {

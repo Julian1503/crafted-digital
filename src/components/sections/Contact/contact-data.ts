@@ -18,17 +18,17 @@ export const formSchema = z.object({
     /** Selected project topics - at least one required */
     topics: z.array(z.string()).min(1, "Select at least one topic"),
     /** Budget range - optional */
-    budget: z.string().optional(),
+    budget: z.string().optional().nullable(),
     /** Project timeline preference - optional */
-    timeline: z.string().optional(),
+    timeline: z.string().optional().nullable(),
     /** Preferred contact method - optional */
-    contactMethod: z.enum(["Email", "Call"]).optional(),
+    contactMethod: z.enum(["Email", "Call"]).optional().nullable(),
     /** Company name - optional */
-    company: z.string().optional(),
+    company: z.string().optional().nullable(),
     /** Company website URL - optional */
-    website: z.string().optional(),
+    website: z.string().optional().nullable(),
     /** Honeypot field for spam prevention - should remain empty */
-    hp: z.string().optional(),
+    hp: z.string().optional().nullable(),
 });
 
 

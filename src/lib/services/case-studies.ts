@@ -4,10 +4,10 @@ import { logAudit } from "@/lib/services/audit";
 interface CaseStudyPaginationParams {
   page?: number;
   limit?: number;
-  search?: string;
-  sortBy?: string;
+  search?: string | null;
+  sortBy?: string | null;
   sortDir?: "asc" | "desc";
-  status?: string;
+  status?: string | null;
   featured?: boolean;
 }
 
@@ -45,7 +45,7 @@ export async function getCaseStudies(params: CaseStudyPaginationParams = {}) {
       where,
       skip,
       take: limit,
-      orderBy: { [sortBy]: sortDir },
+      orderBy: { [sortBy as string]: sortDir },
       include: { author: { select: { id: true, name: true, email: true } } },
     }),
     prisma.caseStudy.count({ where }),
@@ -79,18 +79,18 @@ export async function getPublishedCaseStudies() {
 export async function createCaseStudy(
   data: {
     title: string;
-    slug?: string;
-    summary?: string;
+    slug?: string | null;
+    summary?: string | null;
     body: string;
-    coverImage?: string;
-    gallery?: string;
-    status?: string;
-    publishedAt?: Date;
+    coverImage?: string | null;
+    gallery?: string | null;
+    status?: string | null;
+    publishedAt?: Date | null;
     featured?: boolean;
     sortOrder?: number;
-    metaTitle?: string;
-    metaDesc?: string;
-    ogImage?: string;
+    metaTitle?: string | null;
+    metaDesc?: string | null;
+    ogImage?: string | null;
   },
   actorId?: string
 ) {
@@ -123,19 +123,19 @@ export async function createCaseStudy(
 export async function updateCaseStudy(
   id: string,
   data: {
-    title?: string;
-    slug?: string;
-    summary?: string;
-    body?: string;
-    coverImage?: string;
-    gallery?: string;
-    status?: string;
+    title?: string | null;
+    slug?: string | null;
+    summary?: string | null;
+    body?: string | null;
+    coverImage?: string | null;
+    gallery?: string | null;
+    status?: string | null;
     publishedAt?: Date | null;
     featured?: boolean;
     sortOrder?: number;
-    metaTitle?: string;
-    metaDesc?: string;
-    ogImage?: string;
+    metaTitle?: string | null;
+    metaDesc?: string | null;
+    ogImage?: string | null;
   },
   actorId?: string
 ) {
