@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminDialog } from "@/components/admin/AdminDialog";
+import { LEAD_STATUS_COLORS } from "@/lib/constants";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
 
@@ -48,84 +50,11 @@ interface PaginatedLeads {
 /*  Status helpers                                                     */
 /* ------------------------------------------------------------------ */
 
-const statusColors: Record<string, string> = {
-  new: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  contacted: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  qualified: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  won: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-  lost: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-};
-
 const statusTransitions: Record<string, { label: string; next: string }> = {
   new: { label: "Mark as Contacted", next: "contacted" },
   contacted: { label: "Mark as Qualified", next: "qualified" },
   qualified: { label: "Mark as Won", next: "won" },
 };
-
-/* ------------------------------------------------------------------ */
-/*  Dialog                                                             */
-/* ------------------------------------------------------------------ */
-
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-  wide,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  wide?: boolean;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    const timer = setTimeout(() => {
-      panelRef.current?.querySelector<HTMLElement>("input")?.focus();
-    }, 50);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        className={cn(
-          "w-full rounded-lg border bg-background p-6 shadow-xl animate-[dialogIn_0.2s_ease-out_both]",
-          wide ? "max-w-3xl" : "max-w-lg"
-        )}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <Button size="icon-sm" variant="ghost" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
@@ -527,7 +456,7 @@ export default function LeadsPage() {
                       <span
                         className={cn(
                           "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                          statusColors[lead.status] ?? "bg-gray-100 text-gray-700"
+                          LEAD_STATUS_COLORS[lead.status] ?? "bg-gray-100 text-gray-700"
                         )}
                       >
                         {lead.status}
@@ -648,7 +577,7 @@ export default function LeadsPage() {
                     <span
                       className={cn(
                         "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                        statusColors[drawerLead.status] ?? "bg-gray-100 text-gray-700"
+                        LEAD_STATUS_COLORS[drawerLead.status] ?? "bg-gray-100 text-gray-700"
                       )}
                     >
                       {drawerLead.status}
@@ -727,7 +656,7 @@ export default function LeadsPage() {
       )}
 
       {/* Add / Edit Dialog */}
-      <Dialog
+      <AdminDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         title={editingLead ? "Edit Lead" : "Add Lead"}
@@ -836,7 +765,7 @@ export default function LeadsPage() {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </AdminDialog>
     </div>
   );
 }
