@@ -15,10 +15,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import SortableList, {
-  type SortableListItem,
-} from "@/components/admin/SortableList";
+import SortableList from "@/components/admin/SortableList";
 import { toast } from "@/hooks/use-sonner";
+import { useReorder } from "@/hooks/use-reorder";
 import { cn } from "@/lib/utils";
 import { STATUS_BADGE } from "@/lib/constants";
 import { CaseStudyFormDialog } from "./_components/CaseStudyFormDialog";
@@ -42,10 +41,11 @@ export default function CaseStudiesPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   // Reorder mode
-  const [reorderMode, setReorderMode] = useState(false);
-  const [reorderItems, setReorderItems] = useState<SortableListItem[]>([]);
-  const [savingOrder, setSavingOrder] = useState(false);
-  const reorderSnapshotRef = useRef<SortableListItem[]>([]);
+  const reorder = useReorder({
+    endpoint: "/api/admin/case-studies/reorder",
+    mode: "fractional",
+    onSaved: () => fetchStudies(page, search, statusFilter, featuredFilter),
+  });
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -146,69 +146,9 @@ export default function CaseStudiesPage() {
 
   const enterReorderMode = () => {
     if (!studies) return;
-    const items = studies.data.map((s) => ({
-      id: s.id,
-      title: s.title,
-      sortOrder: s.sortOrder,
-    }));
-    setReorderItems(items);
-    reorderSnapshotRef.current = [...items];
-    setReorderMode(true);
-  };
-
-  const saveOrder = async () => {
-    setSavingOrder(true);
-    try {
-      const snapshot = reorderSnapshotRef.current;
-      const originalSortOrder = new Map(snapshot.map((i) => [i.id, i.sortOrder]));
-      const effectiveOrder = new Map<string, number>(originalSortOrder);
-      const currentIds = reorderItems.map((i) => i.id);
-      const snapshotIds = snapshot.map((i) => i.id);
-
-      for (let i = 0; i < currentIds.length; i++) {
-        const id = currentIds[i];
-        if (snapshotIds[i] === id) continue;
-
-        const prevId = i > 0 ? currentIds[i - 1] : null;
-        const nextId = i < currentIds.length - 1 ? currentIds[i + 1] : null;
-
-        const prevOrder = prevId ? (effectiveOrder.get(prevId) ?? 0) : 0;
-        const nextOrder = nextId
-            ? (effectiveOrder.get(nextId) ?? prevOrder + 2000)
-            : prevOrder + 2000;
-
-        const newOrder = (prevOrder + nextOrder) / 2;
-        effectiveOrder.set(id, newOrder);
-      }
-
-      const changes = currentIds
-          .filter((id) => {
-            const orig = originalSortOrder.get(id) ?? 0;
-            const next = effectiveOrder.get(id) ?? 0;
-            return Math.abs(orig - next) > 0.0001;
-          })
-          .map((id) => ({ id, sortOrder: effectiveOrder.get(id)! }));
-
-      if (changes.length === 0) {
-        setReorderMode(false);
-        return;
-      }
-
-      const res = await fetch("/api/admin/case-studies/reorder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: changes }),
-      });
-      if (!res.ok) throw new Error();
-
-      toast({ title: "Order saved", variant: "success" });
-      setReorderMode(false);
-      fetchStudies(page, search, statusFilter, featuredFilter);
-    } catch {
-      toast({ title: "Failed to save order", variant: "error" });
-    } finally {
-      setSavingOrder(false);
-    }
+    reorder.enterReorderMode(
+      studies.data.map((s) => ({ id: s.id, title: s.title, sortOrder: s.sortOrder }))
+    );
   };
 
   /* ---------- Render ---------- */
@@ -222,7 +162,7 @@ export default function CaseStudiesPage() {
           <h1 className="text-2xl font-bold tracking-tight">Case Studies</h1>
         </div>
         <div className="flex gap-2">
-          {!reorderMode && (
+          {!reorder.reorderMode && (
             <Button size="sm" variant="outline" onClick={enterReorderMode}>
               <GripVertical className="mr-2 size-4" />
               Reorder Mode
@@ -236,7 +176,7 @@ export default function CaseStudiesPage() {
       </div>
 
       {/* Reorder mode */}
-      {reorderMode ? (
+      {reorder.reorderMode ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
@@ -246,17 +186,17 @@ export default function CaseStudiesPage() {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => setReorderMode(false)}
+                onClick={reorder.cancelReorder}
               >
                 Cancel
               </Button>
-              <Button size="sm" onClick={saveOrder} disabled={savingOrder}>
+              <Button size="sm" onClick={reorder.saveOrder} disabled={reorder.savingOrder}>
                 <Save className="mr-2 size-4" />
-                {savingOrder ? "Saving…" : "Save Order"}
+                {reorder.savingOrder ? "Saving…" : "Save Order"}
               </Button>
             </div>
           </div>
-          <SortableList items={reorderItems} onReorder={setReorderItems} />
+          <SortableList items={reorder.reorderItems} onReorder={reorder.setReorderItems} />
         </div>
       ) : (
         <>

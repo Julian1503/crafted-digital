@@ -2,7 +2,7 @@
 
 ## Summary
 
-This PR addresses a critical build failure and sets up the testing and CI infrastructure for the project.
+This PR applies SOLID/Clean Code principles across the codebase: eliminates duplicated code, splits large files by responsibility, and extracts shared utilities and hooks.
 
 ## Major Changes
 
@@ -33,10 +33,14 @@ Each schema was designed to match the data shapes expected by the corresponding 
 **Added:**
 - Vitest as test runner with v8 coverage provider
 - `vitest.config.ts` with path aliases matching tsconfig
-- 98 unit tests across 10 test files covering:
+- 122 unit tests across 14 test files covering:
   - All 14 validation schemas (valid inputs, required fields, optional fields, edge cases)
   - `normalizeFolder` utility (sanitization, traversal prevention, edge cases)
   - `toValidationError` and `simpleError` HTTP helpers
+  - `slugify` utility (special chars, whitespace, edge cases)
+  - `makePseudoAssetFromUrl` (URL parsing, filename extraction)
+  - `computeFractionalChanges` (reorder algorithm, swaps, edge cases)
+  - Status badge constants (complete key coverage)
 
 **New scripts:**
 - `npm run test` — run all tests
@@ -54,6 +58,29 @@ Created `.github/workflows/ci.yml` that runs on pushes/PRs to `main`:
 ## Bugs Fixed
 
 1. **Build completely broken** — 54 module-not-found errors from missing validation schema files. All 14 files created.
+2. **Content page TypeScript error** — `enterReorderMode` was creating `SortableListItem` objects without the required `sortOrder` field. Fixed by including `b.sortOrder`.
+3. **Case-studies error handling bug** — `err?.error != null ? err.error.messages` used loose equality and accessed a potentially non-existent `.messages` property. Fixed with optional chaining: `err?.error?.messages ?? "Request failed"`.
+4. **Case-studies debug console.log** — Removed leftover `console.log(err.error)` from case-studies form submit handler.
+
+## SOLID/Clean Code Refactoring
+
+### Extracted Shared Components
+- **`AdminDialog`** (`src/components/admin/AdminDialog.tsx`) — Replaced 13 identical `Dialog` function definitions across all admin pages and MediaPicker
+- **`slugify`** (`src/lib/utils.ts`) — Shared slug generation, previously duplicated in blog and case-studies
+- **`makePseudoAssetFromUrl`** (`src/lib/media/make-pseudo-asset.ts`) — Shared MediaAsset factory from URL, previously duplicated in blog and case-studies
+- **Status badge constants** (`src/lib/constants.ts`) — `STATUS_BADGE`, `LEAD_STATUS_COLORS`, `BOOKING_STATUS_COLORS`, previously duplicated across 4 pages
+
+### Extracted Shared Hook
+- **`useReorder`** (`src/hooks/use-reorder.ts`) — Shared reorder mode state and save logic, supporting both "fractional indexing" (blog, case-studies) and "ids" (content) modes. Also exports `computeFractionalChanges` as a pure, testable function.
+
+### Split Large Admin Pages
+| Page | Before | After | Extracted |
+|------|--------|-------|-----------|
+| Blog | 1,032 | 501 | `BlogFormDialog` (290), `blog.types` (29) |
+| Case Studies | 929 | 400 | `CaseStudyFormDialog` (280), `case-study.types` (30) |
+| Leads | 842 | 391 | `LeadFormDialog` (150), `LeadDetailDrawer` (170), `lead.types` (25) |
+| Bookings | 864 | 443 | `BookingFormDialog` (160), `BookingDetailDrawer` (180), `booking.types` (25) |
+| Content | 567 | 479 | (used shared hook) |
 
 ## Decisions & Tradeoffs
 
@@ -64,7 +91,8 @@ Created `.github/workflows/ci.yml` that runs on pushes/PRs to `main`:
 
 ## Remaining Risks / Next Steps
 
-1. **Pre-existing TypeScript errors** — 7 files have type errors (blog slug page, case studies page, BlogCard, blog-data, ContactFormField, admin content page, users API route). These should be fixed in a follow-up.
+1. **Pre-existing TypeScript errors** — 6 files still have type errors (blog slug page, case studies slug page, BlogCard, blog-data, ContactFormField, media upload route). These should be fixed in a follow-up.
 2. **Integration/E2E tests** — Only unit tests are included. Integration tests for API routes and E2E tests for user journeys should be added.
-3. **Console.log cleanup** — 4 files still use `console.log` in production code paths.
+3. **Console.log cleanup** — Some files may still use `console.log` in production code paths.
 4. **Google Fonts** — Consider adding a fallback font strategy or using `next/font/local` for offline builds.
+5. **Further page splitting** — Media (783 lines), coupons (724 lines), plans (604 lines) could benefit from the same form dialog extraction pattern.

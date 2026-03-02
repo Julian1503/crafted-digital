@@ -121,7 +121,7 @@ export function CaseStudyFormDialog({
       if (!res.ok) {
         const err = await res.json().catch(() => null);
         throw new Error(
-          err?.error != null ? err.error.messages : "Request failed"
+          err?.error?.messages ?? "Request failed"
         );
       }
 
