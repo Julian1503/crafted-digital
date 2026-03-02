@@ -23,6 +23,7 @@ import SortableList, {
 } from "@/components/admin/SortableList";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
+import {type MediaAsset, MediaPicker} from "@/components/admin/MediaPicker";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -39,7 +40,7 @@ interface BlogPost {
   coverImage: string | null;
   tags: string | null;
   categories: string | null;
-  author: string | null;
+  author: { id: string; name: string; email: string; } | null;
   sortOrder: number;
   metaTitle: string | null;
   metaDesc: string | null;
@@ -110,7 +111,7 @@ function Dialog({
       document.removeEventListener("keydown", onKey);
       clearTimeout(timer);
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
@@ -167,6 +168,7 @@ export default function BlogPage() {
   const [reorderMode, setReorderMode] = useState(false);
   const [reorderItems, setReorderItems] = useState<SortableListItem[]>([]);
   const [savingOrder, setSavingOrder] = useState(false);
+  const reorderSnapshotRef = useRef<SortableListItem[]>([]);
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -176,6 +178,7 @@ export default function BlogPage() {
   // Form fields
   const [formTitle, setFormTitle] = useState("");
   const [formSlug, setFormSlug] = useState("");
+  const [coverAsset, setCoverAsset] = useState<MediaAsset[]>([]);
   const [slugManual, setSlugManual] = useState(false);
   const [formContent, setFormContent] = useState("");
   const [formExcerpt, setFormExcerpt] = useState("");
@@ -236,6 +239,40 @@ export default function BlogPage() {
     }, 400);
   };
 
+  const makePseudoAssetFromUrl = (url: string): MediaAsset => {
+    const clean = url.trim();
+    const filename = (() => {
+      try {
+        const u = new URL(clean);
+        return decodeURIComponent(u.pathname.split("/").pop() || clean);
+      } catch {
+        return clean.split("/").pop() || clean;
+      }
+    })();
+
+    return {
+      id: clean,
+      url: clean,
+      filename,
+      mimeType: "image/*",
+      size: 0,
+      width: null,
+      height: null,
+      alt: null,
+      title: null,
+      tags: null,
+      folder: "unknown",
+      createdBy: null,
+      deleted: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      provider: undefined,
+      providerFileId: undefined,
+      providerPath: undefined,
+      thumbnailUrl: undefined,
+    };
+  };
+
   /* ---------- Dialog helpers ---------- */
 
   const resetForm = (post?: BlogPost) => {
@@ -248,6 +285,8 @@ export default function BlogPage() {
     setFormPublishedAt(
       post?.publishedAt ? post.publishedAt.substring(0, 10) : ""
     );
+    const coverUrl = (post?.coverImage ?? "").trim();
+    setCoverAsset(coverUrl ? [makePseudoAssetFromUrl(coverUrl)] : []);
     setFormCoverImage(post?.coverImage ?? "");
     setFormTags(post?.tags ?? "");
     setFormCategories(post?.categories ?? "");
@@ -293,7 +332,7 @@ export default function BlogPage() {
         excerpt: formExcerpt,
         status: asDraft ? "draft" : formStatus,
         publishedAt: formPublishedAt || null,
-        coverImage: formCoverImage || null,
+        coverImage: coverAsset[0]?.url ?? null,
         tags: formTags || null,
         categories: formCategories || null,
         metaTitle: formMetaTitle || null,
@@ -429,23 +468,61 @@ export default function BlogPage() {
 
   const enterReorderMode = () => {
     if (!posts) return;
-    setReorderItems(
-      posts.data.map((p) => ({ id: p.id, title: p.title }))
-    );
+    const items = posts.data.map((p) => ({
+      id: p.id,
+      title: p.title,
+      sortOrder: p.sortOrder,
+    }));
+    setReorderItems(items);
+    reorderSnapshotRef.current = [...items];
     setReorderMode(true);
   };
 
   const saveOrder = async () => {
     setSavingOrder(true);
     try {
+      const snapshot = reorderSnapshotRef.current;
+      const originalSortOrder = new Map(snapshot.map((i) => [i.id, i.sortOrder]));
+      const effectiveOrder = new Map<string, number>(originalSortOrder);
+      const currentIds = reorderItems.map((i) => i.id);
+      const snapshotIds = snapshot.map((i) => i.id);
+
+      for (let i = 0; i < currentIds.length; i++) {
+        const id = currentIds[i];
+        if (snapshotIds[i] === id) continue;
+
+        const prevId = i > 0 ? currentIds[i - 1] : null;
+        const nextId = i < currentIds.length - 1 ? currentIds[i + 1] : null;
+
+        const prevOrder = prevId ? (effectiveOrder.get(prevId) ?? 0) : 0;
+        const nextOrder = nextId
+            ? (effectiveOrder.get(nextId) ?? prevOrder + 2000)
+            : prevOrder + 2000;
+
+        const newOrder = (prevOrder + nextOrder) / 2;
+        effectiveOrder.set(id, newOrder);
+      }
+
+      const changes = currentIds
+          .filter((id) => {
+            const orig = originalSortOrder.get(id) ?? 0;
+            const next = effectiveOrder.get(id) ?? 0;
+            return Math.abs(orig - next) > 0.0001;
+          })
+          .map((id) => ({ id, sortOrder: effectiveOrder.get(id)! }));
+
+      if (changes.length === 0) {
+        setReorderMode(false);
+        return;
+      }
+
       const res = await fetch("/api/admin/blog/reorder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ids: reorderItems.map((i) => i.id),
-        }),
+        body: JSON.stringify({ items: changes }),
       });
       if (!res.ok) throw new Error();
+
       toast({ title: "Order saved", variant: "success" });
       setReorderMode(false);
       fetchPosts(page, search, statusFilter, sortBy);
@@ -598,6 +675,8 @@ export default function BlogPage() {
                   <thead>
                     <tr className="border-b bg-muted/30 text-left">
                       <th className="whitespace-nowrap px-4 py-3">
+                      </th>
+                      <th className="whitespace-nowrap px-4 py-3">
                         <input
                           type="checkbox"
                           checked={
@@ -621,19 +700,20 @@ export default function BlogPage() {
                         Published
                       </th>
                       <th className="whitespace-nowrap px-4 py-3 font-medium">
-                        Sort Order
-                      </th>
-                      <th className="whitespace-nowrap px-4 py-3 font-medium">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {posts.data.map((post) => (
+                    {posts.data.map((post, index) => (
                       <tr
                         key={post.id}
                         className="border-b transition-colors hover:bg-muted/20 last:border-b-0"
                       >
+
+                        <td className="px-4 py-3">
+                          {index+1}
+                        </td>
                         <td className="whitespace-nowrap px-4 py-3">
                           <input
                             type="checkbox"
@@ -661,15 +741,12 @@ export default function BlogPage() {
                           </span>
                         </td>
                         <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">
-                          {post.author ?? "—"}
+                          {post.author?.name ?? "—"}
                         </td>
                         <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">
                           {post.publishedAt
                             ? new Date(post.publishedAt).toLocaleDateString()
                             : "—"}
-                        </td>
-                        <td className="whitespace-nowrap px-4 py-3 text-center text-muted-foreground">
-                          {post.sortOrder}
                         </td>
                         <td className="whitespace-nowrap px-4 py-3">
                           <div className="flex gap-1">
@@ -830,14 +907,11 @@ export default function BlogPage() {
               />
             </div>
             <div>
-              <label htmlFor="post-cover" className="mb-1 block text-sm font-medium">
-                Cover Image URL
-              </label>
-              <Input
-                id="post-cover"
-                value={formCoverImage}
-                onChange={(e) => setFormCoverImage(e.target.value)}
-                placeholder="https://…"
+              <MediaPicker
+                  label="Cover Image"
+                  mode="single"
+                  value={coverAsset}
+                  onChange={setCoverAsset}
               />
             </div>
             <div>
@@ -865,7 +939,7 @@ export default function BlogPage() {
             <div>
               <span className="mb-1 block text-sm font-medium">Author</span>
               <p className="text-sm text-muted-foreground">
-                {editingPost?.author ?? "Current user"}
+                {editingPost?.author?.name ?? "Current user"}
               </p>
             </div>
           </div>

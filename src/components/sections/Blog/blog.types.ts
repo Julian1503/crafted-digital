@@ -25,5 +25,5 @@ export interface BlogPost {
     publishedAt: string;
 
     /** Author name */
-    author: string;
+    author: { id: string; name: string; email: string; };
 }

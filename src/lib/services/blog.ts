@@ -4,11 +4,11 @@ import { logAudit } from "@/lib/services/audit";
 interface BlogPaginationParams {
   page?: number;
   limit?: number;
-  search?: string;
-  sortBy?: string;
+  search?: string | null;
+  sortBy?: string | null;
   sortDir?: "asc" | "desc";
-  status?: string;
-  tags?: string;
+  status?: string | null;
+  tags?: string | null;
   dateFrom?: Date;
   dateTo?: Date;
 }
@@ -34,7 +34,7 @@ async function ensureUniqueSlug(slug: string, excludeId?: string): Promise<strin
 }
 
 export async function getBlogPosts(params: BlogPaginationParams = {}) {
-  const { page = 1, limit = 20, search, sortBy = "createdAt", sortDir = "desc", status, tags, dateFrom, dateTo } = params;
+  const { page = 1, limit = 20, search, sortBy = "sortOrder", sortDir = "desc", status, tags, dateFrom, dateTo } = params;
   const skip = (page - 1) * limit;
 
   const where: Record<string, unknown> = { deleted: false };
@@ -53,7 +53,7 @@ export async function getBlogPosts(params: BlogPaginationParams = {}) {
       where,
       skip,
       take: limit,
-      orderBy: { [sortBy]: sortDir },
+      orderBy: { [sortBy as string]: sortDir },
       include: { author: { select: { id: true, name: true, email: true } } },
     }),
     prisma.blogPost.count({ where }),
@@ -87,22 +87,28 @@ export async function getPublishedBlogPosts() {
 export async function createBlogPost(
   data: {
     title: string;
-    slug?: string;
-    excerpt?: string;
+    slug?: string | null;
+    excerpt?: string | null;
     content: string;
-    coverImage?: string;
-    status?: string;
+    coverImage?: string | null;
+    status?: string | null;
     publishedAt?: Date;
     sortOrder?: number;
-    tags?: string;
-    categories?: string;
-    metaTitle?: string;
-    metaDesc?: string;
-    ogImage?: string;
+    tags?: string | null;
+    categories?: string | null;
+    metaTitle?: string | null;
+    metaDesc?: string | null;
+    ogImage?: string | null;
   },
   actorId?: string
 ) {
   const slug = await ensureUniqueSlug(data.slug || generateSlug(data.title));
+  const sortOrder = await prisma.caseStudy.aggregate({
+    _max: { sortOrder: true },
+    where: { deleted: false }
+  })
+  const SORT_GAP = 1000;
+  const nextSortOrder = (sortOrder._max.sortOrder ?? 0) + SORT_GAP;
 
   const post = await prisma.blogPost.create({
     data: {
@@ -113,7 +119,7 @@ export async function createBlogPost(
       coverImage: data.coverImage || null,
       status: data.status ?? "draft",
       publishedAt: data.publishedAt,
-      sortOrder: data.sortOrder ?? 0,
+      sortOrder: nextSortOrder,
       tags: data.tags,
       categories: data.categories,
       metaTitle: data.metaTitle,
@@ -131,19 +137,19 @@ export async function createBlogPost(
 export async function updateBlogPost(
   id: string,
   data: {
-    title?: string;
-    slug?: string;
-    excerpt?: string;
-    content?: string;
-    coverImage?: string;
-    status?: string;
+    title?: string | null;
+    slug?: string | null;
+    excerpt?: string | null;
+    content?: string | null;
+    coverImage?: string | null;
+    status?: string | null;
     publishedAt?: Date | null;
     sortOrder?: number;
-    tags?: string;
-    categories?: string;
-    metaTitle?: string;
-    metaDesc?: string;
-    ogImage?: string;
+    tags?: string | null;
+    categories?: string | null;
+    metaTitle?: string | null;
+    metaDesc?: string | null;
+    ogImage?: string | null;
   },
   actorId?: string
 ) {
@@ -165,9 +171,20 @@ export async function updateBlogPost(
 }
 
 export async function deleteBlogPost(id: string, actorId?: string) {
+  const target = await prisma.blogPost.findUniqueOrThrow({
+    where: { id },
+    select: { sortOrder: true },
+  });
   const post = await prisma.blogPost.update({
     where: { id },
     data: { deleted: true },
+  });
+  await prisma.blogPost.updateMany({
+    where: {
+      deleted: false,
+      sortOrder: { gt: target.sortOrder },
+    },
+    data: { sortOrder: { decrement: 1 } },
   });
   await logAudit({ actorId, action: "delete", entity: "BlogPost", entityId: id });
   return post;
@@ -179,7 +196,35 @@ export async function reorderBlogPosts(items: { id: string; sortOrder: number }[
       prisma.blogPost.update({ where: { id: item.id }, data: { sortOrder: item.sortOrder } })
     )
   );
+  await renormalizeIfNeeded(actorId);
   await logAudit({ actorId, action: "reorder", entity: "BlogPost", metadata: { count: items.length } });
+}
+
+/** Renormalizes all sortOrders to multiples of 1000 when gaps get too small */
+async function renormalizeIfNeeded(actorId?: string) {
+  const items = await prisma.caseStudy.findMany({
+    where: { deleted: false },
+    orderBy: { sortOrder: "asc" },
+    select: { id: true, sortOrder: true },
+  });
+
+  // Check minimum gap
+  const minGap = items.reduce((min, item, i) => {
+    if (i === 0) return min;
+    return Math.min(min, item.sortOrder - items[i - 1].sortOrder);
+  }, Infinity);
+
+  if (minGap >= 1) return; // Gaps still healthy, skip
+
+  await prisma.$transaction(
+      items.map((item, i) =>
+          prisma.caseStudy.update({
+            where: { id: item.id },
+            data: { sortOrder: (i + 1) * 1000 },
+          })
+      )
+  );
+  await logAudit({ actorId, action: "renormalize", entity: "CaseStudy", metadata: { count: items.length } });
 }
 
 export async function bulkUpdateStatus(ids: string[], status: string, actorId?: string) {

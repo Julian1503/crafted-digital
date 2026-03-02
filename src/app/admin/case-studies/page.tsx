@@ -168,6 +168,7 @@ export default function CaseStudiesPage() {
   const [reorderMode, setReorderMode] = useState(false);
   const [reorderItems, setReorderItems] = useState<SortableListItem[]>([]);
   const [savingOrder, setSavingOrder] = useState(false);
+  const reorderSnapshotRef = useRef<SortableListItem[]>([]);
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -420,23 +421,61 @@ export default function CaseStudiesPage() {
 
   const enterReorderMode = () => {
     if (!studies) return;
-    setReorderItems(
-      studies.data.map((s) => ({ id: s.id, title: s.title }))
-    );
+    const items = studies.data.map((s) => ({
+      id: s.id,
+      title: s.title,
+      sortOrder: s.sortOrder,
+    }));
+    setReorderItems(items);
+    reorderSnapshotRef.current = [...items];
     setReorderMode(true);
   };
 
   const saveOrder = async () => {
     setSavingOrder(true);
     try {
+      const snapshot = reorderSnapshotRef.current;
+      const originalSortOrder = new Map(snapshot.map((i) => [i.id, i.sortOrder]));
+      const effectiveOrder = new Map<string, number>(originalSortOrder);
+      const currentIds = reorderItems.map((i) => i.id);
+      const snapshotIds = snapshot.map((i) => i.id);
+
+      for (let i = 0; i < currentIds.length; i++) {
+        const id = currentIds[i];
+        if (snapshotIds[i] === id) continue;
+
+        const prevId = i > 0 ? currentIds[i - 1] : null;
+        const nextId = i < currentIds.length - 1 ? currentIds[i + 1] : null;
+
+        const prevOrder = prevId ? (effectiveOrder.get(prevId) ?? 0) : 0;
+        const nextOrder = nextId
+            ? (effectiveOrder.get(nextId) ?? prevOrder + 2000)
+            : prevOrder + 2000;
+
+        const newOrder = (prevOrder + nextOrder) / 2;
+        effectiveOrder.set(id, newOrder);
+      }
+
+      const changes = currentIds
+          .filter((id) => {
+            const orig = originalSortOrder.get(id) ?? 0;
+            const next = effectiveOrder.get(id) ?? 0;
+            return Math.abs(orig - next) > 0.0001;
+          })
+          .map((id) => ({ id, sortOrder: effectiveOrder.get(id)! }));
+
+      if (changes.length === 0) {
+        setReorderMode(false);
+        return;
+      }
+
       const res = await fetch("/api/admin/case-studies/reorder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ids: reorderItems.map((i) => i.id),
-        }),
+        body: JSON.stringify({ items: changes }),
       });
       if (!res.ok) throw new Error();
+
       toast({ title: "Order saved", variant: "success" });
       setReorderMode(false);
       fetchStudies(page, search, statusFilter, featuredFilter);
@@ -560,6 +599,8 @@ export default function CaseStudiesPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b bg-muted/30 text-left">
+                      <th className="whitespace-nowrap px-4 py-3">
+                      </th>
                       <th className="whitespace-nowrap px-4 py-3 font-medium">
                         Title
                       </th>
@@ -573,19 +614,19 @@ export default function CaseStudiesPage() {
                         Author
                       </th>
                       <th className="whitespace-nowrap px-4 py-3 font-medium">
-                        Sort Order
-                      </th>
-                      <th className="whitespace-nowrap px-4 py-3 font-medium">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {studies.data.map((study) => (
+                    {studies.data.map((study, index) => (
                       <tr
                         key={study.id}
                         className="border-b transition-colors hover:bg-muted/20 last:border-b-0"
                       >
+                        <td className="px-4 py-3">
+                          {index+1}
+                        </td>
                         <td className="px-4 py-3">
                           <div>
                             <span className="font-medium">{study.title}</span>
@@ -626,9 +667,6 @@ export default function CaseStudiesPage() {
                         </td>
                         <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">
                           {study.author?.name ?? "—"}
-                        </td>
-                        <td className="whitespace-nowrap px-4 py-3 text-center text-muted-foreground">
-                          {study.sortOrder}
                         </td>
                         <td className="whitespace-nowrap px-4 py-3">
                           <div className="flex gap-1">

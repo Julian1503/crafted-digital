@@ -23,7 +23,7 @@ interface CaseStudy {
     technologies: string[];
     testimonial?: {
         quote: string;
-        author: string;
+        author: { id: string; name: string; email: string; };
         role: string;
     };
 }

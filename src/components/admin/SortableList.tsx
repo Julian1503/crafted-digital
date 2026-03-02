@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 export interface SortableListItem {
   id: string;
   title: string;
+  sortOrder: number;
 }
 
 interface SortableListProps {

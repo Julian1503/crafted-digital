@@ -16,7 +16,7 @@ interface BlogPost {
     category: string;
     readTime: string;
     publishedAt: string;
-    author: string;
+    author: { id: string; name: string; email: string; };
     content: string[];
     relatedServices: string[];
     relatedCaseStudies?: string[];
