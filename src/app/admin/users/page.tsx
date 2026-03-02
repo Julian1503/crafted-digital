@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminDialog } from "@/components/admin/AdminDialog";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
 
@@ -41,62 +42,6 @@ interface PaginatedUsers {
   page: number;
   limit: number;
   totalPages: number;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Dialog                                                             */
-/* ------------------------------------------------------------------ */
-
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    // Focus first input
-    const timer = setTimeout(() => {
-      panelRef.current?.querySelector<HTMLElement>("input")?.focus();
-    }, 50);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        className="w-full max-w-lg rounded-lg border bg-background p-6 shadow-xl animate-[dialogIn_0.2s_ease-out_both]"
-      >
-        <h2 className="mb-4 text-lg font-semibold">{title}</h2>
-        {children}
-      </div>
-    </div>
-  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -446,7 +391,7 @@ export default function UsersPage() {
       )}
 
       {/* Add / Edit Dialog */}
-      <Dialog
+      <AdminDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         title={editingUser ? "Edit User" : "Add User"}
@@ -553,7 +498,7 @@ export default function UsersPage() {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </AdminDialog>
     </div>
   );
 }

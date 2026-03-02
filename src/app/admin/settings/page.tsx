@@ -8,11 +8,11 @@ import {
   Edit,
   Trash2,
   Save,
-  X,
   FolderOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AdminDialog } from "@/components/admin/AdminDialog";
 import { CardSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { toast } from "@/hooks/use-sonner";
@@ -34,71 +34,6 @@ interface SiteSetting {
   key: string;
   value: string;
   group: string;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Dialog                                                             */
-/* ------------------------------------------------------------------ */
-
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-  wide,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  wide?: boolean;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    const timer = setTimeout(() => {
-      panelRef.current?.querySelector<HTMLElement>("input,textarea")?.focus();
-    }, 50);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        className={cn(
-          "w-full rounded-lg border bg-background p-6 shadow-xl animate-[dialogIn_0.2s_ease-out_both]",
-          wide ? "max-w-3xl" : "max-w-lg"
-        )}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <Button size="icon-sm" variant="ghost" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -515,7 +450,7 @@ export default function SettingsPage() {
         ))}
 
       {/* Create / Edit dialog */}
-      <Dialog
+      <AdminDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         title={editingSetting ? "Edit Setting" : "New Setting"}
@@ -581,10 +516,10 @@ export default function SettingsPage() {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </AdminDialog>
 
       {/* Delete confirmation dialog */}
-      <Dialog
+      <AdminDialog
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         title="Delete Setting"
@@ -612,7 +547,7 @@ export default function SettingsPage() {
             Delete
           </Button>
         </div>
-      </Dialog>
+      </AdminDialog>
     </div>
   );
 }
