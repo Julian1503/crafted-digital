@@ -11,7 +11,6 @@ import {
   Star,
   Filter,
   Save,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,8 +20,11 @@ import SortableList, {
   type SortableListItem,
 } from "@/components/admin/SortableList";
 import { toast } from "@/hooks/use-sonner";
-import { cn } from "@/lib/utils";
+import { cn, slugify } from "@/lib/utils";
 import { MediaPicker, type MediaAsset } from "@/components/admin/MediaPicker";
+import { AdminDialog } from "@/components/admin/AdminDialog";
+import { makePseudoAssetFromUrl } from "@/lib/media/make-pseudo-asset";
+import { STATUS_BADGE } from "@/lib/constants";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -58,93 +60,6 @@ interface PaginatedCaseStudies {
   page: number;
   limit: number;
   totalPages: number;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
-
-function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_]+/g, "-")
-    .replace(/-+/g, "-");
-}
-
-const statusBadge: Record<string, string> = {
-  published:
-    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  draft:
-    "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  scheduled:
-    "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-};
-
-/* ------------------------------------------------------------------ */
-/*  Dialog                                                             */
-/* ------------------------------------------------------------------ */
-
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-  wide,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  wide?: boolean;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    const timer = setTimeout(() => {
-      panelRef.current?.querySelector<HTMLElement>("input")?.focus();
-    }, 50);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
-  }, [open]);
-
-  if (!open) return null;
-
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        className={cn(
-          "w-full rounded-lg border bg-background p-6 shadow-xl animate-[dialogIn_0.2s_ease-out_both]",
-          wide ? "max-w-3xl" : "max-w-lg"
-        )}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <Button size="icon-sm" variant="ghost" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -232,40 +147,6 @@ export default function CaseStudiesPage() {
       setPage(1);
       fetchStudies(1, value, statusFilter, featuredFilter);
     }, 400);
-  };
-
-  const makePseudoAssetFromUrl = (url: string): MediaAsset => {
-    const clean = url.trim();
-    const filename = (() => {
-      try {
-        const u = new URL(clean);
-        return decodeURIComponent(u.pathname.split("/").pop() || clean);
-      } catch {
-        return clean.split("/").pop() || clean;
-      }
-    })();
-
-    return {
-      id: clean,
-      url: clean,
-      filename,
-      mimeType: "image/*",
-      size: 0,
-      width: null,
-      height: null,
-      alt: null,
-      title: null,
-      tags: null,
-      folder: "unknown",
-      createdBy: null,
-      deleted: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      provider: undefined,
-      providerFileId: undefined,
-      providerPath: undefined,
-      thumbnailUrl: undefined,
-    };
   };
 
   const parseGalleryUrls = (gallery: string | null | undefined): string[] => {
@@ -639,7 +520,7 @@ export default function CaseStudiesPage() {
                           <span
                             className={cn(
                               "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                              statusBadge[study.status]
+                              STATUS_BADGE[study.status]
                             )}
                           >
                             {study.status}
@@ -725,7 +606,7 @@ export default function CaseStudiesPage() {
       )}
 
       {/* Create / Edit Dialog */}
-      <Dialog
+      <AdminDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         title={editingStudy ? "Edit Case Study" : "New Case Study"}
@@ -923,7 +804,7 @@ export default function CaseStudiesPage() {
                 : "Create Case Study"}
           </Button>
         </div>
-      </Dialog>
+      </AdminDialog>
     </div>
   );
 }

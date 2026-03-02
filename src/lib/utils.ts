@@ -39,3 +39,23 @@ export function scrollToId(id: string): boolean {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
     return true;
 }
+
+/**
+ * Converts a text string into a URL-friendly slug.
+ *
+ * @param text - The text to slugify
+ * @returns URL-friendly slug string
+ *
+ * @example
+ * ```ts
+ * slugify("Hello World!") // "hello-world"
+ * ```
+ */
+export function slugify(text: string): string {
+    return text
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/[\s_]+/g, "-")
+        .replace(/-+/g, "-");
+}
