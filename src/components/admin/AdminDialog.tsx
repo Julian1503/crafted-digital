@@ -23,7 +23,7 @@ export function AdminDialog({ open, onClose, title, children, wide }: AdminDialo
     };
     document.addEventListener("keydown", onKey);
     const timer = setTimeout(() => {
-      panelRef.current?.querySelector<HTMLElement>("input")?.focus();
+      panelRef.current?.querySelector<HTMLElement>("input,select,textarea")?.focus();
     }, 50);
     return () => {
       document.removeEventListener("keydown", onKey);
