@@ -2,14 +2,16 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import {
-  Calendar, Plus, Search, Edit, Trash2, Eye, X, MessageSquare, Clock,
+  Calendar, Plus, Search, Edit, Trash2, Eye, MessageSquare, Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminDialog } from "@/components/admin/AdminDialog";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
+import { BOOKING_STATUS_COLORS } from "@/lib/constants";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -35,86 +37,6 @@ interface PaginatedBookings {
   page: number;
   limit: number;
   totalPages: number;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Status helpers                                                     */
-/* ------------------------------------------------------------------ */
-
-const statusColors: Record<string, string> = {
-  pending:
-    "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  confirmed:
-    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  cancelled:
-    "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  completed:
-    "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-};
-
-/* ------------------------------------------------------------------ */
-/*  Dialog                                                             */
-/* ------------------------------------------------------------------ */
-
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-  wide,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  wide?: boolean;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    const timer = setTimeout(() => {
-      panelRef.current?.querySelector<HTMLElement>("input")?.focus();
-    }, 50);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        className={cn(
-          "w-full rounded-lg border bg-background p-6 shadow-xl animate-[dialogIn_0.2s_ease-out_both]",
-          wide ? "max-w-3xl" : "max-w-lg"
-        )}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <Button size="icon-sm" variant="ghost" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -534,7 +456,7 @@ export default function BookingsPage() {
                       <span
                         className={cn(
                           "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                          statusColors[booking.status] ??
+                          BOOKING_STATUS_COLORS[booking.status] ??
                             "bg-gray-100 text-gray-700"
                         )}
                       >
@@ -604,7 +526,7 @@ export default function BookingsPage() {
       )}
 
       {/* View / Detail Dialog */}
-      <Dialog
+      <AdminDialog
         open={!!detailBooking}
         onClose={closeDetail}
         title="Booking Details"
@@ -644,7 +566,7 @@ export default function BookingsPage() {
               <span
                 className={cn(
                   "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                  statusColors[detailBooking.status] ??
+                  BOOKING_STATUS_COLORS[detailBooking.status] ??
                     "bg-gray-100 text-gray-700"
                 )}
               >
@@ -693,10 +615,10 @@ export default function BookingsPage() {
             </div>
           </div>
         ) : null}
-      </Dialog>
+      </AdminDialog>
 
       {/* Create / Edit Dialog */}
-      <Dialog
+      <AdminDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         title={editingBooking ? "Edit Booking" : "New Booking"}
@@ -824,10 +746,10 @@ export default function BookingsPage() {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </AdminDialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
+      <AdminDialog
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         title="Delete Booking"
@@ -858,7 +780,7 @@ export default function BookingsPage() {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </AdminDialog>
     </div>
   );
 }
