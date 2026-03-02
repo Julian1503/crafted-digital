@@ -7,7 +7,6 @@ import {
   Search,
   Edit,
   Trash2,
-  X,
   ToggleLeft,
   ToggleRight,
   Clock,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AdminDialog } from "@/components/admin/AdminDialog";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { toast } from "@/hooks/use-sonner";
@@ -65,66 +65,6 @@ function formatDate(dateStr: string): string {
 
 function formatDateTime(dateStr: string): string {
   return new Date(dateStr).toLocaleString();
-}
-
-/* ------------------------------------------------------------------ */
-/*  Dialog                                                             */
-/* ------------------------------------------------------------------ */
-
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    const timer = setTimeout(() => {
-      panelRef.current?.querySelector<HTMLElement>("input")?.focus();
-    }, 50);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        className="w-full max-w-lg rounded-lg border bg-background p-6 shadow-xl animate-[dialogIn_0.2s_ease-out_both]"
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <Button size="icon-sm" variant="ghost" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -587,7 +527,7 @@ export default function CouponsPage() {
       )}
 
       {/* Create / Edit Dialog */}
-      <Dialog
+      <AdminDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         title={editingCoupon ? "Edit Coupon" : "New Coupon"}
@@ -745,10 +685,10 @@ export default function CouponsPage() {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </AdminDialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
+      <AdminDialog
         open={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         title="Delete Coupon"
@@ -778,7 +718,7 @@ export default function CouponsPage() {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </AdminDialog>
     </div>
   );
 }

@@ -34,3 +34,31 @@ const TECH: TechItem[] = [
 
 export { TECH };
 export type { TechItem };
+
+/* ------------------------------------------------------------------ */
+/*  Admin status badge color maps                                      */
+/* ------------------------------------------------------------------ */
+
+/** CSS classes for content status badges (blog, case-studies). */
+export const STATUS_BADGE: Record<string, string> = {
+  published: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  draft: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+  scheduled: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+};
+
+/** CSS classes for lead status badges. */
+export const LEAD_STATUS_COLORS: Record<string, string> = {
+  new: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  contacted: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+  qualified: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  won: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  lost: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+};
+
+/** CSS classes for booking status badges. */
+export const BOOKING_STATUS_COLORS: Record<string, string> = {
+  pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+  confirmed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  cancelled: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+};

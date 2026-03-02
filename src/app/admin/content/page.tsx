@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   FileText,
   Plus,
@@ -10,16 +10,15 @@ import {
   ToggleLeft,
   ToggleRight,
   Save,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AdminDialog } from "@/components/admin/AdminDialog";
 import { CardSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import SortableList, {
-  type SortableListItem,
-} from "@/components/admin/SortableList";
+import SortableList from "@/components/admin/SortableList";
 import { toast } from "@/hooks/use-sonner";
+import { useReorder } from "@/hooks/use-reorder";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------------ */
@@ -66,73 +65,6 @@ const sectionOptions = [
 ] as const;
 
 /* ------------------------------------------------------------------ */
-/*  Dialog                                                             */
-/* ------------------------------------------------------------------ */
-
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-  wide,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  wide?: boolean;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    const timer = setTimeout(() => {
-      panelRef.current
-        ?.querySelector<HTMLElement>("input,select,textarea")
-        ?.focus();
-    }, 50);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        className={cn(
-          "w-full rounded-lg border bg-background p-6 shadow-xl animate-[dialogIn_0.2s_ease-out_both]",
-          wide ? "max-w-3xl" : "max-w-lg"
-        )}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <Button size="icon-sm" variant="ghost" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -142,9 +74,11 @@ export default function ContentPage() {
   const [sectionFilter, setSectionFilter] = useState("all");
 
   // Reorder mode
-  const [reorderMode, setReorderMode] = useState(false);
-  const [reorderItems, setReorderItems] = useState<SortableListItem[]>([]);
-  const [savingOrder, setSavingOrder] = useState(false);
+  const reorder = useReorder({
+    endpoint: "/api/admin/content/reorder",
+    mode: "ids",
+    onSaved: () => fetchBlocks(),
+  });
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -290,31 +224,9 @@ export default function ContentPage() {
   /* ---------- Reorder ---------- */
 
   const enterReorderMode = () => {
-    setReorderItems(
-      filtered.map((b) => ({ id: b.id, title: b.title || "Untitled" }))
+    reorder.enterReorderMode(
+      filtered.map((b) => ({ id: b.id, title: b.title || "Untitled", sortOrder: b.sortOrder }))
     );
-    setReorderMode(true);
-  };
-
-  const saveOrder = async () => {
-    setSavingOrder(true);
-    try {
-      const res = await fetch("/api/admin/content/reorder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ids: reorderItems.map((i) => i.id),
-        }),
-      });
-      if (!res.ok) throw new Error();
-      toast({ title: "Order saved", variant: "success" });
-      setReorderMode(false);
-      fetchBlocks();
-    } catch {
-      toast({ title: "Failed to save order", variant: "error" });
-    } finally {
-      setSavingOrder(false);
-    }
   };
 
   /* ---------- Render ---------- */
@@ -328,7 +240,7 @@ export default function ContentPage() {
           <h1 className="text-2xl font-bold tracking-tight">Content Blocks</h1>
         </div>
         <div className="flex gap-2">
-          {!reorderMode && (
+          {!reorder.reorderMode && (
             <Button size="sm" variant="outline" onClick={enterReorderMode}>
               <GripVertical className="mr-2 size-4" />
               Reorder
@@ -346,7 +258,7 @@ export default function ContentPage() {
       </p>
 
       {/* Reorder mode */}
-      {reorderMode ? (
+      {reorder.reorderMode ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
@@ -356,17 +268,17 @@ export default function ContentPage() {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => setReorderMode(false)}
+                onClick={reorder.cancelReorder}
               >
                 Cancel
               </Button>
-              <Button size="sm" onClick={saveOrder} disabled={savingOrder}>
+              <Button size="sm" onClick={reorder.saveOrder} disabled={reorder.savingOrder}>
                 <Save className="mr-2 size-4" />
-                {savingOrder ? "Saving…" : "Save Order"}
+                {reorder.savingOrder ? "Saving…" : "Save Order"}
               </Button>
             </div>
           </div>
-          <SortableList items={reorderItems} onReorder={setReorderItems} />
+          <SortableList items={reorder.reorderItems} onReorder={reorder.setReorderItems} />
         </div>
       ) : (
         <>
@@ -473,7 +385,7 @@ export default function ContentPage() {
       )}
 
       {/* Add / Edit dialog */}
-      <Dialog
+      <AdminDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
         title={editingBlock ? "Edit Block" : "Add Block"}
@@ -561,7 +473,7 @@ export default function ContentPage() {
                 : "Create Block"}
           </Button>
         </div>
-      </Dialog>
+      </AdminDialog>
     </div>
   );
 }

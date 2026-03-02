@@ -9,143 +9,19 @@ import {
   Trash2,
   GripVertical,
   Star,
-  Filter,
   Save,
-  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import SortableList, {
-  type SortableListItem,
-} from "@/components/admin/SortableList";
+import SortableList from "@/components/admin/SortableList";
 import { toast } from "@/hooks/use-sonner";
+import { useReorder } from "@/hooks/use-reorder";
 import { cn } from "@/lib/utils";
-import { MediaPicker, type MediaAsset } from "@/components/admin/MediaPicker";
-
-/* ------------------------------------------------------------------ */
-/*  Types                                                              */
-/* ------------------------------------------------------------------ */
-
-interface CaseStudy {
-  id: string;
-  title: string;
-  slug: string;
-  summary: string | null;
-  body: string | null;
-  status: "draft" | "published" | "scheduled";
-  featured: boolean;
-  publishedAt: string | null;
-  coverImage: string | null;
-  gallery: string | null;
-  sortOrder: number;
-  metaTitle: string | null;
-  metaDesc: string | null;
-  ogImage: string | null;
-  createdAt: string;
-  updatedAt: string;
-  author: {
-    id: string;
-    name: string;
-    email: string;
-  }
-}
-
-interface PaginatedCaseStudies {
-  data: CaseStudy[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-/* ------------------------------------------------------------------ */
-/*  Helpers                                                            */
-/* ------------------------------------------------------------------ */
-
-function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_]+/g, "-")
-    .replace(/-+/g, "-");
-}
-
-const statusBadge: Record<string, string> = {
-  published:
-    "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  draft:
-    "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  scheduled:
-    "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-};
-
-/* ------------------------------------------------------------------ */
-/*  Dialog                                                             */
-/* ------------------------------------------------------------------ */
-
-function Dialog({
-  open,
-  onClose,
-  title,
-  children,
-  wide,
-}: {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-  wide?: boolean;
-}) {
-  const panelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    const timer = setTimeout(() => {
-      panelRef.current?.querySelector<HTMLElement>("input")?.focus();
-    }, 50);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      clearTimeout(timer);
-    };
-  }, [open]);
-
-  if (!open) return null;
-
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        ref={panelRef}
-        className={cn(
-          "w-full rounded-lg border bg-background p-6 shadow-xl animate-[dialogIn_0.2s_ease-out_both]",
-          wide ? "max-w-3xl" : "max-w-lg"
-        )}
-      >
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <Button size="icon-sm" variant="ghost" onClick={onClose}>
-            <X className="size-4" />
-          </Button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
+import { STATUS_BADGE } from "@/lib/constants";
+import { CaseStudyFormDialog } from "./_components/CaseStudyFormDialog";
+import type { CaseStudy, PaginatedCaseStudies } from "./_components/case-study.types";
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
@@ -165,33 +41,15 @@ export default function CaseStudiesPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
 
   // Reorder mode
-  const [reorderMode, setReorderMode] = useState(false);
-  const [reorderItems, setReorderItems] = useState<SortableListItem[]>([]);
-  const [savingOrder, setSavingOrder] = useState(false);
-  const reorderSnapshotRef = useRef<SortableListItem[]>([]);
+  const reorder = useReorder({
+    endpoint: "/api/admin/case-studies/reorder",
+    mode: "fractional",
+    onSaved: () => fetchStudies(page, search, statusFilter, featuredFilter),
+  });
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingStudy, setEditingStudy] = useState<CaseStudy | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  // Form fields
-  const [formTitle, setFormTitle] = useState("");
-  const [formSlug, setFormSlug] = useState("");
-  const [slugManual, setSlugManual] = useState(false);
-  const [formSummary, setFormSummary] = useState("");
-  const [formBody, setFormBody] = useState("");
-  const [formStatus, setFormStatus] = useState<
-    "draft" | "published" | "scheduled"
-  >("draft");
-  const [formPublishedAt, setFormPublishedAt] = useState("");
-  const [formFeatured, setFormFeatured] = useState(false);
-  const [formMetaTitle, setFormMetaTitle] = useState("");
-  const [formmetaDesc, setFormmetaDesc] = useState("");
-  const [formOgImage, setFormOgImage] = useState("");
-  const [seoOpen, setSeoOpen] = useState(false);
-  const [coverAsset, setCoverAsset] = useState<MediaAsset[]>([]);
-  const [galleryAssets, setGalleryAssets] = useState<MediaAsset[]>([]);
 
   /* ---------- Fetch ---------- */
 
@@ -234,149 +92,16 @@ export default function CaseStudiesPage() {
     }, 400);
   };
 
-  const makePseudoAssetFromUrl = (url: string): MediaAsset => {
-    const clean = url.trim();
-    const filename = (() => {
-      try {
-        const u = new URL(clean);
-        return decodeURIComponent(u.pathname.split("/").pop() || clean);
-      } catch {
-        return clean.split("/").pop() || clean;
-      }
-    })();
-
-    return {
-      id: clean,
-      url: clean,
-      filename,
-      mimeType: "image/*",
-      size: 0,
-      width: null,
-      height: null,
-      alt: null,
-      title: null,
-      tags: null,
-      folder: "unknown",
-      createdBy: null,
-      deleted: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      provider: undefined,
-      providerFileId: undefined,
-      providerPath: undefined,
-      thumbnailUrl: undefined,
-    };
-  };
-
-  const parseGalleryUrls = (gallery: string | null | undefined): string[] => {
-    if (!gallery) return [];
-    return gallery
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .filter((u, i, arr) => arr.indexOf(u) === i); // dedupe
-  };
-
   /* ---------- Dialog helpers ---------- */
-
-  const resetForm = (study?: CaseStudy) => {
-    setFormTitle(study?.title ?? "");
-    setFormSlug(study?.slug ?? "");
-    setSlugManual(!!study);
-    setFormSummary(study?.summary ?? "");
-    setFormBody(study?.body ?? "");
-    setFormStatus(study?.status ?? "draft");
-    setFormPublishedAt(
-      study?.publishedAt ? study.publishedAt.substring(0, 10) : ""
-    );
-    setFormFeatured(study?.featured ?? false);
-    setFormMetaTitle(study?.metaTitle ?? "");
-    setFormmetaDesc(study?.metaDesc ?? "");
-    setFormOgImage(study?.ogImage ?? "");
-    const coverUrl = (study?.coverImage ?? "").trim();
-    setCoverAsset(coverUrl ? [makePseudoAssetFromUrl(coverUrl)] : []);
-
-    const galleryUrls = parseGalleryUrls(study?.gallery);
-    setGalleryAssets(galleryUrls.map(makePseudoAssetFromUrl));
-    setSeoOpen(false);
-  };
 
   const openCreate = () => {
     setEditingStudy(null);
-    resetForm();
     setDialogOpen(true);
   };
 
   const openEdit = (study: CaseStudy) => {
     setEditingStudy(study);
-    resetForm(study);
     setDialogOpen(true);
-  };
-
-  /* ---------- Auto-slug ---------- */
-
-  const handleTitleChange = (value: string) => {
-    setFormTitle(value);
-    if (!slugManual) setFormSlug(slugify(value));
-  };
-
-  /* ---------- Submit ---------- */
-
-  const handleSubmit = async () => {
-    if (!formTitle.trim()) {
-      toast({ title: "Title is required", variant: "error" });
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const body: Record<string, unknown> = {
-        title: formTitle.trim(),
-        slug: formSlug || slugify(formTitle),
-        summary: formSummary || null,
-        body: formBody || null,
-        status: formStatus,
-        publishedAt: formPublishedAt || null,
-        coverImage: coverAsset[0]?.url ?? null,
-        gallery: galleryAssets.length ? galleryAssets.map(a => a.url).join(", ") : null,
-        featured: formFeatured,
-        metaTitle: formMetaTitle || null,
-        metaDesc: formmetaDesc || null,
-        ogImage: formOgImage || null,
-      };
-
-      const url = editingStudy
-        ? `/api/admin/case-studies/${editingStudy.id}`
-        : "/api/admin/case-studies";
-      const method = editingStudy ? "PATCH" : "POST";
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => null);
-        console.log(err.error)
-        throw new Error(
-          typeof err?.error != null ? err.error.messages : "Request failed"
-        );
-      }
-
-      toast({
-        title: editingStudy ? "Case study updated" : "Case study created",
-        variant: "success",
-      });
-      setDialogOpen(false);
-      fetchStudies(page, search, statusFilter, featuredFilter);
-    } catch (err) {
-      toast({
-        title: err instanceof Error ? err.message : "Something went wrong",
-        variant: "error",
-      });
-    } finally {
-      setSubmitting(false);
-    }
   };
 
   /* ---------- Delete ---------- */
@@ -421,69 +146,9 @@ export default function CaseStudiesPage() {
 
   const enterReorderMode = () => {
     if (!studies) return;
-    const items = studies.data.map((s) => ({
-      id: s.id,
-      title: s.title,
-      sortOrder: s.sortOrder,
-    }));
-    setReorderItems(items);
-    reorderSnapshotRef.current = [...items];
-    setReorderMode(true);
-  };
-
-  const saveOrder = async () => {
-    setSavingOrder(true);
-    try {
-      const snapshot = reorderSnapshotRef.current;
-      const originalSortOrder = new Map(snapshot.map((i) => [i.id, i.sortOrder]));
-      const effectiveOrder = new Map<string, number>(originalSortOrder);
-      const currentIds = reorderItems.map((i) => i.id);
-      const snapshotIds = snapshot.map((i) => i.id);
-
-      for (let i = 0; i < currentIds.length; i++) {
-        const id = currentIds[i];
-        if (snapshotIds[i] === id) continue;
-
-        const prevId = i > 0 ? currentIds[i - 1] : null;
-        const nextId = i < currentIds.length - 1 ? currentIds[i + 1] : null;
-
-        const prevOrder = prevId ? (effectiveOrder.get(prevId) ?? 0) : 0;
-        const nextOrder = nextId
-            ? (effectiveOrder.get(nextId) ?? prevOrder + 2000)
-            : prevOrder + 2000;
-
-        const newOrder = (prevOrder + nextOrder) / 2;
-        effectiveOrder.set(id, newOrder);
-      }
-
-      const changes = currentIds
-          .filter((id) => {
-            const orig = originalSortOrder.get(id) ?? 0;
-            const next = effectiveOrder.get(id) ?? 0;
-            return Math.abs(orig - next) > 0.0001;
-          })
-          .map((id) => ({ id, sortOrder: effectiveOrder.get(id)! }));
-
-      if (changes.length === 0) {
-        setReorderMode(false);
-        return;
-      }
-
-      const res = await fetch("/api/admin/case-studies/reorder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items: changes }),
-      });
-      if (!res.ok) throw new Error();
-
-      toast({ title: "Order saved", variant: "success" });
-      setReorderMode(false);
-      fetchStudies(page, search, statusFilter, featuredFilter);
-    } catch {
-      toast({ title: "Failed to save order", variant: "error" });
-    } finally {
-      setSavingOrder(false);
-    }
+    reorder.enterReorderMode(
+      studies.data.map((s) => ({ id: s.id, title: s.title, sortOrder: s.sortOrder }))
+    );
   };
 
   /* ---------- Render ---------- */
@@ -497,7 +162,7 @@ export default function CaseStudiesPage() {
           <h1 className="text-2xl font-bold tracking-tight">Case Studies</h1>
         </div>
         <div className="flex gap-2">
-          {!reorderMode && (
+          {!reorder.reorderMode && (
             <Button size="sm" variant="outline" onClick={enterReorderMode}>
               <GripVertical className="mr-2 size-4" />
               Reorder Mode
@@ -511,7 +176,7 @@ export default function CaseStudiesPage() {
       </div>
 
       {/* Reorder mode */}
-      {reorderMode ? (
+      {reorder.reorderMode ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
@@ -521,17 +186,17 @@ export default function CaseStudiesPage() {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => setReorderMode(false)}
+                onClick={reorder.cancelReorder}
               >
                 Cancel
               </Button>
-              <Button size="sm" onClick={saveOrder} disabled={savingOrder}>
+              <Button size="sm" onClick={reorder.saveOrder} disabled={reorder.savingOrder}>
                 <Save className="mr-2 size-4" />
-                {savingOrder ? "Saving…" : "Save Order"}
+                {reorder.savingOrder ? "Saving…" : "Save Order"}
               </Button>
             </div>
           </div>
-          <SortableList items={reorderItems} onReorder={setReorderItems} />
+          <SortableList items={reorder.reorderItems} onReorder={reorder.setReorderItems} />
         </div>
       ) : (
         <>
@@ -639,7 +304,7 @@ export default function CaseStudiesPage() {
                           <span
                             className={cn(
                               "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                              statusBadge[study.status]
+                              STATUS_BADGE[study.status]
                             )}
                           >
                             {study.status}
@@ -725,205 +390,12 @@ export default function CaseStudiesPage() {
       )}
 
       {/* Create / Edit Dialog */}
-      <Dialog
+      <CaseStudyFormDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        title={editingStudy ? "Edit Case Study" : "New Case Study"}
-        wide
-      >
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* Left column – 2/3 */}
-          <div className="space-y-4 md:col-span-2">
-            <div>
-              <label htmlFor="cs-title" className="mb-1 block text-sm font-medium">
-                Title
-              </label>
-              <Input
-                id="cs-title"
-                value={formTitle}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="Case study title"
-              />
-            </div>
-            <div>
-              <label htmlFor="cs-slug" className="mb-1 block text-sm font-medium">
-                Slug
-              </label>
-              <Input
-                id="cs-slug"
-                value={formSlug}
-                onChange={(e) => {
-                  setSlugManual(true);
-                  setFormSlug(e.target.value);
-                }}
-                placeholder="auto-generated-slug"
-              />
-            </div>
-            <div>
-              <label htmlFor="cs-summary" className="mb-1 block text-sm font-medium">
-                Summary
-              </label>
-              <textarea
-                id="cs-summary"
-                rows={3}
-                value={formSummary}
-                onChange={(e) => setFormSummary(e.target.value)}
-                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-                placeholder="Brief summary…"
-              />
-            </div>
-            <div>
-              <label htmlFor="cs-body" className="mb-1 block text-sm font-medium">
-                Body
-              </label>
-              <textarea
-                id="cs-body"
-                rows={12}
-                value={formBody}
-                onChange={(e) => setFormBody(e.target.value)}
-                className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-                placeholder="Full case study content…"
-              />
-            </div>
-          </div>
-
-          {/* Right column – 1/3 */}
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="cs-status" className="mb-1 block text-sm font-medium">
-                Status
-              </label>
-              <select
-                id="cs-status"
-                value={formStatus}
-                onChange={(e) =>
-                  setFormStatus(
-                    e.target.value as "draft" | "published" | "scheduled"
-                  )
-                }
-                className="h-9 w-full rounded-md border bg-background px-3 text-sm"
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="scheduled">Scheduled</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="cs-published" className="mb-1 block text-sm font-medium">
-                Published At
-              </label>
-              <Input
-                id="cs-published"
-                type="date"
-                value={formPublishedAt}
-                onChange={(e) => setFormPublishedAt(e.target.value)}
-              />
-            </div>
-            <div>
-              <MediaPicker
-                  label="Cover Image"
-                  mode="single"
-                  value={coverAsset}
-                  onChange={setCoverAsset}
-              />
-            </div>
-            <div>
-              <MediaPicker
-                  label="Gallery"
-                  mode="multi"
-                  value={galleryAssets}
-                  onChange={setGalleryAssets}
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                id="cs-featured"
-                type="checkbox"
-                checked={formFeatured}
-                onChange={(e) => setFormFeatured(e.target.checked)}
-                className="size-4 rounded border"
-              />
-              <label htmlFor="cs-featured" className="text-sm font-medium">
-                Featured
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* SEO section */}
-        <div className="mt-6 rounded-md border">
-          <button
-            type="button"
-            className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium"
-            onClick={() => setSeoOpen(!seoOpen)}
-          >
-            <span>SEO Settings</span>
-            <Filter
-              className={cn(
-                "size-4 transition-transform",
-                seoOpen && "rotate-180"
-              )}
-            />
-          </button>
-          {seoOpen && (
-            <div className="space-y-4 border-t px-4 py-4">
-              <div>
-                <label htmlFor="cs-meta-title" className="mb-1 block text-sm font-medium">
-                  Meta Title
-                </label>
-                <Input
-                  id="cs-meta-title"
-                  value={formMetaTitle}
-                  onChange={(e) => setFormMetaTitle(e.target.value)}
-                  placeholder="SEO title"
-                />
-              </div>
-              <div>
-                <label htmlFor="cs-meta-desc" className="mb-1 block text-sm font-medium">
-                  Meta Description
-                </label>
-                <textarea
-                  id="cs-meta-desc"
-                  rows={2}
-                  value={formmetaDesc}
-                  onChange={(e) => setFormmetaDesc(e.target.value)}
-                  className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-                  placeholder="SEO description"
-                />
-              </div>
-              <div>
-                <label htmlFor="cs-og" className="mb-1 block text-sm font-medium">
-                  OG Image URL
-                </label>
-                <Input
-                  id="cs-og"
-                  value={formOgImage}
-                  onChange={(e) => setFormOgImage(e.target.value)}
-                  placeholder="https://…"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="mt-6 flex justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setDialogOpen(false)}
-          >
-            Cancel
-          </Button>
-          <Button size="sm" onClick={handleSubmit} disabled={submitting}>
-            {submitting
-              ? "Saving…"
-              : editingStudy
-                ? "Update Case Study"
-                : "Create Case Study"}
-          </Button>
-        </div>
-      </Dialog>
+        editingStudy={editingStudy}
+        onSaved={() => fetchStudies(page, search, statusFilter, featuredFilter)}
+      />
     </div>
   );
 }
