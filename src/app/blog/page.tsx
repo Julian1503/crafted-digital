@@ -5,8 +5,11 @@ import { ArrowLeft } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SkipLink } from "@/components/ui/skip-link";
-import {blogPosts} from "@/components/sections/Blog/blog-data";
 import BlogCard from "@/components/sections/Blog/BlogCard";
+import { getPublishedBlogPosts } from "@/lib/services/blog";
+import { toBlogCardProps } from "@/lib/mappers/blog.mapper";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
     title: "Blog | Web Development Tips for Australian Businesses",
@@ -24,7 +27,10 @@ export const metadata: Metadata = {
     },
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+    const posts = await getPublishedBlogPosts();
+    const blogPosts = posts.map(toBlogCardProps);
+
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-secondary/30">
             <SkipLink />
@@ -66,7 +72,7 @@ export default function BlogPage() {
                                 </div>
                             ) : (
                                 blogPosts.map((post) => (
-                                    <BlogCard key={post.title} post={ post } />
+                                    <BlogCard key={post.slug} post={ post } />
                                 ))
                             )}
                         </div>

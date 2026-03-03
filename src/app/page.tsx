@@ -1,11 +1,14 @@
 import {Header} from "@/components/layout/Header";
 import Hero from "@/components/sections/Hero/Hero";
-import {Work} from "@/components/sections/Work/Work";
+import {WorkSection} from "@/components/sections/Work/WorkSection";
 import {SkipLink} from "@/components/ui/skip-link";
 import dynamic from "next/dynamic";
 import {FAQSchema} from "@/components/seo/FAQSchema";
+import {PricingSection} from "@/components/sections/Pricing/PricingSection";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
     // Dynamically import below-the-fold components to reduce initial JS bundle
     // These components are not visible on initial load and can be loaded asynchronously
     const Services = dynamic(() => import("@/components/sections/Services/Services").then(mod => ({ default: mod.Services })), {
@@ -18,10 +21,6 @@ export default function Home() {
 
     const Process = dynamic(() => import("@/components/sections/Process/Process").then(mod => ({ default: mod.Process })), {
         loading: () => <section className="py-24 bg-background" aria-hidden="true" />,
-    });
-
-    const Pricing = dynamic(() => import("@/components/sections/Pricing/Pricing").then(mod => ({ default: mod.Pricing })), {
-        loading: () => <section className="py-24 bg-muted/30" aria-hidden="true" />,
     });
 
     const FAQ = dynamic(() => import("@/components/sections/FAQ").then(mod => ({ default: mod.FAQ })), {
@@ -44,10 +43,11 @@ export default function Home() {
             <main id="main-content">
                 <FAQSchema />
                 <Hero/>
-                <Work/>
+                <WorkSection/>
                 <Services/>
+                <TechStack/>
                 <Process/>
-                <Pricing/>
+                <PricingSection/>
                 <FAQ/>
                 <Contact/>
             </main>
