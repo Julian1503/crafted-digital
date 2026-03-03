@@ -44,6 +44,6 @@ function parsePlanMeta(features: string | null): PlanMeta {
 function formatPrice(price: number, currency: string, interval: string): string {
     const formatted = price.toLocaleString("en-AU");
     const prefix = currency ?? "AUD";
-    const suffix = interval === "monthly" ? "/mo" : interval === "one-time" ? "+" : "+";
+    const suffix = interval === "monthly" ? "/mo" : "+";
     return `${prefix} ${formatted}${suffix}`;
 }

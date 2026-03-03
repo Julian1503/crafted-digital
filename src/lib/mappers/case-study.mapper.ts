@@ -90,17 +90,21 @@ export function toProjectProps(study: PrismaCaseStudy): Project {
 }
 
 function extractClient(study: PrismaCaseStudy): string {
-    const body = parseCaseStudyBody(study.body);
-    if (body && "client" in (JSON.parse(study.body) as Record<string, unknown>)) {
-        return (JSON.parse(study.body) as Record<string, string>).client;
+    try {
+        const parsed = JSON.parse(study.body) as Record<string, unknown>;
+        if (typeof parsed.client === "string") return parsed.client;
+    } catch {
+        // ignore
     }
     return study.metaTitle ?? study.title;
 }
 
 function extractCategory(study: PrismaCaseStudy): string {
-    const body = parseCaseStudyBody(study.body);
-    if (body && "category" in (JSON.parse(study.body) as Record<string, unknown>)) {
-        return (JSON.parse(study.body) as Record<string, string>).category;
+    try {
+        const parsed = JSON.parse(study.body) as Record<string, unknown>;
+        if (typeof parsed.category === "string") return parsed.category;
+    } catch {
+        // ignore
     }
     return "Case Study";
 }

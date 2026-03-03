@@ -20,9 +20,13 @@ export function toBlogCardProps(post: PrismaBlogPost): BlogPost {
         excerpt: post.excerpt ?? "",
         category: post.categories ?? "General",
         readTime: estimateReadTime(post.content),
-        publishedAt: post.publishedAt?.toISOString().split("T")[0] ?? post.createdAt.toISOString().split("T")[0],
+        publishedAt: toDateString(post.publishedAt ?? post.createdAt),
         author: post.author?.name ?? "Julian Delgado",
     };
+}
+
+function toDateString(date: Date): string {
+    return date.toISOString().split("T")[0];
 }
 
 function estimateReadTime(content: string): string {
