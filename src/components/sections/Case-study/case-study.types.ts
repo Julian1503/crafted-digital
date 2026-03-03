@@ -54,7 +54,7 @@ export interface CaseStudyTestimonial {
     quote: string;
 
     /** Name of the person providing the testimonial */
-    author: { id: string; name: string; email: string; };
+    author: string;
 
     /** Role or position of the author */
     role: string;

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Work/Portfolio data.
- * Contains featured projects displayed in the Work section carousel.
+ * Contains animation constants and fallback project data for the Work section carousel.
  */
 import { Project } from "@/components/sections/Work/work.types";
 
@@ -14,8 +14,7 @@ export const STAGGER_MS_DESKTOP = 90;
 export const CARD_MS = 620;
 
 /**
- * Featured portfolio projects.
- * Each project includes title, brand, category, description, and image.
+ * Fallback portfolio projects used when the database is empty or unavailable.
  */
 export const PROJECTS: Project[] = [
     {

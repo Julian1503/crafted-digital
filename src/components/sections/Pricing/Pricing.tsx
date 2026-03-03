@@ -9,7 +9,11 @@ import { Sparkles, Timer, ShieldCheck } from "lucide-react";
 import { useScrollAnimation } from "@/lib/use-scroll-animation";
 import { scrollToId } from "@/lib/utils";
 import PricingCard from "@/components/sections/Pricing/PricingCard";
-import { plans } from "@/components/sections/Pricing/pricing-data";
+import type { Pricing as PricingType } from "@/components/sections/Pricing/pricing.types";
+
+interface PricingProps {
+    plans: PricingType[];
+}
 
 /**
  * Pricing section component displaying available plans and pricing.
@@ -17,7 +21,7 @@ import { plans } from "@/components/sections/Pricing/pricing-data";
  *
  * @returns The rendered Pricing section
  */
-export function Pricing() {
+export function Pricing({ plans }: PricingProps) {
     const { ref, isVisible } = useScrollAnimation();
 
     return (

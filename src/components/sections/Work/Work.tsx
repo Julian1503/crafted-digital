@@ -10,10 +10,15 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import CarouselControls from "@/components/sections/Work/CarouselControls";
-import { HEADER_MS, PROJECTS } from "@/components/sections/Work/work-data";
+import { HEADER_MS } from "@/components/sections/Work/work-data";
+import { Project } from "@/components/sections/Work/work.types";
 
 /** Duration of the autoplay interval in milliseconds */
 const AUTOPLAY_MS = 4500;
+
+interface WorkProps {
+    projects: Project[];
+}
 
 /**
  * Work section component displaying featured projects in a carousel.
@@ -21,7 +26,7 @@ const AUTOPLAY_MS = 4500;
  *
  * @returns The rendered Work section with project carousel
  */
-export function Work() {
+export function Work({ projects }: WorkProps) {
     const scrollerRef = useRef<HTMLDivElement | null>(null);
     const sectionRef = useRef<HTMLElement | null>(null);
     const progressRefs = useRef<Array<HTMLDivElement | null>>([]);
@@ -288,7 +293,7 @@ export function Work() {
                                   activeIndex={activeIndex}
                                   hasRevealed={hasRevealed}
                                   scrollerRef={scrollerRef}
-                                  projects={PROJECTS}/>
+                                  projects={projects}/>
             </div>
         </section>
     );

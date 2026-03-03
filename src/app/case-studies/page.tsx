@@ -5,7 +5,10 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import {CaseStudyCard} from "@/components/sections/Case-study/CaseStudyCard";
-import {caseStudies} from "@/components/sections/Case-study/case-study.data";
+import { getPublishedCaseStudies } from "@/lib/services/case-studies";
+import { toCaseStudyCardProps } from "@/lib/mappers/case-study.mapper";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
     title: "Case Studies | Web Development Projects for Australian Businesses",
@@ -23,7 +26,10 @@ export const metadata: Metadata = {
     },
 };
 
-export default function CaseStudiesPage() {
+export default async function CaseStudiesPage() {
+    const studies = await getPublishedCaseStudies();
+    const caseStudies = studies.map(toCaseStudyCardProps);
+
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-secondary/30">
             <SkipLink />
