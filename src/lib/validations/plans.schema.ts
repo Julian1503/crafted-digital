@@ -7,7 +7,7 @@ export const planCreateSchema = z.object({
   currency: z.string().optional().default("AUD"),
   interval: z.string().optional().default("one-time"),
   features: z.string().optional(),
-  sortOrder: z.number().int().optional(),
+  sortOrder: z.number().optional(),
   active: z.boolean().optional().default(true),
   highlighted: z.boolean().optional().default(false),
 });
@@ -19,7 +19,7 @@ export const planUpdateSchema = z.object({
   currency: z.string().optional(),
   interval: z.string().optional(),
   features: z.string().optional(),
-  sortOrder: z.number().int().optional(),
+  sortOrder: z.number().optional(),
   active: z.boolean().optional(),
   highlighted: z.boolean().optional(),
 });

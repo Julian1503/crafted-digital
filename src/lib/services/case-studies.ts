@@ -13,11 +13,11 @@ interface CaseStudyPaginationParams {
 
 function generateSlug(title: string): string {
   return title
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
 }
 
 async function ensureUniqueSlug(slug: string, excludeId?: string): Promise<string> {
@@ -32,7 +32,8 @@ async function ensureUniqueSlug(slug: string, excludeId?: string): Promise<strin
 }
 
 export async function getCaseStudies(params: CaseStudyPaginationParams = {}) {
-  const { page = 1, limit = 20, search, sortBy = "sortOrder", sortDir = "desc", status, featured } = params;
+  // ✅ sortDir default cambiado a "asc" — consistente con fractional indexing
+  const { page = 1, limit = 20, search, sortBy = "sortOrder", sortDir = "asc", status, featured } = params;
   const skip = (page - 1) * limit;
 
   const where: Record<string, unknown> = { deleted: false };
@@ -77,31 +78,31 @@ export async function getPublishedCaseStudies() {
 }
 
 export async function createCaseStudy(
-  data: {
-    title: string;
-    slug?: string | null;
-    summary?: string | null;
-    body: string;
-    coverImage?: string | null;
-    gallery?: string | null;
-    status?: string | null;
-    publishedAt?: Date | null;
-    featured?: boolean;
-    sortOrder?: number;
-    metaTitle?: string | null;
-    metaDesc?: string | null;
-    ogImage?: string | null;
-  },
-  actorId?: string
+    data: {
+      title: string;
+      slug?: string | null;
+      summary?: string | null;
+      body: string;
+      coverImage?: string | null;
+      gallery?: string | null;
+      status?: string | null;
+      publishedAt?: Date | null;
+      featured?: boolean;
+      sortOrder?: number;
+      metaTitle?: string | null;
+      metaDesc?: string | null;
+      ogImage?: string | null;
+    },
+    actorId?: string
 ) {
   const slug = await ensureUniqueSlug(data.slug || generateSlug(data.title));
 
-  const sortOrder = await prisma.caseStudy.aggregate({
+  const aggregate = await prisma.caseStudy.aggregate({
     _max: { sortOrder: true },
-    where: { deleted: false }
-  })
+    where: { deleted: false },
+  });
   const SORT_GAP = 1000;
-  const nextSortOrder = (sortOrder._max.sortOrder ?? 0) + SORT_GAP;
+  const nextSortOrder = (aggregate._max.sortOrder ?? 0) + SORT_GAP;
 
   const caseStudy = await prisma.caseStudy.create({
     data: {
@@ -128,23 +129,23 @@ export async function createCaseStudy(
 }
 
 export async function updateCaseStudy(
-  id: string,
-  data: {
-    title?: string | null;
-    slug?: string | null;
-    summary?: string | null;
-    body?: string | null;
-    coverImage?: string | null;
-    gallery?: string | null;
-    status?: string | null;
-    publishedAt?: Date | null;
-    featured?: boolean | null;
-    sortOrder?: number | null;
-    metaTitle?: string | null;
-    metaDesc?: string | null;
-    ogImage?: string | null;
-  },
-  actorId?: string
+    id: string,
+    data: {
+      title?: string | null;
+      slug?: string | null;
+      summary?: string | null;
+      body?: string | null;
+      coverImage?: string | null;
+      gallery?: string | null;
+      status?: string | null;
+      publishedAt?: Date | null;
+      featured?: boolean | null;
+      sortOrder?: number | null;
+      metaTitle?: string | null;
+      metaDesc?: string | null;
+      ogImage?: string | null;
+    },
+    actorId?: string
 ) {
   const updateData: Record<string, unknown> = { ...data };
   if (data.slug) {
@@ -164,22 +165,10 @@ export async function updateCaseStudy(
 }
 
 export async function deleteCaseStudy(id: string, actorId?: string) {
-  const target = await prisma.caseStudy.findUniqueOrThrow({
-    where: { id },
-    select: { sortOrder: true },
-  });
-
+  // ✅ Eliminado el updateMany con decrement — innecesario y destructivo con fractional indexing
   const caseStudy = await prisma.caseStudy.update({
     where: { id },
     data: { deleted: true },
-  });
-
-  await prisma.caseStudy.updateMany({
-    where: {
-      deleted: false,
-      sortOrder: { gt: target.sortOrder },
-    },
-    data: { sortOrder: { decrement: 1 } },
   });
 
   await logAudit({ actorId, action: "delete", entity: "CaseStudy", entityId: id });
@@ -188,9 +177,9 @@ export async function deleteCaseStudy(id: string, actorId?: string) {
 
 export async function reorderCaseStudies(items: { id: string; sortOrder: number }[], actorId?: string) {
   await prisma.$transaction(
-    items.map((item) =>
-        prisma.caseStudy.update({ where: { id: item.id }, data: { sortOrder: item.sortOrder } })
-    )
+      items.map((item) =>
+          prisma.caseStudy.update({ where: { id: item.id }, data: { sortOrder: item.sortOrder } })
+      )
   );
   await renormalizeIfNeeded(actorId);
   await logAudit({ actorId, action: "reorder", entity: "CaseStudy", metadata: { count: items.length } });
@@ -204,13 +193,12 @@ async function renormalizeIfNeeded(actorId?: string) {
     select: { id: true, sortOrder: true },
   });
 
-  // Check minimum gap
   const minGap = items.reduce((min, item, i) => {
     if (i === 0) return min;
     return Math.min(min, item.sortOrder - items[i - 1].sortOrder);
   }, Infinity);
 
-  if (minGap >= 1) return; // Gaps still healthy, skip
+  if (minGap >= 1) return;
 
   await prisma.$transaction(
       items.map((item, i) =>

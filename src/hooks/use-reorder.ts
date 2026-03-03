@@ -13,37 +13,42 @@ import { toast } from "@/hooks/use-sonner";
  * Only returns items whose order actually changed from the snapshot.
  */
 export function computeFractionalChanges(
-  currentItems: SortableListItem[],
-  snapshot: SortableListItem[],
+    currentItems: SortableListItem[],
+    snapshot: SortableListItem[],
 ): { id: string; sortOrder: number }[] {
   const originalSortOrder = new Map(snapshot.map((i) => [i.id, i.sortOrder]));
+
+  // Start with original values — only overwrite when an item is out of place
   const effectiveOrder = new Map<string, number>(originalSortOrder);
   const currentIds = currentItems.map((i) => i.id);
-  const snapshotIds = snapshot.map((i) => i.id);
 
   for (let i = 0; i < currentIds.length; i++) {
     const id = currentIds[i];
-    if (snapshotIds[i] === id) continue;
+    const currentOrder = effectiveOrder.get(id)!;
 
     const prevId = i > 0 ? currentIds[i - 1] : null;
     const nextId = i < currentIds.length - 1 ? currentIds[i + 1] : null;
 
     const prevOrder = prevId ? (effectiveOrder.get(prevId) ?? 0) : 0;
     const nextOrder = nextId
-      ? (effectiveOrder.get(nextId) ?? prevOrder + 2000)
-      : prevOrder + 2000;
+        ? (effectiveOrder.get(nextId) ?? prevOrder + 2000)
+        : prevOrder + 2000;
 
-    const newOrder = (prevOrder + nextOrder) / 2;
-    effectiveOrder.set(id, newOrder);
+    // ✅ Item already fits between its neighbors — no change needed
+    if (currentOrder > prevOrder && currentOrder < nextOrder) continue;
+
+    // ❌ Out of place — assign midpoint between neighbors
+    effectiveOrder.set(id, (prevOrder + nextOrder) / 2);
   }
 
+  // Return only items that actually changed
   return currentIds
-    .filter((id) => {
-      const orig = originalSortOrder.get(id) ?? 0;
-      const next = effectiveOrder.get(id) ?? 0;
-      return Math.abs(orig - next) > 0.0001;
-    })
-    .map((id) => ({ id, sortOrder: effectiveOrder.get(id)! }));
+      .filter((id) => {
+        const orig = originalSortOrder.get(id) ?? 0;
+        const next = effectiveOrder.get(id) ?? 0;
+        return Math.abs(orig - next) > 0.0001;
+      })
+      .map((id) => ({ id, sortOrder: effectiveOrder.get(id)! }));
 }
 
 /* ------------------------------------------------------------------ */
@@ -51,8 +56,8 @@ export function computeFractionalChanges(
 /* ------------------------------------------------------------------ */
 
 type ReorderPayloadMode =
-  | "fractional" // sends { items: [{ id, sortOrder }] }
-  | "ids";       // sends { ids: string[] }
+    | "fractional" // sends { items: [{ id, sortOrder }] }
+    | "ids";       // sends { ids: string[] }
 
 interface UseReorderOptions {
   /** API endpoint to POST reorder data to */

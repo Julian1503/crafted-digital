@@ -28,6 +28,6 @@ export const paginationSchema = z.object({
 export const reorderSchema = z.array(
   z.object({
     id: z.string().min(1),
-    sortOrder: z.number().int(),
+    sortOrder: z.number(),
   }),
 );
