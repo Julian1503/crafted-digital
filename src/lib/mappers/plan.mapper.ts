@@ -37,7 +37,7 @@ function parsePlanMeta(features: string | null): PlanMeta {
     try {
         return JSON.parse(features) as PlanMeta;
     } catch {
-        return { features: features.split(",").map((f) => f.trim()) };
+        return { features: features.split("\n").map((f) => f.trim()) };
     }
 }
 

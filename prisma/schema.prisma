@@ -163,6 +163,18 @@ model BlogPost {
 }
 
 // ─── CONTENT: CASE STUDIES ───────────────────────────────────────────
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  website     String?
+  logo        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  caseStudies CaseStudy[]
+}
 
 model CaseStudy {
   id          String    @id @default(cuid())
@@ -171,6 +183,9 @@ model CaseStudy {
   summary     String?
   body        String
   coverImage  String?
+  challenges  String?
+  solutions   String?
+  results     String?
   gallery     String?
   status      String    @default("draft")
   publishedAt DateTime?
@@ -184,11 +199,74 @@ model CaseStudy {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  author                User?                 @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  customer              Customer?             @relation(fields: [customerId], references: [id])
+  customerId            String?
+  caseStudyTools        CaseStudyTool[]
+  caseStudyIndustries   CaseStudyIndustry[]
+  caseStudyTechnologies CaseStudyTechnology[]
 
   @@index([status])
   @@index([slug])
   @@index([sortOrder])
+}
+
+model Industry {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  caseStudies CaseStudyIndustry[]
+
+  @@unique([name])
+}
+
+model CaseStudyIndustry {
+  caseStudyId String
+  industryId  String
+
+  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id], onDelete: Cascade)
+  industry  Industry  @relation(fields: [industryId], references: [id], onDelete: Cascade)
+
+  @@id([caseStudyId, industryId])
+  @@index([industryId])
+}
+
+model Tool {
+  id          String          @id @default(cuid())
+  name        String          @unique
+  slug        String          @unique
+  caseStudies CaseStudyTool[]
+}
+
+model Technology {
+  id          String                @id @default(cuid())
+  name        String                @unique
+  slug        String                @unique
+  caseStudies CaseStudyTechnology[]
+}
+
+model CaseStudyTechnology {
+  caseStudyId  String
+  technologyId String
+
+  caseStudy  CaseStudy  @relation(fields: [caseStudyId], references: [id], onDelete: Cascade)
+  technology Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+
+  @@id([caseStudyId, technologyId])
+}
+
+model CaseStudyTool {
+  caseStudyId String
+  toolId      String
+
+  caseStudy CaseStudy @relation(fields: [caseStudyId], references: [id], onDelete: Cascade)
+  tool      Tool      @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@id([caseStudyId, toolId])
 }
 
 // ─── CONTENT BLOCKS ──────────────────────────────────────────────────

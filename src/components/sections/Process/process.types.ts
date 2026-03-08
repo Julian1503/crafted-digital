@@ -16,4 +16,6 @@ export interface Process {
     bullets: string[];
     /** Icon component to display with the step */
     icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+    image?: string;
+    video?: string;
 }

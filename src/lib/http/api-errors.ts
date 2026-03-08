@@ -41,7 +41,6 @@ export function toValidationError(err: z.ZodError) {
     }
     for (const k of Object.keys(fieldErrors)) fieldErrors[k] = unique(fieldErrors[k]);
 
-    // Para toast: top N mensajes (únicos) + contador real
     const uniqueMessages = unique(issues.map((i) => i.message));
     const TOP = 3;
     const topMessages = uniqueMessages.slice(0, TOP);
@@ -57,7 +56,7 @@ export function toValidationError(err: z.ZodError) {
     return {
         error: {
             code: "VALIDATION_ERROR" as const,
-            message: summary,          // si querés un solo string
+            message: summary,
             messages: remaining > 0 ? [...topMessages, `+${remaining} more`] : topMessages, // mejor UX
             fieldErrors,
             issues,

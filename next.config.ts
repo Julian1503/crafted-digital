@@ -16,12 +16,25 @@ const nextConfig: NextConfig = {
             },
             {
                 protocol: "https",
+                hostname: "unsplash.com",
+            },
+            {
+                protocol: "https",
+                hostname: "youtube.com",
+            }
+            ,
+            {
+                protocol: "https",
                 hostname: "www.actian.com",
             },
             {
                 protocol: "https",
                 hostname: "zpesystems.com",
             },
+            {
+                protocol: "https",
+                hostname: "res.cloudinary.com",
+            }
 
         ],
         // Reduce quality for smaller file sizes (default is 75)

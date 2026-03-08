@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { logAudit } from "@/lib/services/audit";
+import { generateSlug, ensureUniqueSlug } from "@/lib/utils/slug";
+import { SORT_ORDER_GAP, SORT_ORDER_MIN_GAP, ContentStatus } from "@/lib/types/enums";
 
 interface CaseStudyPaginationParams {
   page?: number;
@@ -11,28 +13,7 @@ interface CaseStudyPaginationParams {
   featured?: boolean;
 }
 
-function generateSlug(title: string): string {
-  return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-}
-
-async function ensureUniqueSlug(slug: string, excludeId?: string): Promise<string> {
-  let candidate = slug;
-  let counter = 1;
-  while (true) {
-    const existing = await prisma.caseStudy.findUnique({ where: { slug: candidate } });
-    if (!existing || existing.id === excludeId) return candidate;
-    counter++;
-    candidate = `${slug}-${counter}`;
-  }
-}
-
 export async function getCaseStudies(params: CaseStudyPaginationParams = {}) {
-  // ✅ sortDir default cambiado a "asc" — consistente con fractional indexing
   const { page = 1, limit = 20, search, sortBy = "sortOrder", sortDir = "asc", status, featured } = params;
   const skip = (page - 1) * limit;
 
@@ -70,12 +51,19 @@ export async function getCaseStudyBySlug(slug: string) {
 }
 
 export async function getPublishedCaseStudies() {
-  return prisma.caseStudy.findMany({
-    where: { status: "published", deleted: false },
-    orderBy: { sortOrder: "asc" },
-    include: { author: { select: { id: true, name: true, email: true } } },
-  });
+    return prisma.caseStudy.findMany({
+        where:   { status: ContentStatus.PUBLISHED, deleted: false },
+        orderBy: { sortOrder: "asc" },
+        include: {
+            author:                { select: { id: true, name: true, email: true } },
+            // customer:              true,
+            // caseStudyIndustries:   { include: { industry: true } },
+            // caseStudyTools:        { include: { tool: true } },
+            // caseStudyTechnologies: { include: { technology: true } },
+        },
+    });
 }
+
 
 export async function createCaseStudy(
     data: {
@@ -95,14 +83,16 @@ export async function createCaseStudy(
     },
     actorId?: string
 ) {
-  const slug = await ensureUniqueSlug(data.slug || generateSlug(data.title));
+  const slug = await ensureUniqueSlug(
+    data.slug || generateSlug(data.title),
+    "caseStudy"
+  );
 
   const aggregate = await prisma.caseStudy.aggregate({
     _max: { sortOrder: true },
     where: { deleted: false },
   });
-  const SORT_GAP = 1000;
-  const nextSortOrder = (aggregate._max.sortOrder ?? 0) + SORT_GAP;
+  const nextSortOrder = (aggregate._max.sortOrder ?? 0) + SORT_ORDER_GAP;
 
   const caseStudy = await prisma.caseStudy.create({
     data: {
@@ -112,7 +102,7 @@ export async function createCaseStudy(
       body: data.body,
       coverImage: data.coverImage || null,
       gallery: data.gallery,
-      status: data.status ?? "draft",
+      status: data.status ?? ContentStatus.DRAFT,
       publishedAt: data.publishedAt,
       featured: data.featured ?? false,
       sortOrder: nextSortOrder,
@@ -149,7 +139,7 @@ export async function updateCaseStudy(
 ) {
   const updateData: Record<string, unknown> = { ...data };
   if (data.slug) {
-    updateData.slug = await ensureUniqueSlug(data.slug, id);
+    updateData.slug = await ensureUniqueSlug(data.slug, "caseStudy", id);
   }
   if (data.coverImage !== undefined) updateData.coverImage = data.coverImage || null;
   if (data.ogImage !== undefined) updateData.ogImage = data.ogImage || null;
@@ -165,7 +155,6 @@ export async function updateCaseStudy(
 }
 
 export async function deleteCaseStudy(id: string, actorId?: string) {
-  // ✅ Eliminado el updateMany con decrement — innecesario y destructivo con fractional indexing
   const caseStudy = await prisma.caseStudy.update({
     where: { id },
     data: { deleted: true },
@@ -198,13 +187,13 @@ async function renormalizeIfNeeded(actorId?: string) {
     return Math.min(min, item.sortOrder - items[i - 1].sortOrder);
   }, Infinity);
 
-  if (minGap >= 1) return;
+  if (minGap >= SORT_ORDER_MIN_GAP) return;
 
   await prisma.$transaction(
       items.map((item, i) =>
           prisma.caseStudy.update({
             where: { id: item.id },
-            data: { sortOrder: (i + 1) * 1000 },
+            data: { sortOrder: (i + 1) * SORT_ORDER_GAP },
           })
       )
   );

@@ -29,7 +29,7 @@ export function AdminDialog({ open, onClose, title, children, wide }: AdminDialo
       document.removeEventListener("keydown", onKey);
       clearTimeout(timer);
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 

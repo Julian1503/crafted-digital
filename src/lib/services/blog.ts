@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { logAudit } from "@/lib/services/audit";
+import { generateSlug, ensureUniqueSlug } from "@/lib/utils/slug";
+import { SORT_ORDER_GAP, SORT_ORDER_MIN_GAP, ContentStatus } from "@/lib/types/enums";
 
 interface BlogPaginationParams {
   page?: number;
@@ -11,26 +13,6 @@ interface BlogPaginationParams {
   tags?: string | null;
   dateFrom?: Date;
   dateTo?: Date;
-}
-
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-}
-
-async function ensureUniqueSlug(slug: string, excludeId?: string): Promise<string> {
-  let candidate = slug;
-  let counter = 1;
-  while (true) {
-    const existing = await prisma.blogPost.findUnique({ where: { slug: candidate } });
-    if (!existing || existing.id === excludeId) return candidate;
-    counter++;
-    candidate = `${slug}-${counter}`;
-  }
 }
 
 export async function getBlogPosts(params: BlogPaginationParams = {}) {
@@ -78,7 +60,7 @@ export async function getBlogPostBySlug(slug: string) {
 
 export async function getPublishedBlogPosts() {
   return prisma.blogPost.findMany({
-    where: { status: "published", deleted: false },
+    where: { status: ContentStatus.PUBLISHED, deleted: false },
     orderBy: { sortOrder: "asc" },
     include: { author: { select: { id: true, name: true, email: true } } },
   });
@@ -102,13 +84,15 @@ export async function createBlogPost(
   },
   actorId?: string
 ) {
-  const slug = await ensureUniqueSlug(data.slug || generateSlug(data.title));
-  const sortOrder = await prisma.caseStudy.aggregate({
+  const slug = await ensureUniqueSlug(
+    data.slug || generateSlug(data.title),
+    "blogPost"
+  );
+  const sortOrder = await prisma.blogPost.aggregate({
     _max: { sortOrder: true },
     where: { deleted: false }
   })
-  const SORT_GAP = 1000;
-  const nextSortOrder = (sortOrder._max.sortOrder ?? 0) + SORT_GAP;
+  const nextSortOrder = (sortOrder._max.sortOrder ?? 0) + SORT_ORDER_GAP;
 
   const post = await prisma.blogPost.create({
     data: {
@@ -117,7 +101,7 @@ export async function createBlogPost(
       excerpt: data.excerpt,
       content: data.content,
       coverImage: data.coverImage || null,
-      status: data.status ?? "draft",
+      status: data.status ?? ContentStatus.DRAFT,
       publishedAt: data.publishedAt,
       sortOrder: nextSortOrder,
       tags: data.tags,
@@ -155,7 +139,7 @@ export async function updateBlogPost(
 ) {
   const updateData: Record<string, unknown> = { ...data };
   if (data.slug) {
-    updateData.slug = await ensureUniqueSlug(data.slug, id);
+    updateData.slug = await ensureUniqueSlug(data.slug, "blogPost", id);
   }
   if (data.coverImage !== undefined) updateData.coverImage = data.coverImage || null;
   if (data.ogImage !== undefined) updateData.ogImage = data.ogImage || null;
@@ -202,7 +186,7 @@ export async function reorderBlogPosts(items: { id: string; sortOrder: number }[
 
 /** Renormalizes all sortOrders to multiples of 1000 when gaps get too small */
 async function renormalizeIfNeeded(actorId?: string) {
-  const items = await prisma.caseStudy.findMany({
+  const items = await prisma.blogPost.findMany({
     where: { deleted: false },
     orderBy: { sortOrder: "asc" },
     select: { id: true, sortOrder: true },
@@ -214,17 +198,17 @@ async function renormalizeIfNeeded(actorId?: string) {
     return Math.min(min, item.sortOrder - items[i - 1].sortOrder);
   }, Infinity);
 
-  if (minGap >= 1) return; // Gaps still healthy, skip
+  if (minGap >= SORT_ORDER_MIN_GAP) return; // Gaps still healthy, skip
 
   await prisma.$transaction(
       items.map((item, i) =>
-          prisma.caseStudy.update({
+          prisma.blogPost.update({
             where: { id: item.id },
-            data: { sortOrder: (i + 1) * 1000 },
+            data: { sortOrder: (i + 1) * SORT_ORDER_GAP },
           })
       )
   );
-  await logAudit({ actorId, action: "renormalize", entity: "CaseStudy", metadata: { count: items.length } });
+  await logAudit({ actorId, action: "renormalize", entity: "BlogPost", metadata: { count: items.length } });
 }
 
 export async function bulkUpdateStatus(ids: string[], status: string, actorId?: string) {

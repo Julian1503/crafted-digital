@@ -1,0 +1,272 @@
+/* ─────────────────────────────────────────────
+   Loading Screen — loading-screen.module.css
+   Palette tokens from globals.css
+   ───────────────────────────────────────────── */
+
+.root {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: hsl(var(--hero-bg));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    /* Exit: slide up */
+    transition: transform 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.exiting {
+    transform: translateY(-100%);
+}
+
+/* ── Grain ─────────────────────────────────── */
+.grain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ── Diagonal stripe (mirrors hero) ────────── */
+.stripe {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+            115deg,
+            transparent 0%,
+            transparent 35%,
+            hsl(var(--hero-accent) / 0.12) 35%,
+            hsl(var(--hero-accent) / 0.12) 52%,
+            transparent 52%
+    );
+    animation: stripeFade 0.8s 0.2s ease forwards;
+    opacity: 0;
+}
+
+@keyframes stripeFade {
+    to { opacity: 1; }
+}
+
+/* ── Corner brackets ────────────────────────── */
+.corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    opacity: 0;
+    animation: cornerIn 0.5s 0.15s ease forwards;
+}
+
+@keyframes cornerIn {
+    from { opacity: 0; transform: scale(0.6); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.cornerTL {
+    top: 2rem; left: 2rem;
+    border-top: 1.5px solid hsl(var(--hero-accent) / 0.6);
+    border-left: 1.5px solid hsl(var(--hero-accent) / 0.6);
+}
+.cornerTR {
+    top: 2rem; right: 2rem;
+    border-top: 1.5px solid hsl(var(--hero-accent) / 0.6);
+    border-right: 1.5px solid hsl(var(--hero-accent) / 0.6);
+}
+.cornerBL {
+    bottom: 2rem; left: 2rem;
+    border-bottom: 1.5px solid hsl(var(--hero-accent) / 0.6);
+    border-left: 1.5px solid hsl(var(--hero-accent) / 0.6);
+}
+.cornerBR {
+    bottom: 2rem; right: 2rem;
+    border-bottom: 1.5px solid hsl(var(--hero-accent) / 0.6);
+    border-right: 1.5px solid hsl(var(--hero-accent) / 0.6);
+}
+
+/* ── Center stage ───────────────────────────── */
+.stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Name block ─────────────────────────────── */
+.nameBlock {
+    display: flex;
+    flex-direction: column;
+    line-height: 0.88;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.nameEntering {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* When revealing: slight scale up for impact */
+.nameRevealing {
+    opacity: 1;
+    transform: translateY(0) scale(1.02);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nameLine {
+    display: flex;
+    align-items: baseline;
+    overflow: visible;
+}
+
+/* The J and D — always visible */
+.anchor {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(5rem, 16vw, 13rem);
+    font-weight: 700;
+    color: hsl(var(--primary-foreground));
+    letter-spacing: -0.03em;
+    line-height: 1;
+    display: block;
+    /* Subtle text shadow for depth */
+    text-shadow: 0 0 80px hsl(var(--hero-accent) / 0.2);
+}
+
+/* The hidden suffix — clip reveals left→right */
+.rest {
+    display: inline-flex;
+    align-items: baseline;
+    padding-bottom: 0.22em;
+    margin-bottom: -0.22em;
+    clip-path: inset(0 100% -0.22em 0);
+    transition: clip-path 0s;
+}
+
+.restVisible {
+    clip-path: inset(0 0% 0 0);
+    transition: clip-path 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Second line gets a tiny delay for stagger */
+.nameLine:nth-child(2) .restVisible {
+    transition: clip-path 0.35s 0.06s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.restInner {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(5rem, 16vw, 13rem);
+    font-weight: 700;
+    color: hsl(var(--primary-foreground));
+    letter-spacing: -0.03em;
+    line-height: 1;
+    display: block;
+    white-space: nowrap;
+    /* Slide in from left as clip reveals */
+    transform: translateX(-12px);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.restVisible .restInner {
+    transform: translateX(0);
+}
+
+.restInnerDelay {
+    transition-delay: 0.06s;
+}
+
+/* ── Tagline ────────────────────────────────── */
+.tagline {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: hsl(var(--primary-foreground) / 0);
+    font-weight: 400;
+    transition: color 0.4s ease, opacity 0.3s ease;
+    user-select: none;
+}
+
+.taglineVisible {
+    color: hsl(var(--primary-foreground) / 0.3);
+}
+
+.taglineHidden {
+    color: hsl(var(--primary-foreground) / 0);
+    opacity: 0;
+}
+
+/* ── Progress ────────────────────────────────── */
+.progressWrap {
+    position: absolute;
+    bottom: 3rem;
+    left: 2.5rem;
+    right: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    z-index: 1;
+}
+
+.progressTrack {
+    flex: 1;
+    height: 1px;
+    background: hsl(var(--primary-foreground) / 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: hsl(var(--hero-accent));
+    border-radius: 2px;
+    transition: width 0.1s linear;
+    /* Glow */
+    box-shadow: 0 0 8px hsl(var(--hero-accent) / 0.6);
+}
+
+.progressCount {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    color: hsl(var(--primary-foreground) / 0.4);
+    font-variant-numeric: tabular-nums;
+    min-width: 2.5ch;
+    text-align: right;
+}
+
+/* ── Domain ──────────────────────────────────── */
+.domain {
+    position: absolute;
+    bottom: 2rem;
+    right: 2.5rem;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: lowercase;
+    color: hsl(var(--primary-foreground) / 0.2);
+    font-weight: 300;
+    opacity: 0;
+    animation: domainIn 0.6s 0.5s ease forwards;
+}
+
+@keyframes domainIn {
+    to { opacity: 1; }
+}
+
+/* ── Reduced motion ──────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .root        { transition: none; }
+    .nameBlock   { transition: none; }
+    .rest        { clip-path: inset(0 0% 0 0) !important; transition: none !important; }
+    .restInner   { transform: none !important; transition: none !important; }
+    .corner,
+    .stripe,
+    .domain      { animation: none; opacity: 1; }
+}

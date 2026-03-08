@@ -14,11 +14,6 @@ export default async function Home() {
     const Services = dynamic(() => import("@/components/sections/Services/Services").then(mod => ({ default: mod.Services })), {
         loading: () => <section className="py-24 bg-muted/30" aria-hidden="true" />,
     });
-
-    const TechStack = dynamic(() => import("@/components/sections/TechStack"), {
-        loading: () => <section className="py-16 bg-primary" aria-hidden="true" />,
-    });
-
     const Process = dynamic(() => import("@/components/sections/Process/Process").then(mod => ({ default: mod.Process })), {
         loading: () => <section className="py-24 bg-background" aria-hidden="true" />,
     });
@@ -45,7 +40,6 @@ export default async function Home() {
                 <Hero/>
                 <WorkSection/>
                 <Services/>
-                <TechStack/>
                 <Process/>
                 <PricingSection/>
                 <FAQ/>
