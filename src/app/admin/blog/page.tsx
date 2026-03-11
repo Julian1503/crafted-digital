@@ -20,7 +20,7 @@ import SortableList from "@/components/admin/SortableList";
 import { toast } from "@/hooks/use-sonner";
 import { useReorder } from "@/hooks/use-reorder";
 import { cn } from "@/lib/utils";
-import { STATUS_BADGE } from "@/lib/constants";
+import { CONTENT_STATUS_BADGE } from "@/lib/types/enums";
 import { BlogFormDialog } from "./_components/BlogFormDialog";
 import type { BlogPost, PaginatedPosts } from "./_components/blog.types";
 
@@ -412,7 +412,7 @@ export default function BlogPage() {
                           <span
                             className={cn(
                               "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                              STATUS_BADGE[post.status]
+                              CONTENT_STATUS_BADGE[post.status]
                             )}
                           >
                             {post.status}

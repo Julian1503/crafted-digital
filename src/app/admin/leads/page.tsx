@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import { LEAD_STATUS_COLORS } from "@/lib/constants";
+import {LEAD_STATUS_BADGE, LeadStatusType} from "@/lib/types/enums";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
 import type { Lead, PaginatedLeads } from "./_components/lead.types";
@@ -73,7 +73,7 @@ export default function LeadsPage() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setPage(1);
-      fetchLeads(1, value, statusFilter);
+      return fetchLeads(1, value, statusFilter);
     }, 400);
   };
 
@@ -121,7 +121,7 @@ export default function LeadsPage() {
       });
       if (!res.ok) throw new Error();
       toast({ title: `Status updated to ${newStatus}`, variant: "success" });
-      fetchLeads(page, search, statusFilter);
+      await fetchLeads(page, search, statusFilter);
       await refreshDrawerLead(lead.id);
     } catch {
       toast({ title: "Failed to update status", variant: "error" });
@@ -129,7 +129,7 @@ export default function LeadsPage() {
   }, [fetchLeads, page, search, statusFilter, refreshDrawerLead]);
 
   const handleNoteAdded = useCallback(() => {
-    if (drawerLead) refreshDrawerLead(drawerLead.id);
+    if (drawerLead) return refreshDrawerLead(drawerLead.id);
   }, [drawerLead, refreshDrawerLead]);
 
   /* ---------- Open dialog ---------- */
@@ -154,7 +154,7 @@ export default function LeadsPage() {
       });
       if (!res.ok) throw new Error();
       toast({ title: "Lead deleted", variant: "success" });
-      fetchLeads(page, search, statusFilter);
+      await fetchLeads(page, search, statusFilter);
     } catch {
       toast({ title: "Failed to delete lead", variant: "error" });
     }
@@ -300,7 +300,7 @@ export default function LeadsPage() {
                       <span
                         className={cn(
                           "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                          LEAD_STATUS_COLORS[lead.status] ?? "bg-gray-100 text-gray-700"
+                          LEAD_STATUS_BADGE[lead.status as LeadStatusType] ?? "bg-gray-100 text-gray-700"
                         )}
                       >
                         {lead.status}

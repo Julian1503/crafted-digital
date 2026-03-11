@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { X, Clock, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
-import { BOOKING_STATUS_COLORS } from "@/lib/constants";
+import {BOOKING_STATUS_BADGE, BookingStatusType} from "@/lib/types/enums";
+import { formatDateTime } from "@/lib/utils/date";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
 import type { Booking } from "./booking.types";
@@ -18,17 +19,6 @@ interface BookingDetailDrawerProps {
 }
 
 /* ---------- Helpers ---------- */
-
-const formatDateTime = (iso: string) => {
-  const d = new Date(iso);
-  return d.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
 
 const formatDuration = (minutes: number) => {
   if (minutes < 60) return `${minutes}m`;
@@ -156,7 +146,7 @@ export function BookingDetailDrawer({
                 <span
                   className={cn(
                     "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                    BOOKING_STATUS_COLORS[booking.status] ??
+                    BOOKING_STATUS_BADGE[booking.status as BookingStatusType] ??
                       "bg-gray-100 text-gray-700"
                   )}
                 >

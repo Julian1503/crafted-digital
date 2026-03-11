@@ -19,7 +19,7 @@ import SortableList from "@/components/admin/SortableList";
 import { toast } from "@/hooks/use-sonner";
 import { useReorder } from "@/hooks/use-reorder";
 import { cn } from "@/lib/utils";
-import { STATUS_BADGE } from "@/lib/constants";
+import { CONTENT_STATUS_BADGE } from "@/lib/types/enums";
 import { CaseStudyFormDialog } from "./_components/CaseStudyFormDialog";
 import type { CaseStudy, PaginatedCaseStudies } from "./_components/case-study.types";
 
@@ -304,7 +304,7 @@ export default function CaseStudiesPage() {
                           <span
                             className={cn(
                               "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                              STATUS_BADGE[study.status]
+                              CONTENT_STATUS_BADGE[study.status]
                             )}
                           >
                             {study.status}

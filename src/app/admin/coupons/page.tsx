@@ -13,12 +13,14 @@ import {
   Ban,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { formatDateTime } from "@/lib/utils/date";
 import { Input } from "@/components/ui/input";
 import { AdminDialog } from "@/components/admin/AdminDialog";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
+import {Label} from "@/components/ui/label";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -59,13 +61,6 @@ function formatAmount(coupon: Coupon): string {
   return `$${coupon.amount.toFixed(2)}`;
 }
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString();
-}
-
-function formatDateTime(dateStr: string): string {
-  return new Date(dateStr).toLocaleString();
-}
 
 /* ------------------------------------------------------------------ */
 /*  Page                                                               */
@@ -645,7 +640,7 @@ export default function CouponsPage() {
             />
           </div>
           <div className="flex items-center gap-2">
-            <label className="flex items-center gap-2 text-sm">
+            <Label className="flex items-center gap-2 text-sm">
               <button
                 type="button"
                 role="switch"
@@ -666,7 +661,7 @@ export default function CouponsPage() {
                 />
               </button>
               Active
-            </label>
+            </Label>
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button
