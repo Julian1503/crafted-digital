@@ -2,166 +2,23 @@
 
 import { useState, useEffect, useRef } from "react";
 import styles from "./hero.module.css";
-
-type Slide = { img: string; tag: string; year: string };
-
-const slides: Slide[] = [
-    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-1", tag: "Creative Direction", year: "2026" },
-    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-2", tag: "Web Development",    year: "2026" },
-    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-3", tag: "Brand Identity",     year: "2026" },
-    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-4", tag: "Digital Design",     year: "2026" },
-];
-
-const INTERVAL    = 5000;
-const THRESHOLD   = 0.58;
-const HEADER_H    = 64;
-const HEADER_PX   = 40;
-
-const pad = (n: number): string => String(n + 1).padStart(2, "0");
-const cloudinaryUrl = (base: string, width: number, quality = 80): string =>
-    base.replace("/upload/", `/upload/w_${width},q_${quality},f_auto/`);
-const buildSrcSet = (base: string): string => [
-    `${cloudinaryUrl(base, 480,  75)} 480w`,
-    `${cloudinaryUrl(base, 768,  80)} 768w`,
-    `${cloudinaryUrl(base, 1280, 85)} 1280w`,
-    `${cloudinaryUrl(base, 1920, 90)} 1920w`,
-].join(", ");
-
-function easeInOutQuart(t: number): number {
-    return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
-}
-function lerp(a: number, b: number, t: number): number {
-    return a + (b - a) * t;
-}
+import {
+    buildSrcSet,
+    cloudinaryUrl,
+    easeInOutQuart,
+    INTERVAL,
+    lerp, pad,
+    slides,
+    THRESHOLD
+} from "@/components/sections/Hero/hero.constants";
+import {FloatingTitle} from "@/components/sections/Hero/FloatingTitle";
+import {MobileDots} from "@/components/sections/Hero/MobileDots";
+import Image from "next/image";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Floating title
+// HeroSection
 // ─────────────────────────────────────────────────────────────────────────────
-interface FloatingTitleProps {
-    metricsReady: boolean;
-    startX: number;
-    startY: number;
-    startH: number;
-    currentSlide: number;
-}
-
-function FloatingTitle({ metricsReady, startX, startY, startH }: FloatingTitleProps) {
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (!metricsReady) return;
-
-        const TARGET_H    = 20;
-        const targetScale = startH > 0 ? TARGET_H / (startH / 2) : 0.18;
-
-        const onScroll = () => {
-            if (!ref.current) return;
-            const scrollY   = window.scrollY;
-            const threshold = window.innerHeight * THRESHOLD;
-            const raw       = Math.min(scrollY / threshold, 1);
-            const p         = easeInOutQuart(raw);
-
-            // On mobile, target slightly smaller header px
-            const isMobile = window.innerWidth < 768;
-            const headerPx = isMobile ? 16 : HEADER_PX;
-
-            const targetX = headerPx;
-            const targetY = (HEADER_H - TARGET_H) / 2;
-
-            const x = lerp(startX, targetX, p);
-            const currentViewportStartY = startY - scrollY;
-            const y     = lerp(currentViewportStartY, targetY, p);
-            const scale = lerp(1, targetScale, p);
-
-            ref.current.style.transform       = `translate(${x}px, ${y}px) scale(${scale})`;
-            ref.current.style.transformOrigin = "top left";
-            ref.current.style.opacity         = raw >= 0.92
-                ? String(lerp(1, 0, (raw - 0.92) / 0.08))
-                : "1";
-        };
-
-        onScroll();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-    }, [metricsReady, startX, startY, startH]);
-
-    if (!metricsReady) return null;
-
-    return (
-        <div
-            ref={ref}
-            aria-hidden="true"
-            style={{
-                position:      "fixed",
-                top:           0,
-                left:          0,
-                zIndex:        60,
-                pointerEvents: "none",
-                willChange:    "transform, opacity",
-            }}
-        >
-            <h1
-                className="font-semibold leading-[0.92] tracking-[-0.02em]"
-                style={{
-                    fontSize:   "clamp(3.5rem, 8vw, 8rem)",
-                    color:      "hsl(var(--primary-foreground))",
-                    whiteSpace: "nowrap",
-                }}
-            >
-                {["Julian", "Delgado"].map((word) => (
-                    <span key={word} className="block">{word}</span>
-                ))}
-            </h1>
-        </div>
-    );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Mobile slide dots
-// ─────────────────────────────────────────────────────────────────────────────
-function MobileDots({
-                        slides,
-                        current,
-                        progress,
-                        onDotTap,
-                    }: {
-    slides: Slide[];
-    current: number;
-    progress: number;
-    onDotTap: (i: number) => void;
-}) {
-    return (
-        <div className="flex items-center gap-2">
-            {slides.map((_, i) => (
-                <button
-                    key={i}
-                    onClick={() => onDotTap(i)}
-                    aria-label={`Slide ${i + 1}`}
-                    className="relative h-[2px] rounded-full overflow-hidden"
-                    style={{
-                        width:      i === current ? "2rem" : "0.75rem",
-                        background: "hsl(var(--primary-foreground) / 0.18)",
-                        transition: "width 0.4s cubic-bezier(0.16,1,0.3,1)",
-                    }}
-                >
-                    <span
-                        className="absolute inset-y-0 left-0 rounded-full"
-                        style={{
-                            width:      i === current ? `${progress}%` : "0%",
-                            background: "hsl(var(--hero-accent))",
-                            transition: "width 0.1s linear",
-                        }}
-                    />
-                </button>
-            ))}
-        </div>
-    );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Hero
-// ─────────────────────────────────────────────────────────────────────────────
-export default function Hero() {
+export default function HeroSection() {
     const [current,  setCurrent]  = useState<number>(0);
     const [prev,     setPrev]     = useState<number | null>(null);
     const [progress, setProgress] = useState<number>(0);
@@ -326,21 +183,25 @@ export default function Hero() {
                 {slides.map((slide, i) => {
                     const state = getSlideState(i);
                     if (!state) return null;
+
                     return (
-                        <div key={i} className={`${styles["hero-slide"]} absolute inset-0 overflow-hidden`}>
-                            <img
+                        <div
+                            key={i}
+                            className={`${styles["hero-slide"]} absolute inset-0 overflow-hidden`}
+                        >
+                            <Image
                                 src={cloudinaryUrl(slide.img, 1280, 85)}
-                                srcSet={buildSrcSet(slide.img)}
-                                sizes="100vw"
                                 alt={slide.tag}
+                                fill
+                                sizes="100vw"
                                 className={`${styles["hero-img"]} ${
-                                    state === "entering" ? styles["hero-img-entering"] :
-                                        state === "active"   ? styles["hero-img-active"]   :
-                                            styles["hero-img-leaving"]
+                                    state === "entering"
+                                        ? styles["hero-img-entering"]
+                                        : state === "active"
+                                            ? styles["hero-img-active"]
+                                            : styles["hero-img-leaving"]
                                 }`}
-                                fetchPriority={i === 0 ? "high" : "auto"}
-                                loading={i === 0 ? "eager" : "lazy"}
-                                decoding="async"
+                                priority={i === 0}
                             />
                         </div>
                     );

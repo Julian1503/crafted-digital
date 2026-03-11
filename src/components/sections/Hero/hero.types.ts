@@ -1,0 +1,1 @@
+export type Slide = { img: string; tag: string; year: string };
