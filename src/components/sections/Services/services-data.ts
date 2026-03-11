@@ -35,3 +35,17 @@ export const services: Service[] = [
         icon: LineChart,
     },
 ];
+
+export const L = {
+    label:       "rgba(10,10,10,0.22)",
+    labelMid:    "rgba(10,10,10,0.38)",
+    body:        "rgba(10,10,10,0.45)",
+    heading:     "rgba(10,10,10,0.9)",
+    headingWeak: "rgba(10,10,10,0.55)",
+    border:      "rgba(10,10,10,0.08)",
+    borderSub:   "rgba(10,10,10,0.06)",
+    accent:      "hsl(var(--hero-accent))",
+    accentBorder:"hsla(var(--hero-accent) / 0.35)",
+    bg:          "hsl(var(--background))",
+    mono:        "rgba(10,10,10,0.22)",
+};
