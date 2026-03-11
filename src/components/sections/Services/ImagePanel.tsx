@@ -28,7 +28,7 @@ export function MediaAsset({
                 className="absolute inset-0 h-full w-full object-cover"
                 style={{ filter: MEDIA_FILTER }}
             >
-                <source src={media.src} type="video/mp4" />
+                <source src={media.src} type="video/webm" />
             </video>
         );
     }

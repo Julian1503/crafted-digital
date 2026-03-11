@@ -21,7 +21,7 @@ export function FullBleedMedia({ step }: { step: Step }) {
             >
                 {hasVideo && (
                     <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover" style={{ filter: "saturate(0.75) brightness(0.55)" }}>
-                        <source src={step.video} type="video/mp4" />
+                        <source src={step.video} type="video/webm" />
                     </video>
                 )}
                 {!hasVideo && hasImage && (

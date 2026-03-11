@@ -49,7 +49,7 @@ interface ServiceItem {
 // type "video" → <video autoPlay muted loop playsInline>
 //
 // Example overrides:
-//   { type: "video", src: "/services/1.mp4" },
+//   { type: "video", src: "/services/1.webm" },
 //   { type: "image", src: "/services/2.jpg" },
 
 interface ServiceMedia {
@@ -59,7 +59,7 @@ interface ServiceMedia {
 }
 
 const SERVICE_MEDIA: ServiceMedia[] = (services as ServiceItem[]).map(
-    (_, i) => ({ type: "video" as const, src: `/services/${i + 1}.mp4` })
+    (_, i) => ({ type: "video" as const, src: `/video/${i + 1}.webm` })
 );
 
 // ─── Add-ons ──────────────────────────────────────────────────────────────────
