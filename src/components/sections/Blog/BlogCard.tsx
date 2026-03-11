@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Calendar, Clock, User } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { formatDate } from "@/lib/formatDate";
+import { formatDate } from "@/lib/utils/date";
 import type { BlogPost } from "@/components/sections/Blog/blog.types";
 
 type BlogCardProps = {
