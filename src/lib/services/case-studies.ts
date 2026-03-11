@@ -56,10 +56,10 @@ export async function getPublishedCaseStudies() {
         orderBy: { sortOrder: "asc" },
         include: {
             author:                { select: { id: true, name: true, email: true } },
-            // customer:              true,
-            // caseStudyIndustries:   { include: { industry: true } },
-            // caseStudyTools:        { include: { tool: true } },
-            // caseStudyTechnologies: { include: { technology: true } },
+            customer:              true,
+            caseStudyIndustries:   { include: { industry: true } },
+            caseStudyTools:        { include: { tool: true } },
+            caseStudyTechnologies: { include: { technology: true } },
         },
     });
 }

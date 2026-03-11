@@ -27,9 +27,10 @@ export interface PrismaCaseStudy {
     body:        string;
     coverImage:  string | null;
     metaTitle:   string | null;
-    // challenges:  string | null;
-    // solutions:   string | null;
-    // results:     string | null;
+    gallery:     string | null;
+    challenges:  string | null;
+    solutions:   string | null;
+    results:     string | null;
     publishedAt: Date   | null;
     author:      { id: string; name: string | null; email: string } | null;
 }
@@ -39,10 +40,10 @@ export interface PrismaCaseStudy {
  * needed to fully populate the Work section card.
  */
 export interface CaseStudyWithRelations extends PrismaCaseStudy {
-    // customer:              { id: string; name: string; logo: string | null } | null;
-    // caseStudyIndustries:   { industry:   { name: string } }[];
-    // caseStudyTools:        { tool:       { name: string } }[];
-    // caseStudyTechnologies: { technology: { name: string } }[];
+    customer:              { id: string; name: string; logo: string | null } | null;
+    caseStudyIndustries:   { industry:   { name: string } }[];
+    caseStudyTools:        { tool:       { name: string } }[];
+    caseStudyTechnologies: { technology: { name: string } }[];
 }
 
 // ─── Body JSON shape ──────────────────────────────────────────────────────────
@@ -130,6 +131,15 @@ function extractCategory(
     return "Case Study";
 }
 
+/**
+ * Resolves the gallery images.
+ * Priority: transforms a simple string in a string array → body JSON `gallery` field → empty array.
+ */
+function extractGallery(gallery: string | null | undefined) : string[] {
+    if (!gallery || gallery.trim().length === 0) return [];
+    return gallery.split(",").map(img => img.trim());
+}
+
 // ─── Public mappers ───────────────────────────────────────────────────────────
 
 /** Maps to the card/list shape used by CaseStudy listing pages. */
@@ -156,6 +166,7 @@ export function toCaseStudyDetailProps(study: PrismaCaseStudy): CaseStudyDetail 
         category:     extractCategory(study),
         description:  study.summary    ?? "",
         image:        study.coverImage ?? "/placeholder-case-study.jpg",
+        gallery:      extractGallery(study.gallery),
         challenge:    body.challenge,
         approach:     body.approach,
         solution:     body.solution,
@@ -204,6 +215,7 @@ export function toProjectProps(study: CaseStudyWithRelations): Project {
         slug:        study.slug,
         image:       study.coverImage ?? "/placeholder-case-study.jpg",
         href:        `/case-studies/${study.slug}`,
+        gallery:    extractGallery(study.gallery),
         year,
         company,
         industry,
