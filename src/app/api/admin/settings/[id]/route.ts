@@ -1,34 +1,33 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { checkApiAuth } from "@/lib/auth/rbac";
 import { prisma } from "@/lib/db/prisma";
 import { logAudit } from "@/lib/services/audit";
+import { withErrorHandling, successResponse } from "@/lib/http/api-handler";
+import { UnauthorizedError, ForbiddenError, NotFoundError } from "@/lib/errors/api-error";
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || [];
-    if (!checkApiAuth(roles, ["admin"]))
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+type RouteContext = { params: Promise<{ id: string }> };
 
-    const setting = await prisma.siteSetting.findUnique({ where: { id } });
-    if (!setting) return NextResponse.json({ error: "Not found" }, { status: 404 });
+export const DELETE = withErrorHandling(async (req: NextRequest, ctx?: unknown) => {
+  const { id } = await (ctx as RouteContext).params;
+  const session = await auth();
+  if (!session?.user) throw new UnauthorizedError();
+  const roles = session.roles || [];
+  if (!checkApiAuth(roles, ["admin"]))
+    throw new ForbiddenError();
 
-    await prisma.siteSetting.delete({ where: { id } });
+  const setting = await prisma.siteSetting.findUnique({ where: { id } });
+  if (!setting) throw new NotFoundError("Setting", id);
 
-    await logAudit({
-      actorId: session.user.id,
-      action: "delete",
-      entity: "siteSetting",
-      entityId: id,
-      metadata: { key: setting.key, group: setting.group },
-    });
+  await prisma.siteSetting.delete({ where: { id } });
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("DELETE /api/admin/settings/[id] error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
+  await logAudit({
+    actorId: session.user.id,
+    action: "delete",
+    entity: "siteSetting",
+    entityId: id,
+    metadata: { key: setting.key, group: setting.group },
+  });
+
+  return successResponse({ success: true });
+});

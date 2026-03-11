@@ -59,3 +59,28 @@ export function slugify(text: string): string {
         .replace(/[\s_]+/g, "-")
         .replace(/-+/g, "-");
 }
+
+/**
+ * Clamps a number between 0 and 1.
+ * @param n - The number to clamp
+ * @returns The clamped number
+ * @example
+ * clamp01(0.5) // 0.5
+ * clamp01(2) // 1
+ * clamp01(-1) // 0
+ * clamp01(1.5) // 1
+ * clamp01(NaN) // 0
+ */
+export function clamp01 (n: number) : number {
+    return Math.max(0, Math.min(1, n))
+}
+
+/**
+ * Removes the query string and fragment identifier from the current URL without reloading the page.
+ * Updates the browser's history to reflect the cleaned URL.
+ *
+ * @return {void} This method does not return a value.
+ */
+export function setUrlClean(): void {
+    try { window.history.replaceState({}, "", window.location.pathname); } catch { /* noop */ }
+}

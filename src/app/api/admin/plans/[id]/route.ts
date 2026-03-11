@@ -1,61 +1,51 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { checkApiAuth } from "@/lib/auth/rbac";
 import { getPlan, updatePlan, deletePlan } from "@/lib/services/plans";
 import { planUpdateSchema } from "@/lib/validations";
+import {
+  withErrorHandling,
+  successResponse,
+  validateRequestBody,
+} from "@/lib/http/api-handler";
+import { UnauthorizedError, ForbiddenError, NotFoundError } from "@/lib/errors/api-error";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || [];
-    if (!checkApiAuth(roles, ["admin", "editor", "viewer"]))
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+type RouteContext = { params: Promise<{ id: string }> };
 
-    const plan = await getPlan(id);
-    if (!plan) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return NextResponse.json(plan);
-  } catch (error) {
-    console.error("GET /api/admin/plans/[id] error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
+export const GET = withErrorHandling(async (req: NextRequest, ctx?: unknown) => {
+  const { id } = await (ctx as RouteContext).params;
+  const session = await auth();
+  if (!session?.user) throw new UnauthorizedError();
+  const roles = session.roles || [];
+  if (!checkApiAuth(roles, ["admin", "editor", "viewer"]))
+    throw new ForbiddenError();
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || [];
-    if (!checkApiAuth(roles, ["admin"]))
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  const plan = await getPlan(id);
+  if (!plan) throw new NotFoundError("Plan", id);
+  return successResponse(plan);
+});
 
-    const body = await req.json();
-    const parsed = planUpdateSchema.safeParse(body);
-    if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+export const PATCH = withErrorHandling(async (req: NextRequest, ctx?: unknown) => {
+  const { id } = await (ctx as RouteContext).params;
+  const session = await auth();
+  if (!session?.user) throw new UnauthorizedError();
+  const roles = session.roles || [];
+  if (!checkApiAuth(roles, ["admin"]))
+    throw new ForbiddenError();
 
-    const plan = await updatePlan(id, parsed.data, session.user.id);
-    return NextResponse.json(plan);
-  } catch (error) {
-    console.error("PATCH /api/admin/plans/[id] error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
+  const data = await validateRequestBody(req, planUpdateSchema);
+  const plan = await updatePlan(id, data, session.user.id);
+  return successResponse(plan);
+});
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || [];
-    if (!checkApiAuth(roles, ["admin"]))
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+export const DELETE = withErrorHandling(async (req: NextRequest, ctx?: unknown) => {
+  const { id } = await (ctx as RouteContext).params;
+  const session = await auth();
+  if (!session?.user) throw new UnauthorizedError();
+  const roles = session.roles || [];
+  if (!checkApiAuth(roles, ["admin"]))
+    throw new ForbiddenError();
 
-    await deletePlan(id, session.user.id);
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("DELETE /api/admin/plans/[id] error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
+  await deletePlan(id, session.user.id);
+  return successResponse({ success: true });
+});

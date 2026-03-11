@@ -1,45 +1,35 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { checkApiAuth } from "@/lib/auth/rbac";
 import { getMediaAssets, createMediaAsset } from "@/lib/services/media";
 import { paginationSchema, mediaAssetSchema } from "@/lib/validations";
+import {
+  withErrorHandling,
+  successResponse,
+  validateSearchParams,
+  validateRequestBody,
+} from "@/lib/http/api-handler";
+import { UnauthorizedError, ForbiddenError } from "@/lib/errors/api-error";
 
-export async function GET(req: NextRequest) {
-  try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || [];
-    if (!checkApiAuth(roles, ["admin", "editor", "viewer"]))
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+export const GET = withErrorHandling(async (req) => {
+  const session = await auth();
+  if (!session?.user) throw new UnauthorizedError();
+  const roles = session.roles || [];
+  if (!checkApiAuth(roles, ["admin", "editor", "viewer"]))
+    throw new ForbiddenError();
 
-    const params = Object.fromEntries(req.nextUrl.searchParams);
-    const parsed = paginationSchema.safeParse(params);
-    if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  const params = validateSearchParams(req, paginationSchema);
+  const result = await getMediaAssets({ ...params, folder: req.nextUrl.searchParams.get("folder") || undefined });
+  return successResponse(result);
+});
 
-    const result = await getMediaAssets({ ...parsed.data, folder: req.nextUrl.searchParams.get("folder") || undefined });
-    return NextResponse.json(result);
-  } catch (error) {
-    console.error("GET /api/admin/media error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
+export const POST = withErrorHandling(async (req) => {
+  const session = await auth();
+  if (!session?.user) throw new UnauthorizedError();
+  const roles = session.roles || [];
+  if (!checkApiAuth(roles, ["admin", "editor"]))
+    throw new ForbiddenError();
 
-export async function POST(req: NextRequest) {
-  try {
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || [];
-    if (!checkApiAuth(roles, ["admin", "editor"]))
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-
-    const body = await req.json();
-    const parsed = mediaAssetSchema.safeParse(body);
-    if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
-
-    const asset = await createMediaAsset(parsed.data, session.user.id);
-    return NextResponse.json(asset, { status: 201 });
-  } catch (error) {
-    console.error("POST /api/admin/media error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
+  const data = await validateRequestBody(req, mediaAssetSchema);
+  const asset = await createMediaAsset(data, session.user.id);
+  return successResponse(asset, 201);
+});
