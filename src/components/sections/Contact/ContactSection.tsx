@@ -97,8 +97,8 @@ export function ContactSection() {
                     >
                         {!isSuccess && (
                             <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
-                                <video autoPlay muted loop playsInline className="w-full h-full object-cover" style={{ filter: "saturate(1.08) brightness(0.65)" }}>
-                                    <source src="/video/lights.webm" type="video/webm" />
+                                <video poster="https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/lights_bfoa7s.jpg" autoPlay muted loop playsInline className="w-full h-full object-cover" style={{ filter: "saturate(1.08) brightness(0.65)" }}>
+                                    <source src="https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/lights_bfoa7s.webm" type="video/webm" />
                                 </video>
                                 <div className="absolute inset-0" style={{ background: "rgba(5,3,3,0.68)" }} />
                             </div>

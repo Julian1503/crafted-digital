@@ -58,9 +58,11 @@ interface ServiceMedia {
     poster?: string;
 }
 
-const SERVICE_MEDIA: ServiceMedia[] = (services as ServiceItem[]).map(
-    (_, i) => ({ type: "video" as const, src: `/video/${i + 1}.webm` })
-);
+const SERVICE_MEDIA: ServiceMedia[] = [
+    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.jpg", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265023/1_n2cd8y.webm` },
+    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/2_kzosmf.jpg", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/2_kzosmf.webm` },
+    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.jpg", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.webm` },
+];
 
 // ─── Add-ons ──────────────────────────────────────────────────────────────────
 
