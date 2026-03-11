@@ -90,4 +90,13 @@ export interface Project {
 
     /** Client testimonial shown at the bottom of the featured card */
     testimonial?: ProjectTestimonial;
+
+    /** Image or screenshot URLs for the featured case study gallery */
+    gallery?: string[];
 }
+
+/**
+ * Props for the Work component.
+ * 1. projects: Project[];
+ */
+export interface WorkProps { projects: Project[]; }
