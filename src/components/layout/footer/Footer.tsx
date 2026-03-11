@@ -1,5 +1,5 @@
 /**
- * @fileoverview Footer — dark editorial, matches site aesthetic.
+ * @fileoverview footer — dark editorial, matches site aesthetic.
  */
 "use client";
 
@@ -7,26 +7,8 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FaLinkedin, FaInstagram } from "react-icons/fa";
-import { scrollToId } from "@/lib/utils";
-
-type FooterItem =
-    | { label: string; type: "section"; id: string }
-    | { label: string; type: "route"; href: string };
-
-const FOOTER_LINKS: FooterItem[] = [
-    { label: "Work",         type: "section", id: "work"          },
-    { label: "Services",     type: "section", id: "services"      },
-    { label: "Process",      type: "section", id: "process"       },
-    { label: "Pricing",      type: "section", id: "pricing"       },
-    { label: "Contact",      type: "section", id: "contact"       },
-    { label: "Case Studies", type: "route",   href: "/case-studies" },
-    { label: "Blog",         type: "route",   href: "/blog"         },
-    { label: "About",        type: "route",   href: "/about-me"     },
-];
-
-function setUrlClean() {
-    try { window.history.replaceState({}, "", window.location.pathname); } catch { /* noop */ }
-}
+import {scrollToId, setUrlClean} from "@/lib/utils";
+import {FOOTER_LINKS} from "@/components/layout/footer/footer.data";
 
 // Reusable link style
 const linkStyle: React.CSSProperties = { color: "rgba(255,255,255,0.32)", transition: "color 0.2s" };
@@ -58,7 +40,7 @@ export function Footer() {
                     {/* Brand */}
                     <div className="flex flex-col gap-3">
                         <Link
-                            href="/"
+                            href="/public"
                             onClick={e => {
                                 if (isHome) {
                                     e.preventDefault();
@@ -167,7 +149,7 @@ export function Footer() {
                         })}
                     </nav>
 
-                    {/* Contact strip */}
+                    {/* ContactSection strip */}
                     <div className="flex flex-col gap-2.5">
                         <span
                             className="font-mono text-[0.58rem] tracking-[0.22em] uppercase mb-1"
