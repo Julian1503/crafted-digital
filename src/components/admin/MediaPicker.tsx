@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { AdminDialog } from "@/components/admin/AdminDialog";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
+import {Label} from "@/components/ui/label";
+import Image from "next/image";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -60,7 +62,7 @@ export function MediaPicker({
                             }: {
     label: string;
     mode?: MediaPickerMode;
-    value: MediaAsset[]; // always array for simplicity
+    value: MediaAsset[];
     onChange: (next: MediaAsset[]) => void;
     placeholder?: string;
     folderDefault?: string;
@@ -250,7 +252,13 @@ export function MediaPicker({
                 <div className="mt-2 flex flex-wrap gap-2">
                     {value.slice(0, mode === "single" ? 1 : 6).map((v) => (
                         <div key={v.id} className="flex items-center gap-2 rounded-md border p-1 pr-2">
-                            <img src={v.url} alt={v.alt ?? v.filename} className="size-10 rounded object-cover" />
+                            <Image
+                                src={v.url}
+                                alt={v.alt ?? v.filename}
+                                width={40}
+                                height={40}
+                                className="size-10 rounded object-cover"
+                            />
                             <div className="min-w-0">
                                 <p className="max-w-[220px] truncate text-xs font-medium">{v.filename}</p>
                                 <p className="text-[11px] text-muted-foreground">{v.folder}</p>
@@ -343,11 +351,13 @@ export function MediaPicker({
                                             )}
                                         >
                                             <div className="flex aspect-square items-center justify-center bg-muted/30">
-                                                <img
+                                                <Image
                                                     src={asset.url}
                                                     alt={asset.alt ?? asset.filename}
-                                                    className="size-full object-cover"
+                                                    fill
+                                                    className="object-cover"
                                                 />
+
                                             </div>
 
                                             <div className="p-2">
@@ -428,7 +438,7 @@ export function MediaPicker({
                 <div className="space-y-4">
                     <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1">
-                            <label className="block text-sm font-medium">Provider</label>
+                            <Label className="block text-sm font-medium">Provider</Label>
                             <select
                                 value={uploadProvider}
                                 onChange={(e) => setUploadProvider(e.target.value as UploadProvider)}
@@ -441,7 +451,7 @@ export function MediaPicker({
                         </div>
 
                         <div className="space-y-1">
-                            <label className="block text-sm font-medium">Folder</label>
+                            <Label className="block text-sm font-medium">Folder</Label>
                             <Input
                                 value={uploadFolder}
                                 onChange={(e) => setUploadFolder(e.target.value)}
@@ -488,9 +498,12 @@ export function MediaPicker({
                             <div className="max-h-48 space-y-2 overflow-y-auto">
                                 {uploadFiles.map((file, i) => (
                                     <div key={`${file.name}-${i}`} className="flex items-center gap-3 rounded-md border p-2">
-                                        <img
+                                        <Image
                                             src={URL.createObjectURL(file)}
                                             alt={file.name}
+                                            width={40}
+                                            height={40}
+                                            unoptimized
                                             className="size-10 rounded object-cover"
                                         />
                                         <div className="flex-1 min-w-0">
