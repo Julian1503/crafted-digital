@@ -1,5 +1,5 @@
 /**
- * @fileoverview Contact form validation schema and configuration.
+ * @fileoverview ContactSection form validation schema and configuration.
  * Uses Zod for form validation with comprehensive field requirements.
  */
 import { z } from "zod";
