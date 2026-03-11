@@ -4,7 +4,7 @@
  */
 "use client";
 
-import { useScrollAnimation } from "@/lib/use-scroll-animation";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { ReactNode, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
