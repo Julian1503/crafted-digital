@@ -64,7 +64,6 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
 
         const observer = new IntersectionObserver(
             (entries) => {
-                // ✅ setState in callback - responding to an external system
                 const entry = entries[0];
                 if (entry.isIntersecting) {
                     setObserverVisible(true);
@@ -79,9 +78,6 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
             { threshold, rootMargin }
         );
 
-        // observe() will trigger the callback synchronously if an element
-        // is already intersecting (per IntersectionObserver spec).
-        // This handles the hard-refresh case correctly.
         observer.observe(el);
 
         return () => {
