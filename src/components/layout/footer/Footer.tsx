@@ -6,19 +6,41 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useInView } from "framer-motion";
 import { FaLinkedin, FaInstagram } from "react-icons/fa";
-import {scrollToId, setUrlClean} from "@/lib/utils";
-import {FOOTER_LINKS} from "@/components/layout/footer/footer.data";
+import { scrollToId, setUrlClean } from "@/lib/utils";
+import { FOOTER_LINKS } from "@/components/layout/footer/footer.data";
 
-// Reusable link style
 const linkStyle: React.CSSProperties = { color: "rgba(255,255,255,0.32)", transition: "color 0.2s" };
 const linkHover = (e: React.MouseEvent) => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.85)"; };
 const linkLeave = (e: React.MouseEvent) => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.32)"; };
+
+/** Splits a word into individual letter spans, each sliding up with a stagger. */
+function AnimatedWord({ word, delay = 0 }: { word: string; delay?: number }) {
+    return (
+        <>
+            {word.split("").map((char, i) => (
+                <span
+                    key={i}
+                    className="inline-block"
+                    style={{
+                        animationDelay: `${delay + i * 0.045}s`,
+                    }}
+                >
+                    {char}
+                </span>
+            ))}
+        </>
+    );
+}
 
 export function Footer() {
     const router   = useRouter();
     const pathname = usePathname();
     const isHome   = pathname === "/";
+
+    const nameRef = React.useRef<HTMLAnchorElement>(null);
+    const inView  = useInView(nameRef, { once: true, margin: "-60px" });
 
     const navigateToSection = (id: string) => {
         if (isHome) { const ok = scrollToId(id); if (ok) setUrlClean(); return; }
@@ -28,19 +50,37 @@ export function Footer() {
     return (
         <footer
             role="contentinfo"
-            className="overflow-hidden"
+            data-hide-logo
+            className="overflow-hidden pb-30"
             style={{ background: "#0c0c0c" }}
         >
+            {/* Keyframe styles injected once */}
+            <style>{`
+                @keyframes letterUp {
+                    from { opacity: 0; transform: translateY(60%) skewY(4deg); }
+                    to   { opacity: 1; transform: translateY(0)    skewY(0deg); }
+                }
+                .footer-name-animate span {
+                    opacity: 0;
+                }
+                .footer-name-animate.in-view span {
+                    animation: letterUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+                }
+            `}</style>
+
             {/* ── Main body ─────────────────────────────────────────────── */}
             <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 pt-16 md:pt-20 pb-10">
 
                 {/* Top row: brand + nav + socials */}
-                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-10 md:gap-16 pb-12 border-b" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
-
+                <div
+                    className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-10 md:gap-16 pb-12 border-b"
+                    style={{ borderColor: "rgba(255,255,255,0.07)" }}
+                >
                     {/* Brand */}
                     <div className="flex flex-col gap-3">
                         <Link
-                            href="/public"
+                            ref={nameRef}
+                            href="/"
                             onClick={e => {
                                 if (isHome) {
                                     e.preventDefault();
@@ -49,17 +89,30 @@ export function Footer() {
                                 }
                             }}
                             aria-label="Julian Delgado — Back to top"
-                            className="self-start"
+                            className={`self-start overflow-hidden footer-name-animate${inView ? " in-view" : ""}`}
                         >
                             <span
-                                className="font-serif font-normal leading-[0.95] tracking-[-0.025em]"
-                                style={{ fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)", color: "rgba(255,255,255,0.88)" }}
+                                className="block font-serif font-normal leading-[0.95] tracking-[-0.025em]"
+                                style={{
+                                    fontSize: "clamp(1.6rem,3.5vw,2.4rem)",
+                                    color: "rgba(255,255,255,0.88)",
+                                }}
                             >
-                                Julian<br />Delgado
+                                {/* "Julian" — letters 0–5 */}
+                                <span className="block overflow-hidden">
+                                    <AnimatedWord word="Julian" delay={0} />
+                                </span>
+                                {/* "Delgado" — letters start after Julian finishes */}
+                                <span className="block pb-3 md:pb-5">
+                                    <AnimatedWord word="Delgado" delay={0.32} />
+                                </span>
                             </span>
                         </Link>
 
-                        <p className="text-[0.78rem] leading-relaxed mt-1" style={{ color: "rgba(255,255,255,0.28)", maxWidth: "28ch" }}>
+                        <p
+                            className="text-[0.78rem] leading-relaxed mt-1"
+                            style={{ color: "rgba(255,255,255,0.28)", maxWidth: "28ch" }}
+                        >
                             Web development for Australian service businesses.
                         </p>
 
@@ -73,16 +126,8 @@ export function Footer() {
                                 aria-label="LinkedIn (opens in new tab)"
                                 className="inline-flex items-center justify-center h-8 w-8 rounded-full border transition-all duration-200"
                                 style={{ borderColor: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.4)" }}
-                                onMouseEnter={e => {
-                                    const el = e.currentTarget as HTMLElement;
-                                    el.style.borderColor = "rgba(255,255,255,0.3)";
-                                    el.style.color = "#fff";
-                                }}
-                                onMouseLeave={e => {
-                                    const el = e.currentTarget as HTMLElement;
-                                    el.style.borderColor = "rgba(255,255,255,0.12)";
-                                    el.style.color = "rgba(255,255,255,0.4)";
-                                }}
+                                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(255,255,255,0.3)"; el.style.color = "#fff"; }}
+                                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(255,255,255,0.12)"; el.style.color = "rgba(255,255,255,0.4)"; }}
                             >
                                 <FaLinkedin size={14} aria-hidden="true" />
                             </Link>
@@ -94,16 +139,8 @@ export function Footer() {
                                 aria-label="Instagram (opens in new tab)"
                                 className="inline-flex items-center justify-center h-8 w-8 rounded-full border transition-all duration-200"
                                 style={{ borderColor: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.4)" }}
-                                onMouseEnter={e => {
-                                    const el = e.currentTarget as HTMLElement;
-                                    el.style.borderColor = "rgba(255,255,255,0.3)";
-                                    el.style.color = "#fff";
-                                }}
-                                onMouseLeave={e => {
-                                    const el = e.currentTarget as HTMLElement;
-                                    el.style.borderColor = "rgba(255,255,255,0.12)";
-                                    el.style.color = "rgba(255,255,255,0.4)";
-                                }}
+                                onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(255,255,255,0.3)"; el.style.color = "#fff"; }}
+                                onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor = "rgba(255,255,255,0.12)"; el.style.color = "rgba(255,255,255,0.4)"; }}
                             >
                                 <FaInstagram size={14} aria-hidden="true" />
                             </Link>
@@ -112,10 +149,7 @@ export function Footer() {
 
                     {/* Nav */}
                     <nav aria-label="Footer navigation" className="flex flex-col gap-2.5">
-                        <span
-                            className="font-mono text-[0.58rem] tracking-[0.22em] uppercase mb-1"
-                            style={{ color: "rgba(255,255,255,0.18)" }}
-                        >
+                        <span className="font-mono text-[0.58rem] tracking-[0.22em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.18)" }}>
                             Navigation
                         </span>
                         {FOOTER_LINKS.map(item => {
@@ -135,43 +169,23 @@ export function Footer() {
                                 );
                             }
                             return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className="text-[0.8rem]"
-                                    style={linkStyle}
-                                    onMouseEnter={linkHover}
-                                    onMouseLeave={linkLeave}
-                                >
+                                <Link key={item.href} href={item.href} className="text-[0.8rem]" style={linkStyle} onMouseEnter={linkHover} onMouseLeave={linkLeave}>
                                     {item.label}
                                 </Link>
                             );
                         })}
                     </nav>
 
-                    {/* ContactSection strip */}
+                    {/* Contact strip */}
                     <div className="flex flex-col gap-2.5">
-                        <span
-                            className="font-mono text-[0.58rem] tracking-[0.22em] uppercase mb-1"
-                            style={{ color: "rgba(255,255,255,0.18)" }}
-                        >
+                        <span className="font-mono text-[0.58rem] tracking-[0.22em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.18)" }}>
                             Contact
                         </span>
-                        <a
-                            href="mailto:julianedelgado@hotmail.com"
-                            className="text-[0.8rem]"
-                            style={linkStyle}
-                            onMouseEnter={linkHover}
-                            onMouseLeave={linkLeave}
-                        >
+                        <a href="mailto:julianedelgado@hotmail.com" className="text-[0.8rem]" style={linkStyle} onMouseEnter={linkHover} onMouseLeave={linkLeave}>
                             julianedelgado@hotmail.com
                         </a>
-                        <span className="text-[0.78rem]" style={{ color: "rgba(255,255,255,0.22)" }}>
-                            Toowoomba, QLD
-                        </span>
-                        <span className="text-[0.78rem]" style={{ color: "rgba(255,255,255,0.22)" }}>
-                            Australia-wide
-                        </span>
+                        <span className="text-[0.78rem]" style={{ color: "rgba(255,255,255,0.22)" }}>Toowoomba, QLD</span>
+                        <span className="text-[0.78rem]" style={{ color: "rgba(255,255,255,0.22)" }}>Australia-wide</span>
                     </div>
                 </div>
 
@@ -180,20 +194,12 @@ export function Footer() {
                     <p className="text-[0.68rem]" style={{ color: "rgba(255,255,255,0.2)" }}>
                         © {new Date().getFullYear()} Julian Delgado. All rights reserved.
                     </p>
-
                     <nav className="flex gap-5" aria-label="Legal links">
                         {[
                             { href: "/privacy", label: "Privacy Policy" },
                             { href: "/terms",   label: "Terms of Service" },
                         ].map(({ href, label }) => (
-                            <Link
-                                key={href}
-                                href={href}
-                                className="text-[0.68rem]"
-                                style={linkStyle}
-                                onMouseEnter={linkHover}
-                                onMouseLeave={linkLeave}
-                            >
+                            <Link key={href} href={href} className="text-[0.68rem]" style={linkStyle} onMouseEnter={linkHover} onMouseLeave={linkLeave}>
                                 {label}
                             </Link>
                         ))}
