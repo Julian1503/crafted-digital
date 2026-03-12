@@ -90,7 +90,7 @@ export function OriginStory() {
                             <div className="relative overflow-hidden rounded-[0.875rem]" style={{ aspectRatio: "3/4" }}>
                                 <motion.div className="absolute inset-0" style={{ y: imgY, scale: 1.14 }}>
                                     <Image
-                                        src="/img/me-aconcagua.jpg"
+                                        src="/img/me-aconcagua.webp"
                                         alt="Julian in the Andes mountains"
                                         fill
                                         sizes="600px"

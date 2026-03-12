@@ -22,7 +22,7 @@ export function AboutCTA() {
                 className="pointer-events-none absolute right-0 top-0 h-full w-[55%] opacity-[0.08]"
             >
                 <Image
-                    src="/img/CTA.png"
+                    src="/img/CTA.webp"
                     alt=""
                     fill
                     sizes="55vw"

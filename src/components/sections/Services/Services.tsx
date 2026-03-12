@@ -10,7 +10,7 @@
  *   • accent:      hsl(var(--hero-accent))
  *
  * Images:
- *   • Place one photo per service at /public/services/1.jpg, 2.jpg …
+ *   • Place one photo per service at /public/services/1.webp, 2.webp …
  *   • Right panel: image with a right-to-left light-wash gradient
  */
 "use client";
@@ -50,7 +50,7 @@ interface ServiceItem {
 //
 // Example overrides:
 //   { type: "video", src: "/services/1.webm" },
-//   { type: "image", src: "/services/2.jpg" },
+//   { type: "image", src: "/services/2.webp" },
 
 interface ServiceMedia {
     type: "image" | "video";
@@ -59,9 +59,9 @@ interface ServiceMedia {
 }
 
 const SERVICE_MEDIA: ServiceMedia[] = [
-    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.jpg", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265023/1_n2cd8y.webm` },
-    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/2_kzosmf.jpg", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/2_kzosmf.webm` },
-    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.jpg", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.webm` },
+    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.webp", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265023/1_n2cd8y.webm` },
+    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/2_kzosmf.webp", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/2_kzosmf.webm` },
+    { type: "video" as const, poster: "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.webp", src: `https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/3_uszur9.webm` },
 ];
 
 // ─── Add-ons ──────────────────────────────────────────────────────────────────
