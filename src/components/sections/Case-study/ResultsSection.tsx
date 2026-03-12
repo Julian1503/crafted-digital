@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, type Variants } from "framer-motion";
 import { StudyData } from "@/components/sections/Case-study/case-study.types";
 import { ChapterLabel } from "@/components/sections/Case-study/ChapterLabel";
 import { C, parseResultMetric } from "@/components/sections/Case-study/case-study.constants";
@@ -62,13 +62,15 @@ function ResultCard({ result, isInView }: { result: string; isInView: boolean })
 }
 
 // ─── Section ───────────────────────────────────────────────────────────────────
-const gridVariants = {
+const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const gridVariants: Variants = {
     hidden: {},
     visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
 };
-const cardVariants = {
+const cardVariants: Variants = {
     hidden:  { opacity: 0, y: 22 },
-    visible: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } },
+    visible: { opacity: 1, y: 0, transition: { duration: 1, ease: EASE_OUT } },
 };
 
 export function ResultsSection({ study }: { study: StudyData }) {

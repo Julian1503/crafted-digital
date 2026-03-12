@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
 import { logAudit } from "@/lib/services/audit";
-import { generateSlug, ensureUniqueSlug } from "@/lib/utils/slug";
+import { generateSlug } from "@/lib/utils/slug";
+import { ensureUniqueSlug } from "@/lib/utils/slug.server";
 import { SORT_ORDER_GAP, SORT_ORDER_MIN_GAP, ContentStatus } from "@/lib/types/enums";
 
 interface CaseStudyPaginationParams {
