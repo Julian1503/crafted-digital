@@ -15,26 +15,27 @@ const STATS = [
 export function AboutHero() {
     const ref = useRef<HTMLElement>(null);
     const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-    const imgScale  = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
-    const fade      = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-    const grayscale = useTransform(scrollYProgress, [0, 1], [0, 30]);
+    const imgScale   = useTransform(scrollYProgress, [0, 1],    [1, 1.12]);
+    const fade       = useTransform(scrollYProgress, [0, 0.7],  [1, 0]);
+    const imgOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0]);
+    const grayscale  = useTransform(scrollYProgress, [0, 1],    [0, 30]);
 
     return (
         <section
             ref={ref}
-            data-hide-logo
             data-header-theme="dark"
+            data-hide-logo
             className="relative h-svh min-h-[600px] w-full overflow-hidden"
             style={{ background: bg }}
         >
             {/* Background image */}
-            <motion.div className="absolute inset-0" style={{ scale: imgScale }}>
+            <motion.div className="absolute inset-0 w-full grid md:grid-cols-2 grid-cols-1" style={{ scale: imgScale, opacity: imgOpacity }}>
                 <Image
                     src="/img/profile_dark.webp"
                     alt="Julian Delgado"
                     fill
                     sizes="(min-width: 768px) 50vw, 100vw"
-                    className="object-cover object-top"
+                    className="object-cover object-top col-start-1 md:col-start-2 col-span-1"
                     style={{ filter: `grayscale(${grayscale}%) brightness(0.55)` }}
                     priority
                 />
@@ -45,8 +46,8 @@ export function AboutHero() {
                 className="pointer-events-none absolute inset-0 z-[1]"
                 style={{
                     background: `
-                        linear-gradient(to top, ${bg} 0%, rgba(10,10,10,0.78) 45%, rgba(10,10,10,0.25) 100%),
-                        linear-gradient(to right, rgba(10,10,10,0.88) 0%, rgba(134,34,25,0) 70%)
+                        linear-gradient(to top,  ${bg} 0%, rgba(10,10,10,0.65) 40%, rgba(10,10,10,0.15) 100%),
+                        linear-gradient(to right, rgba(10,10,10,0.7) 0%, rgba(134, 34, 25, 0) 60%)
                     `,
                 }}
             />
@@ -103,7 +104,7 @@ export function AboutHero() {
                     </motion.span>
 
                     {/* Title */}
-                    <div className="overflow-hidden">
+                    <div className="overflow-hidden pb-3 md:pb-4">
                         <motion.h1
                             initial={{ y: "110%" }}
                             animate={{ y: 0 }}
@@ -169,7 +170,7 @@ export function AboutHero() {
                         >
                             Book a call
                             <span className="flex h-7 w-7 items-center justify-center rounded-full text-[0.85rem] transition-transform duration-200 group-hover:rotate-45"
-                                style={{ border: "1.5px solid rgba(255,255,255,0.4)" }}>↗</span>
+                                  style={{ border: "1.5px solid rgba(255,255,255,0.4)" }}>↗</span>
                         </Link>
                     </motion.div>
 
@@ -192,7 +193,7 @@ export function AboutHero() {
                         >
                             Book a call
                             <span className="flex h-6 w-6 items-center justify-center rounded-full text-[0.8rem]"
-                                style={{ border: "1.5px solid rgba(255,255,255,0.4)" }}>↗</span>
+                                  style={{ border: "1.5px solid rgba(255,255,255,0.4)" }}>↗</span>
                         </Link>
                     </motion.div>
 
@@ -225,7 +226,7 @@ export function AboutHero() {
                 style={{ opacity: 0, animation: "fadeUp 0.8s 1s ease forwards" }}
             >
                 <div className="h-10 w-px"
-                    style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(134,34,25,0))", animation: "scrollLine 1.8s ease infinite" }} />
+                     style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(134,34,25,0))", animation: "scrollLine 1.8s ease infinite" }} />
                 <span style={{ fontSize: "0.58rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", writingMode: "vertical-rl", transform: "rotate(180deg)", fontWeight: 400 }}>
                     Scroll
                 </span>

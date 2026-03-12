@@ -19,13 +19,12 @@ interface ScrollState {
  * - pastHero:     whether the CTA button should be visible (home only)
  */
 export function useScrollState(isHome: boolean): ScrollState {
-    // Logo starts hidden if a hide-logo hero is present, visible otherwise.
-    // We read the DOM after mount, so initialise conservatively to 0 and
-    // correct synchronously in useLayoutEffect before the first paint.
-    const [isScrolled,  setIsScrolled]  = React.useState(false);
-    const [logoOpacity, setLogoOpacity] = React.useState(0);
-    const [pastHero,    setPastHero]    = React.useState(!isHome);
+    const [isScrolled,      setIsScrolled]      = React.useState(false);
+    const [logoOpacity,     setLogoOpacity]     = React.useState(0);
+    const [pastHero,        setPastHero]        = React.useState(!isHome);
+    const [hideLogoVisible, setHideLogoVisible] = React.useState(false);
 
+    // — Scroll: fade del hero superior (igual que antes) —
     React.useLayoutEffect(() => {
         const onScroll = () => {
             const s         = window.scrollY;
@@ -34,9 +33,9 @@ export function useScrollState(isHome: boolean): ScrollState {
 
             setIsScrolled(s > 12);
 
-            // Does this page have a hero that already shows the name?
-            const hasHideLogoHero = !!document.querySelector("[data-hide-logo]");
+            if (isHome) setPastHero(s >= window.innerHeight * 0.9);
 
+            const hasHideLogoHero = !!document.querySelector("[data-hide-logo]");
             if (hasHideLogoHero) {
                 const logoP = raw < LOGO_FADE_START
                     ? 0
@@ -45,11 +44,6 @@ export function useScrollState(isHome: boolean): ScrollState {
             } else {
                 setLogoOpacity(1);
             }
-
-            // CTA visibility (home only)
-            if (isHome) {
-                setPastHero(s >= window.innerHeight * 0.9);
-            }
         };
 
         onScroll();
@@ -57,5 +51,25 @@ export function useScrollState(isHome: boolean): ScrollState {
         return () => window.removeEventListener("scroll", onScroll);
     }, [isHome]);
 
-    return { isScrolled, logoOpacity, pastHero };
+    React.useEffect(() => {
+        const targets = document.querySelectorAll("[data-hide-logo]");
+        if (!targets.length) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const anyVisible = entries.some((e) => e.isIntersecting);
+                setHideLogoVisible(anyVisible);
+            },
+            { threshold: 0.05 }
+        );
+
+        targets.forEach((el) => observer.observe(el));
+        return () => observer.disconnect();
+    }, []);
+
+    const finalOpacity = hideLogoVisible
+        ? Math.min(logoOpacity, 0)
+        : logoOpacity;
+
+    return { isScrolled, logoOpacity: finalOpacity, pastHero };
 }
