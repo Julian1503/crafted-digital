@@ -440,7 +440,7 @@ export default function MediaPage() {
                         className="group relative overflow-hidden rounded-lg border bg-background transition-colors hover:bg-muted/20"
                     >
                       {/* Thumbnail */}
-                      <div className="flex aspect-square items-center justify-center bg-muted/30">
+                      <div className="relative flex aspect-square items-center justify-center bg-muted/30">
                         {asset.mimeType.startsWith("image/") ? (
                             <Image
                                 src={asset.url}
@@ -613,6 +613,7 @@ export default function MediaPage() {
                                 alt={file.name}
                                 width={40}
                                 height={40}
+                                unoptimized
                                 className="rounded object-cover"
                             />
                             <div className="flex-1 min-w-0">
@@ -692,7 +693,7 @@ export default function MediaPage() {
               <div className="space-y-4">
                 {/* Preview & info */}
                 <div className="flex gap-4">
-                  <div className="flex size-32 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted/30">
+                  <div className="relative flex size-32 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted/30">
                     {editingAsset.mimeType.startsWith("image/") ? (
                         <Image
                             src={editingAsset.url}

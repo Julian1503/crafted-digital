@@ -240,7 +240,6 @@ export default async function CaseStudiesPage() {
                         href="/#work"
                         className="inline-flex items-center gap-2 mb-10 transition-colors duration-200"
                         style={{ color: "rgba(255,255,255,0.28)", fontSize: "0.72rem", letterSpacing: "0.08em" }}
-                        onMouseEnter={undefined}
                     >
                         <span aria-hidden="true" style={{ fontSize: "0.8rem" }}>←</span>
                         <span className="uppercase tracking-[0.15em] text-[0.58rem]">Back</span>
