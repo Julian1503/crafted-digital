@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./hero.module.css";
 import {
-    buildSrcSet,
     cloudinaryUrl,
     easeInOutQuart,
     INTERVAL,
@@ -168,6 +167,7 @@ export default function HeroSection() {
 
             <section
                 className="relative w-full overflow-hidden min-h-[600px] h-svh bg-[hsl(var(--hero-bg))] cursor-default"
+                data-hide-logo
                 onTouchStart={onTouchStart}
                 onTouchEnd={onTouchEnd}
             >

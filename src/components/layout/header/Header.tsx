@@ -74,6 +74,7 @@ export function Header() {
 
                 <MobileToggle
                     isOpen={isOpen}
+                    isLight={isLight}
                     onClick={() => setIsOpen(v => !v)}
                     buttonRef={toggleButtonRef as React.RefObject<HTMLButtonElement>}
                 />
@@ -87,6 +88,7 @@ export function Header() {
 
             {isOpen && (
                 <MobileMenu
+                    isLight={isLight}
                     menuRef={menuRef as React.RefObject<HTMLDivElement>}
                     isHome={isHome}
                     pastHero={pastHero}
