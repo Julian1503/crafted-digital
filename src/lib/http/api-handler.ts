@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import {
   ValidationError,
+  BadRequestError,
   InternalServerError,
   isApiError,
 } from "@/lib/errors/api-error";
@@ -89,7 +90,13 @@ export async function validateRequestBody<T extends z.ZodTypeAny>(
   req: NextRequest,
   schema: T
 ): Promise<z.infer<T>> {
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch (parseError) {
+    console.error("[API] JSON parse error:", parseError);
+    throw new BadRequestError("Invalid or malformed JSON in request body");
+  }
   return schema.parse(body); // Will throw ZodError on failure
 }
 
