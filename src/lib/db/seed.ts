@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
-import {slugify} from "@/lib/utils";
+import {generateSlug} from "@/lib/utils/slug";
 import {MediaProvider} from "@/generated/prisma/enums";
 
 const modules = ["content", "crm", "billing", "system"];
@@ -516,11 +516,11 @@ const technologies = [
     // ─── Industries ─────────────────────────────────────────────────────
     for (const name of industries) {
       await prisma.industry.upsert({
-        where: { slug: slugify(name) },
+        where: { slug: generateSlug(name) },
         update: { name },
         create: {
           name,
-          slug: slugify(name),
+          slug: generateSlug(name),
         },
       });
     }
@@ -530,11 +530,11 @@ const technologies = [
     // ─── Tools ──────────────────────────────────────────────────────────
     for (const name of tools) {
       await prisma.tool.upsert({
-        where: { slug: slugify(name) },
+        where: { slug: generateSlug(name) },
         update: { name },
         create: {
           name,
-          slug: slugify(name),
+          slug: generateSlug(name),
         },
       });
     }
@@ -544,11 +544,11 @@ const technologies = [
     // ─── Technologies ───────────────────────────────────────────────────
     for (const name of technologies) {
       await prisma.technology.upsert({
-        where: { slug: slugify(name) },
+        where: { slug: generateSlug(name) },
         update: { name },
         create: {
           name,
-          slug: slugify(name),
+          slug: generateSlug(name),
         },
       });
     }

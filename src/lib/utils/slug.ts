@@ -1,6 +1,10 @@
 /**
  * @fileoverview Slug generation and validation utilities.
- * Provides URL-friendly slug creation with uniqueness guarantees for database entities.
+ * Provides URL-friendly slug creation with best-effort uniqueness checks for database entities.
+ *
+ * NOTE: The check-then-insert approach in ensureUniqueSlug can still race under concurrent
+ * creates/updates. The database unique constraint is the real guarantee of slug uniqueness.
+ * Callers should handle unique constraint violations (e.g. with a retry or ConflictError).
  */
 
 import { prisma } from "@/lib/db/prisma";

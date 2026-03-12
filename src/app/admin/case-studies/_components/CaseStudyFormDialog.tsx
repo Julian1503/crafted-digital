@@ -8,7 +8,8 @@ import { AdminDialog } from "@/components/admin/AdminDialog";
 import { MediaPicker, type MediaAsset } from "@/components/admin/MediaPicker";
 import { makePseudoAssetFromUrl } from "@/lib/media/make-pseudo-asset";
 import { toast } from "@/hooks/use-sonner";
-import { cn, slugify } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { generateSlug } from "@/lib/utils/slug";
 import type { CaseStudy } from "./case-study.types";
 
 interface CaseStudyFormDialogProps {
@@ -82,7 +83,7 @@ export function CaseStudyFormDialog({
 
   const handleTitleChange = (value: string) => {
     setFormTitle(value);
-    if (!slugManual) setFormSlug(slugify(value));
+    if (!slugManual) setFormSlug(generateSlug(value));
   };
 
   const handleSubmit = async () => {
@@ -95,7 +96,7 @@ export function CaseStudyFormDialog({
     try {
       const body: Record<string, unknown> = {
         title: formTitle.trim(),
-        slug: formSlug || slugify(formTitle),
+        slug: formSlug || generateSlug(formTitle),
         summary: formSummary || null,
         body: formBody || null,
         status: formStatus,

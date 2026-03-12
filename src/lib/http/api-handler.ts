@@ -8,6 +8,7 @@ import { z } from "zod";
 import {
   ValidationError,
   InternalServerError,
+  BadRequestError,
   isApiError,
 } from "@/lib/errors/api-error";
 
@@ -89,7 +90,12 @@ export async function validateRequestBody<T extends z.ZodTypeAny>(
   req: NextRequest,
   schema: T
 ): Promise<z.infer<T>> {
-  const body = await req.json();
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    throw new BadRequestError("Invalid or missing JSON in request body");
+  }
   return schema.parse(body); // Will throw ZodError on failure
 }
 

@@ -8,7 +8,8 @@ import { AdminDialog } from "@/components/admin/AdminDialog";
 import { MediaPicker, type MediaAsset } from "@/components/admin/MediaPicker";
 import { makePseudoAssetFromUrl } from "@/lib/media/make-pseudo-asset";
 import { toast } from "@/hooks/use-sonner";
-import { cn, slugify } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { generateSlug } from "@/lib/utils/slug";
 import type { BlogPost } from "./blog.types";
 
 interface BlogFormDialogProps {
@@ -71,7 +72,7 @@ export function BlogFormDialog({
 
   const handleTitleChange = (value: string) => {
     setFormTitle(value);
-    if (!slugManual) setFormSlug(slugify(value));
+    if (!slugManual) setFormSlug(generateSlug(value));
   };
 
   const handleSubmit = async (asDraft?: boolean) => {
@@ -84,7 +85,7 @@ export function BlogFormDialog({
     try {
       const body: Record<string, unknown> = {
         title: formTitle.trim(),
-        slug: formSlug || slugify(formTitle),
+        slug: formSlug || generateSlug(formTitle),
         content: formContent,
         excerpt: formExcerpt,
         status: asDraft ? "draft" : formStatus,
