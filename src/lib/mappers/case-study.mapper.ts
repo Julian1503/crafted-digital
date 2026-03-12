@@ -150,7 +150,7 @@ export function toCaseStudyCardProps(study: PrismaCaseStudy): CaseStudyBase {
         client:      extractClient(study),
         category:    extractCategory(study),
         description: study.summary    ?? "",
-        image:       study.coverImage ?? "/placeholder-case-study.jpg",
+        image:       study.coverImage ?? "/placeholder-case-study.webp",
     };
 }
 
@@ -165,7 +165,7 @@ export function toCaseStudyDetailProps(study: PrismaCaseStudy): CaseStudyDetail 
         client:       extractClient(study),
         category:     extractCategory(study),
         description:  study.summary    ?? "",
-        image:        study.coverImage ?? "/placeholder-case-study.jpg",
+        image:        study.coverImage ?? "/placeholder-case-study.webp",
         gallery:      extractGallery(study.gallery),
         challenge:    body.challenge,
         approach:     body.approach,
@@ -213,7 +213,7 @@ export function toProjectProps(study: CaseStudyWithRelations): Project {
     return {
         title:       study.title,
         slug:        study.slug,
-        image:       study.coverImage ?? "/placeholder-case-study.jpg",
+        image:       study.coverImage ?? "/placeholder-case-study.webp",
         href:        `/case-studies/${study.slug}`,
         gallery:    extractGallery(study.gallery),
         year,

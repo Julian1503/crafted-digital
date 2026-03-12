@@ -32,7 +32,7 @@ export function AboutHero() {
             {/* ── Background image ─────────────────────────────────── */}
             <motion.div className="absolute inset-0 w-full grid md:grid-cols-2 grid-cols-1" style={{ scale: imgScale }}>
                 <Image
-                    src="/img/profile_dark.jpg"
+                    src="/img/profile_dark.webp"
                     alt="Julian Delgado"
                     fill
                     sizes="(min-width: 768px) 50vw, 100vw"                    className="object-cover object-top col-start-1 md:col-start-2 col-span-1"

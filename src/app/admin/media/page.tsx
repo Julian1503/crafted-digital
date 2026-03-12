@@ -18,6 +18,8 @@ import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminDialog } from "@/components/admin/AdminDialog";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
+import {Label} from "@/components/ui/label";
+import Image from "next/image";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -438,11 +440,12 @@ export default function MediaPage() {
                         className="group relative overflow-hidden rounded-lg border bg-background transition-colors hover:bg-muted/20"
                     >
                       {/* Thumbnail */}
-                      <div className="flex aspect-square items-center justify-center bg-muted/30">
+                      <div className="relative flex aspect-square items-center justify-center bg-muted/30">
                         {asset.mimeType.startsWith("image/") ? (
-                            <img
+                            <Image
                                 src={asset.url}
                                 alt={asset.alt ?? asset.filename}
+                                fill
                                 className="size-full object-cover"
                             />
                         ) : asset.mimeType.startsWith("video/") ? (
@@ -524,7 +527,7 @@ export default function MediaPage() {
             {/* Upload settings */}
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1">
-                <label className="block text-sm font-medium">Provider</label>
+                <Label className="block text-sm font-medium">Provider</Label>
                 <select
                     value={uploadProvider}
                     onChange={(e) => setUploadProvider(e.target.value as UploadProvider)}
@@ -539,7 +542,7 @@ export default function MediaPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="block text-sm font-medium">Folder</label>
+                <Label className="block text-sm font-medium">Folder</Label>
                 <Input
                     value={uploadFolder}
                     onChange={(e) => setUploadFolder(e.target.value)}
@@ -605,10 +608,13 @@ export default function MediaPage() {
                       const prog = uploadProgress[key];
                       return (
                           <div key={key} className="flex items-center gap-3 rounded-md border p-2">
-                            <img
+                            <Image
                                 src={URL.createObjectURL(file)}
                                 alt={file.name}
-                                className="size-10 rounded object-cover"
+                                width={40}
+                                height={40}
+                                unoptimized
+                                className="rounded object-cover"
                             />
                             <div className="flex-1 min-w-0">
                               <p className="truncate text-sm">{file.name}</p>
@@ -687,11 +693,12 @@ export default function MediaPage() {
               <div className="space-y-4">
                 {/* Preview & info */}
                 <div className="flex gap-4">
-                  <div className="flex size-32 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted/30">
+                  <div className="relative flex size-32 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted/30">
                     {editingAsset.mimeType.startsWith("image/") ? (
-                        <img
+                        <Image
                             src={editingAsset.url}
                             alt={editingAsset.alt ?? editingAsset.filename}
+                            fill
                             className="size-full object-cover"
                         />
                     ) : editingAsset.mimeType.startsWith("video/") ? (

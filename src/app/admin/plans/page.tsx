@@ -20,6 +20,7 @@ import { CardSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
+import {Label} from "@/components/ui/label";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -505,7 +506,7 @@ export default function PlansPage() {
             />
           </div>
           <div className="flex items-center gap-6">
-            <label className="flex items-center gap-2 text-sm">
+            <Label className="flex items-center gap-2 text-sm">
               <button
                 type="button"
                 role="switch"
@@ -524,8 +525,8 @@ export default function PlansPage() {
                 />
               </button>
               Active
-            </label>
-            <label className="flex items-center gap-2 text-sm">
+            </Label>
+            <Label className="flex items-center gap-2 text-sm">
               <button
                 type="button"
                 role="switch"
@@ -546,7 +547,7 @@ export default function PlansPage() {
                 />
               </button>
               Highlighted
-            </label>
+            </Label>
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button

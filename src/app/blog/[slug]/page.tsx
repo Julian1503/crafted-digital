@@ -2,21 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Calendar, Clock, User } from "lucide-react";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/header/Header";
+import { Footer } from "@/components/layout/footer/Footer";
 import { ReactNode } from "react";
 import { getBlogPostBySlug, getPublishedBlogPosts } from "@/lib/services/blog";
 import { toBlogCardProps } from "@/lib/mappers/blog.mapper";
+import { formatDate } from "@/lib/utils/date";
 
 export const revalidate = 60;
-
-function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString("en-AU", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    });
-}
 
 export async function generateStaticParams() {
     const posts = await getPublishedBlogPosts();

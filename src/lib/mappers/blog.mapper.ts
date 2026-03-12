@@ -14,7 +14,7 @@ interface PrismaBlogPost {
 
 export function toBlogCardProps(post: PrismaBlogPost): BlogPost {
     return {
-        image: post.coverImage ?? "/placeholder-blog.jpg",
+        image: post.coverImage ?? "/placeholder-blog.webp",
         slug: post.slug,
         title: post.title,
         excerpt: post.excerpt ?? "",

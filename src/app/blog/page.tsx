@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/footer/Footer";
+import { Header } from "@/components/layout/header/Header";
 import { SkipLink } from "@/components/ui/skip-link";
 import BlogCard from "@/components/sections/Blog/BlogCard";
 import { getPublishedBlogPosts } from "@/lib/services/blog";

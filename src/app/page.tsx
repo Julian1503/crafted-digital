@@ -1,5 +1,5 @@
-import {Header} from "@/components/layout/Header";
-import Hero from "@/components/sections/Hero/Hero";
+import {Header} from "@/components/layout/header/Header";
+import HeroSection from "@/components/sections/Hero/HeroSection";
 import {WorkSection} from "@/components/sections/Work/WorkSection";
 import {SkipLink} from "@/components/ui/skip-link";
 import dynamic from "next/dynamic";
@@ -22,11 +22,11 @@ export default async function Home() {
         loading: () => <section className="py-24 bg-background" aria-hidden="true" />,
     });
 
-    const Contact = dynamic(() => import("@/components/sections/Contact/Contact").then(mod => ({ default: mod.Contact })), {
+    const Contact = dynamic(() => import("@/components/sections/Contact/ContactSection").then(mod => ({ default: mod.ContactSection })), {
         loading: () => <section className="py-24 bg-muted/30" aria-hidden="true" />,
     });
 
-    const Footer = dynamic(() => import("@/components/layout/Footer").then(mod => ({ default: mod.Footer })), {
+    const Footer = dynamic(() => import("@/components/layout/footer/Footer").then(mod => ({ default: mod.Footer })), {
         loading: () => <footer className="py-16 bg-foreground" aria-hidden="true" />,
     });
 
@@ -37,7 +37,7 @@ export default async function Home() {
             <Header/>
             <main id="main-content">
                 <FAQSchema />
-                <Hero/>
+                <HeroSection/>
                 <WorkSection/>
                 <Services/>
                 <Process/>

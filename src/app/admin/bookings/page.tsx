@@ -11,7 +11,8 @@ import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminDialog } from "@/components/admin/AdminDialog";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
-import { BOOKING_STATUS_COLORS } from "@/lib/constants";
+import {BOOKING_STATUS_BADGE, BookingStatusType} from "@/lib/types/enums";
+import { formatDateTime } from "@/lib/utils/date";
 import { BookingFormDialog } from "./_components/BookingFormDialog";
 import { BookingDetailDrawer } from "./_components/BookingDetailDrawer";
 import type { Booking, PaginatedBookings } from "./_components/booking.types";
@@ -78,7 +79,7 @@ export default function BookingsPage() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setPage(1);
-      fetchBookings(1, value, statusFilter);
+      return fetchBookings(1, value, statusFilter);
     }, 400);
   };
 
@@ -100,7 +101,7 @@ export default function BookingsPage() {
 
   const openDetail = async (booking: Booking) => {
     setDetailBooking(booking);
-    refreshDetail(booking.id);
+    await refreshDetail(booking.id);
   };
 
   const closeDetail = () => {
@@ -135,7 +136,7 @@ export default function BookingsPage() {
       if (!res.ok) throw new Error();
       toast({ title: "Booking deleted", variant: "success" });
       setDeleteTarget(null);
-      fetchBookings(page, search, statusFilter);
+      await fetchBookings(page, search, statusFilter);
     } catch {
       toast({ title: "Failed to delete booking", variant: "error" });
     } finally {
@@ -157,16 +158,6 @@ export default function BookingsPage() {
 
   /* ---------- Helpers ---------- */
 
-  const formatDateTime = (iso: string) => {
-    const d = new Date(iso);
-    return d.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
 
   const formatDuration = (minutes: number) => {
     if (minutes < 60) return `${minutes}m`;
@@ -186,8 +177,8 @@ export default function BookingsPage() {
       });
       if (!res.ok) throw new Error();
       toast({ title: "Status updated", variant: "success" });
-      refreshDetail(booking.id);
-      fetchBookings(page, search, statusFilter);
+      await refreshDetail(booking.id);
+      await fetchBookings(page, search, statusFilter);
     } catch {
       toast({ title: "Failed to update status", variant: "error" });
     }
@@ -317,7 +308,7 @@ export default function BookingsPage() {
                       <span
                         className={cn(
                           "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                          BOOKING_STATUS_COLORS[booking.status] ??
+                          BOOKING_STATUS_BADGE[booking.status as BookingStatusType] ??
                             "bg-gray-100 text-gray-700"
                         )}
                       >
@@ -393,7 +384,7 @@ export default function BookingsPage() {
         onClose={closeDetail}
         onStatusChange={handleStatusChange}
         onNoteAdded={() => {
-          if (detailBooking) refreshDetail(detailBooking.id);
+          if (detailBooking) return refreshDetail(detailBooking.id);
         }}
       />
 

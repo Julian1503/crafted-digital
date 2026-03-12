@@ -9,8 +9,8 @@ describe("makePseudoAssetFromUrl", () => {
   });
 
   it("extracts filename from URL", () => {
-    const asset = makePseudoAssetFromUrl("https://example.com/path/to/photo.jpg");
-    expect(asset.filename).toBe("photo.jpg");
+    const asset = makePseudoAssetFromUrl("https://example.com/path/to/photo.webp");
+    expect(asset.filename).toBe("photo.webp");
   });
 
   it("handles encoded filenames", () => {

@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
+import {ContentPanelProps} from "@/components/sections/Contact/contact.types";
 
 
 const L = {

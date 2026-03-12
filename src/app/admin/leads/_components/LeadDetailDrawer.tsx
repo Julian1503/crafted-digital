@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { X, ArrowRight, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TableSkeleton } from "@/components/admin/AdminSkeleton";
-import { LEAD_STATUS_COLORS } from "@/lib/constants";
+import {LEAD_STATUS_BADGE, LeadStatusType} from "@/lib/types/enums";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
 import type { Lead } from "./lead.types";
@@ -73,7 +73,6 @@ export function LeadDetailDrawer({
   return (
     <>
       {/* Backdrop */}
-      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
       <div
         className="fixed inset-0 z-50 bg-black/50"
         onClick={onClose}
@@ -120,7 +119,7 @@ export function LeadDetailDrawer({
                 <span
                   className={cn(
                     "inline-block rounded-full px-2 py-0.5 text-xs font-medium capitalize",
-                    LEAD_STATUS_COLORS[lead.status] ?? "bg-gray-100 text-gray-700"
+                    LEAD_STATUS_BADGE[lead.status as LeadStatusType] ?? "bg-gray-100 text-gray-700"
                   )}
                 >
                   {lead.status}

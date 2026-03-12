@@ -1,5 +1,5 @@
-import {Header} from "@/components/layout/Header";
-import {Footer} from "@/components/layout/Footer";
+import {Header} from "@/components/layout/header/Header";
+import {Footer} from "@/components/layout/footer/Footer";
 import {SkipLink} from "@/components/ui/skip-link";
 import AboutContent from "@/app/about-me/AboutContent";
 import { getContentBlocks } from "@/lib/services/content-blocks";
@@ -80,7 +80,7 @@ export default async function About() {
             <SkipLink />
             <Header />
 
-            <main id="main-content" className="pt-2 md:pt-24">
+            <main id="main-content">
                 <AboutContent
                     principles={principles}
                     experienceHighlights={experienceHighlights}

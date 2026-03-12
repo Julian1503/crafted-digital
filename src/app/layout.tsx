@@ -5,7 +5,6 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 import {Providers} from "@/components/ui/providers";
 import {StructuredData} from "@/components/seo/StructuredData";
 import React from "react";
-import PageLoader from "@/components/layout/PageLoader";
 
 const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300','600','700'], variable: "--font-cormorant", });
 const dmSans = DM_Sans({ subsets: ['latin'], weight: ['300','400','500'],variable: "--font-dm-sans", },);
@@ -101,13 +100,6 @@ export default function RootLayout({
                 <title>Custom Web Development for Australian Businesses | Julian Delgado</title>
                 {/* Preload the LCP hero image for faster discovery */}
                 <link
-                    rel="preload"
-                    href="/hero-poster.webp"
-                    as="image"
-                    type="image/webp"
-                    fetchPriority="high"
-                />
-                <link
                     rel="preconnect"
                     href="https://images.unsplash.com"
                     crossOrigin=""
@@ -117,9 +109,7 @@ export default function RootLayout({
                 className={`${dmSerif.variable} ${firaSans.variable} ${dmSans.variable} ${cormorant.variable} antialiased`}
             >
                 <Providers>
-                    {/*<PageLoader>*/}
-                        {children}
-                    {/*</PageLoader>*/}
+                    {children}
                 </Providers>
                 <GoogleAnalytics gaId={googleAnalyticsId} />
             </body>

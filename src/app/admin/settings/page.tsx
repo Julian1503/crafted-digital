@@ -17,6 +17,7 @@ import { CardSkeleton } from "@/components/admin/AdminSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { toast } from "@/hooks/use-sonner";
 import { cn } from "@/lib/utils";
+import {Label} from "@/components/ui/label";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -185,7 +186,7 @@ export default function SettingsPage() {
         variant: "success",
       });
       setDialogOpen(false);
-      fetchSettings();
+      await fetchSettings();
     } catch (err) {
       toast({
         title: err instanceof Error ? err.message : "Something went wrong",
@@ -241,7 +242,7 @@ export default function SettingsPage() {
 
       toast({ title: "Settings saved", variant: "success" });
       setDirtyIds(new Set());
-      fetchSettings();
+      await fetchSettings();
     } catch {
       toast({ title: "Failed to save settings", variant: "error" });
     } finally {
@@ -259,7 +260,7 @@ export default function SettingsPage() {
       if (!res.ok) throw new Error();
       toast({ title: "Setting deleted", variant: "success" });
       setDeleteTarget(null);
-      fetchSettings();
+      await fetchSettings();
     } catch {
       toast({ title: "Failed to delete setting", variant: "error" });
     }
@@ -399,7 +400,6 @@ export default function SettingsPage() {
                           5,
                           Math.max(1, inlineValue.split("\n").length)
                         )}
-                        autoFocus
                       />
                     ) : (
                       <button
@@ -457,7 +457,7 @@ export default function SettingsPage() {
       >
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-sm font-medium">Key</label>
+            <Label className="mb-1.5 block text-sm font-medium">Key</Label>
             <Input
               placeholder="e.g. seo.defaultTitle"
               value={formKey}
@@ -470,7 +470,7 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium">Value</label>
+            <Label className="mb-1.5 block text-sm font-medium">Value</Label>
             <textarea
               className="w-full resize-none rounded-md border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               placeholder="Setting value"
@@ -481,7 +481,7 @@ export default function SettingsPage() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium">Group</label>
+            <Label className="mb-1.5 block text-sm font-medium">Group</Label>
             <Input
               placeholder="e.g. general, seo, contact"
               value={formGroup}
