@@ -15,92 +15,33 @@ import { bg, border, white, mid, dim, accent, LINE, E } from "./about-constants"
 import { ChapterLabel } from "./ChapterLabel";
 
 const PRINCIPLES_DATA = [
-    {
-        n: "01",
-        title: "Human-first design",
-        body: "Every interaction should feel obvious, calm, and supportive so people can focus on their work.",
-        image: "/img/Human-first design.webp",
-        imgPos: "object-[center_80%]",
-    },
-    {
-        n: "02",
-        title: "Simplicity scales",
-        body: "Clear architecture and lean interfaces keep products fast as your business grows.",
-        image: "/img/Simplicity_scales.webp",
-        imgPos: "object-center",
-    },
-    {
-        n: "03",
-        title: "Evidence-driven",
-        body: "Decisions are backed by research, analytics, and stakeholder alignment — not guesswork.",
-        image: "/img/Evidence-driven.webp",
-        imgPos: "object-[center_60%]",
-    },
-    {
-        n: "04",
-        title: "Quality in every layer",
-        body: "From typography to API design, I obsess over the details that build trust.",
-        image: "/img/Quality_in_every_layer.webp",
-        imgPos: "object-center",
-    },
+    { n: "01", title: "Human-first design",    body: "Every interaction should feel obvious, calm, and supportive so people can focus on their work.",           image: "/img/Human-first design.webp",    imgPos: "object-[center_80%]" },
+    { n: "02", title: "Simplicity scales",     body: "Clear architecture and lean interfaces keep products fast as your business grows.",                        image: "/img/Simplicity_scales.webp",     imgPos: "object-center" },
+    { n: "03", title: "Evidence-driven",       body: "Decisions are backed by research, analytics, and stakeholder alignment — not guesswork.",                  image: "/img/Evidence-driven.webp",       imgPos: "object-[center_60%]" },
+    { n: "04", title: "Quality in every layer",body: "From typography to API design, I obsess over the details that build trust.",                              image: "/img/Quality_in_every_layer.webp",imgPos: "object-center" },
 ];
 
-function PrincipleDot({
-    scrollYProgress,
-    index,
-    total,
-}: {
-    scrollYProgress: MotionValue<number>;
-    index: number;
-    total: number;
-}) {
-    const center = index === 0 ? 0.05 : index === total - 1 ? 0.95 : index / (total - 1);
+function PrincipleDot({ scrollYProgress, index, total }: { scrollYProgress: MotionValue<number>; index: number; total: number }) {
+    const center   = index === 0 ? 0.05 : index === total - 1 ? 0.95 : index / (total - 1);
     const halfStep = 0.5 / (total - 1);
+    const c        = (v: number) => Math.min(1, Math.max(0, v));
+    const lo       = c(center - halfStep);
+    const midV     = c(center);
+    const hi       = c(center + halfStep);
+    const loSafe   = lo;
+    const midSafe  = midV  <= loSafe  ? loSafe  + 0.001 : midV;
+    const hiSafe   = hi    <= midSafe ? midSafe + 0.001 : hi;
 
-    const c = (v: number) => Math.min(1, Math.max(0, v));
-    const lo = c(center - halfStep);
-    const midV = c(center);
-    const hi = c(center + halfStep);
+    const dotBg = useTransform(scrollYProgress, [loSafe, midSafe, hiSafe], ["rgba(255,255,255,0.18)", LINE, "rgba(255,255,255,0.18)"]);
+    const dotW  = useTransform(scrollYProgress, [loSafe, midSafe, hiSafe], ["6px", "22px", "6px"]);
 
-    const loSafe = lo;
-    const midSafe = midV <= loSafe ? loSafe + 0.001 : midV;
-    const hiSafe = hi <= midSafe ? midSafe + 0.001 : hi;
-
-    const dotBg = useTransform(
-        scrollYProgress,
-        [loSafe, midSafe, hiSafe],
-        ["rgba(255,255,255,0.18)", LINE, "rgba(255,255,255,0.18)"]
-    );
-    const dotW = useTransform(
-        scrollYProgress,
-        [loSafe, midSafe, hiSafe],
-        ["6px", "22px", "6px"]
-    );
-
-    return (
-        <motion.div
-            className="h-[6px] rounded-full"
-            style={{
-                background: dotBg,
-                width: dotW,
-                transition: "none",
-            }}
-        />
-    );
+    return <motion.div className="h-[6px] rounded-full" style={{ background: dotBg, width: dotW, transition: "none" }} />;
 }
 
-function PrinciplePanel({
-    p,
-    index,
-    scrollYProgress,
-}: {
-    p: (typeof PRINCIPLES_DATA)[0];
-    index: number;
-    scrollYProgress: MotionValue<number>;
-}) {
-    const total = PRINCIPLES_DATA.length;
+function PrinciplePanel({ p, index, scrollYProgress }: { p: (typeof PRINCIPLES_DATA)[0]; index: number; scrollYProgress: MotionValue<number> }) {
+    const total  = PRINCIPLES_DATA.length;
     const center = index === 0 ? 0.05 : index === total - 1 ? 0.95 : index / (total - 1);
-    const step = 1 / (total - 1);
+    const step   = 1 / (total - 1);
 
     const imgX = useTransform(
         scrollYProgress,
@@ -110,64 +51,54 @@ function PrinciplePanel({
 
     const textOpacity = useTransform(
         scrollYProgress,
-        [
-            clamp01(center - step * 0.5),
-            clamp01(center - step * 0.12),
-            clamp01(center + step * 0.12),
-            clamp01(center + step * 0.5),
-        ],
+        [clamp01(center - step * 0.5), clamp01(center - step * 0.12), clamp01(center + step * 0.12), clamp01(center + step * 0.5)],
         [0, 1, 1, 0]
     );
 
     const textY = useTransform(
         scrollYProgress,
-        [
-            clamp01(center - step * 0.5),
-            clamp01(center - step * 0.12),
-            clamp01(center + step * 0.12),
-            clamp01(center + step * 0.5),
-        ],
+        [clamp01(center - step * 0.5), clamp01(center - step * 0.12), clamp01(center + step * 0.12), clamp01(center + step * 0.5)],
         ["28px", "0px", "0px", "-28px"]
     );
 
     return (
         <div className="relative flex h-screen w-screen shrink-0 items-center overflow-hidden">
-            <div className="absolute right-0 top-0 h-full w-[62%] overflow-hidden">
+
+            {/* ── Background image ───────────────────────────────────────────
+                Desktop: right 62% panel.
+                Mobile:  full-width background.
+            ────────────────────────────────────────────────────────────────── */}
+            <div className="absolute inset-0 sm:left-auto sm:right-0 sm:w-[62%] overflow-hidden">
                 <motion.div className="absolute inset-0" style={{ x: imgX, scale: 1.08 }}>
                     <Image
                         src={p.image}
                         alt={p.title}
                         fill
-                        sizes="62vw"
+                        sizes="(max-width: 640px) 100vw, 62vw"
                         className={`object-cover ${p.imgPos}`}
                         style={{ filter: "saturate(0.72) brightness(0.68)" }}
                         priority={index === 0}
                     />
                 </motion.div>
 
+                {/* Desktop: left-to-right fade */}
+                <div
+                    className="absolute inset-0 hidden sm:block"
+                    style={{ background: "linear-gradient(to right, #0a0a0a 0%, rgba(10,10,10,0.7) 28%, rgba(10,10,10,0.18) 60%, rgba(134,34,25,0) 100%)" }}
+                />
+                {/* Mobile: strong bottom-up overlay for text legibility */}
+                <div
+                    className="absolute inset-0 sm:hidden"
+                    style={{ background: "linear-gradient(to top, rgba(10,10,10,0.97) 0%, rgba(10,10,10,0.85) 35%, rgba(10,10,10,0.6) 65%, rgba(10,10,10,0.25) 100%)" }}
+                />
+                {/* Shared top/bottom vignette */}
                 <div
                     className="absolute inset-0"
-                    style={{
-                        background:
-                            "linear-gradient(to right, #0a0a0a 0%, rgba(10,10,10,0.7) 28%, rgba(10,10,10,0.18) 60%, rgba(134, 34, 25, 0) 100%)",
-                    }}
-                />
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        background:
-                            "linear-gradient(to bottom, rgba(10,10,10,0.55) 0%, rgba(134, 34, 25, 0) 18%, rgba(134, 34, 25, 0) 78%, rgba(10,10,10,0.65) 100%)",
-                    }}
-                />
-                <div
-                    className="absolute left-1/2 top-1/2 h-1/2 w-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full blur-[32px]"
-                    style={{
-                        background:
-                            "radial-gradient(ellipse, rgba(134,33,25,0.12) 0%, rgba(134, 34, 25, 0) 70%)",
-                    }}
+                    style={{ background: "linear-gradient(to bottom, rgba(10,10,10,0.55) 0%, rgba(134,34,25,0) 18%, rgba(134,34,25,0) 78%, rgba(10,10,10,0.65) 100%)" }}
                 />
             </div>
 
+            {/* Large number watermark */}
             <div
                 aria-hidden
                 className="pointer-events-none absolute bottom-[-0.08em] left-[clamp(0.5rem,3.5vw,4rem)] select-none font-serif text-[clamp(13rem,26vw,24rem)] font-normal leading-none tracking-[-0.06em]"
@@ -176,32 +107,37 @@ function PrinciplePanel({
                 {p.n}
             </div>
 
+            {/* ── Text content ───────────────────────────────────────────────
+                Desktop: left panel, max 44vw.
+                Mobile:  full width, pushed to bottom of the panel.
+            ────────────────────────────────────────────────────────────────── */}
             <motion.div
-                className="relative z-10 max-w-[min(560px,44vw)] pl-[clamp(1.25rem,5vw,5rem)] pr-8"
+                className="relative z-10
+                           w-full px-6 pb-24 pt-20
+                           flex flex-col justify-end h-full
+                           sm:h-auto sm:max-w-[min(560px,44vw)]
+                           sm:pl-[clamp(1.25rem,5vw,5rem)] sm:pr-8
+                           sm:pb-0 sm:pt-0 sm:flex-initial sm:justify-start"
                 style={{ opacity: textOpacity, y: textY }}
             >
                 <div
-                    className="mb-10 inline-flex items-center gap-[0.6rem] rounded-[4px] border px-[0.8rem] py-[0.35rem]"
+                    className="mb-8 inline-flex items-center gap-[0.6rem] rounded-[4px] border px-[0.8rem] py-[0.35rem]"
                     style={{ borderColor: border }}
                 >
-                    <span className="font-mono text-[0.5rem] tracking-[0.2em]" style={{ color: accent }}>
-                        {p.n}
-                    </span>
+                    <span className="font-mono text-[0.5rem] tracking-[0.2em]" style={{ color: accent }}>{p.n}</span>
                     <span className="inline-block h-[10px] w-px" style={{ background: border }} />
-                    <span className="font-mono text-[0.5rem] uppercase tracking-[0.22em]" style={{ color: dim }}>
-                        Principle
-                    </span>
+                    <span className="font-mono text-[0.5rem] uppercase tracking-[0.22em]" style={{ color: dim }}>Principle</span>
                 </div>
 
                 <h2
-                    className="mb-6 font-serif text-[clamp(2.2rem,4.2vw,4rem)] font-normal italic leading-[1.05] tracking-[-0.04em]"
+                    className="mb-5 font-serif text-[clamp(2rem,4.2vw,4rem)] font-normal italic leading-[1.05] tracking-[-0.04em]"
                     style={{ color: white }}
                 >
                     {p.title}
                 </h2>
 
                 <p
-                    className="mb-9 max-w-[40ch] text-[clamp(0.88rem,1.3vw,1.02rem)] leading-[1.92]"
+                    className="mb-8 text-[clamp(0.88rem,1.3vw,1.02rem)] leading-[1.92]"
                     style={{ color: mid }}
                 >
                     {p.body}
@@ -209,10 +145,7 @@ function PrinciplePanel({
 
                 <div
                     className="h-[2px] w-10 rounded-[2px]"
-                    style={{
-                        background: `linear-gradient(to right, ${LINE}, ${accent})`,
-                        boxShadow: `0 0 10px ${LINE}`,
-                    }}
+                    style={{ background: `linear-gradient(to right, ${LINE}, ${accent})`, boxShadow: `0 0 10px ${LINE}` }}
                 />
             </motion.div>
         </div>
@@ -222,13 +155,9 @@ function PrinciplePanel({
 export function Principles({ principles }: { principles: AboutPrinciple[] }) {
     const sectionRef = useRef<HTMLElement>(null);
 
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ["start start", "end end"],
-    });
-
+    const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] });
     const rawX = useTransform(scrollYProgress, [0, 1], ["0vw", "-300vw"]);
-    const x = useSpring(rawX, { stiffness: 55, damping: 22, restDelta: 0.001 });
+    const x    = useSpring(rawX, { stiffness: 55, damping: 22, restDelta: 0.001 });
     const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
     return (
@@ -248,28 +177,15 @@ export function Principles({ principles }: { principles: AboutPrinciple[] }) {
                     <ChapterLabel n="04" label="How I work" />
                 </motion.div>
 
-                <motion.div
-                    className="flex h-full w-[400vw]"
-                    style={{ x, willChange: "transform" }}
-                >
+                <motion.div className="flex h-full w-[400vw]" style={{ x, willChange: "transform" }}>
                     {PRINCIPLES_DATA.map((p, i) => (
-                        <PrinciplePanel
-                            key={p.n}
-                            p={p}
-                            index={i}
-                            scrollYProgress={scrollYProgress}
-                        />
+                        <PrinciplePanel key={p.n} p={p} index={i} scrollYProgress={scrollYProgress} />
                     ))}
                 </motion.div>
 
                 <div className="absolute bottom-[2.2rem] left-1/2 z-40 flex -translate-x-1/2 items-center gap-[0.45rem]">
                     {PRINCIPLES_DATA.map((_, i) => (
-                        <PrincipleDot
-                            key={i}
-                            scrollYProgress={scrollYProgress}
-                            index={i}
-                            total={PRINCIPLES_DATA.length}
-                        />
+                        <PrincipleDot key={i} scrollYProgress={scrollYProgress} index={i} total={PRINCIPLES_DATA.length} />
                     ))}
                 </div>
 
@@ -277,19 +193,14 @@ export function Principles({ principles }: { principles: AboutPrinciple[] }) {
                     className="pointer-events-none absolute bottom-[2.2rem] right-[clamp(1.25rem,5vw,5rem)] z-40 flex items-center gap-2"
                     style={{ opacity: hintOpacity }}
                 >
-                    <span className="font-mono text-[0.48rem] uppercase tracking-[0.24em] text-white/[0.28]">
-                        Scroll to explore
-                    </span>
+                    <span className="font-mono text-[0.48rem] uppercase tracking-[0.24em] text-white/[0.28]">Scroll to explore</span>
                     <motion.span
                         animate={{ x: [0, 7, 0] }}
                         transition={{ repeat: Infinity, duration: 1.7, ease: "easeInOut" }}
                         className="text-[0.75rem] text-white/[0.28]"
-                    >
-                        →
-                    </motion.span>
+                    >→</motion.span>
                 </motion.div>
             </div>
         </section>
     );
 }
-
