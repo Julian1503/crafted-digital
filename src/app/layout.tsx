@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Serif_Text, Fira_Sans,Cormorant_Garamond, DM_Sans} from "next/font/google";
 import "./globals.css";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import {Providers} from "@/components/ui/providers";
 import {StructuredData} from "@/components/seo/StructuredData";
 import React from "react";
@@ -93,8 +93,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
     const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || '';
+    const googleTagManagerId = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || '';
     return (
         <html lang="en-AU">
+            {googleTagManagerId && <GoogleTagManager gtmId={googleTagManagerId} />}
             <head>
                 <StructuredData />
                 <title>Custom Web Development for Australian Businesses | Julian Delgado</title>
