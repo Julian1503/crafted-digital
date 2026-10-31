@@ -40,7 +40,7 @@ export async function GET() {
         "",
         "## Contact",
         "",
-        `- [Book a 20-minute call](${SITE_URL}/contact): reply within 24 hours.`,
+        `- [Book a 30-minute call](${SITE_URL}/contact): reply within 24 hours.`,
         `- Email: ${CONTACT_EMAIL}`,
         `- Based in Toowoomba, QLD, Australia. Remote work with clients across Australia.`,
         "",

@@ -7,7 +7,7 @@ import { BookCallSection } from "@/components/sections/Contact/BookCallSection";
 import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/constants/site";
 
 export const metadata: Metadata = {
-    title: "Contact | Book a 20-minute call",
+    title: "Contact | Book a 30-minute call",
     description:
         "Tell Julian Delgado what you're building. Custom software, AI automation and websites for Australian small businesses, from Toowoomba, QLD. Reply within 24 hours.",
     alternates: { canonical: `${SITE_URL}/contact` },

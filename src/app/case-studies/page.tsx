@@ -320,7 +320,7 @@ export default async function CaseStudiesPage() {
                             className="text-[0.82rem] leading-relaxed"
                             style={{ color: "rgba(255,255,255,0.66)", maxWidth: "40ch" }}
                         >
-                            Let’s talk about your project — no commitment, just a 20 min call.
+                            Let’s talk about your project — no commitment, just a 30 min call.
                         </p>
                     </div>
 

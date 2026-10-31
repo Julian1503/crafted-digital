@@ -34,7 +34,7 @@ export const FAQS: FAQItem[] = [
         id: "not-sure-what-i-need",
         question: "I don’t know exactly what I need. Can I still get in touch?",
         answer:
-            "That is the normal starting point. Send a few lines about the problem and we book a 20-minute call. Discovery is the first phase of every project: we map goals, constraints and a scope you can approve before anything is built.",
+            "That is the normal starting point. Send a few lines about the problem and we book a 30-minute call. Discovery is the first phase of every project: we map goals, constraints and a scope you can approve before anything is built.",
     },
     {
         id: "if-you-disappear",

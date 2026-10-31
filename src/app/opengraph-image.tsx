@@ -44,7 +44,7 @@ export default function OpenGraphImage() {
                     }}
                 >
                     <div>juliandelgado.com.au</div>
-                    <div style={{ color: "#e8705f" }}>Book a 20-minute call</div>
+                    <div style={{ color: "#e8705f" }}>Book a 30-minute call</div>
                 </div>
             </div>
         ),

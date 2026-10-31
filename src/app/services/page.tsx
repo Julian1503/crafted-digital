@@ -96,7 +96,7 @@ export default function ServicesPage() {
 
                 <CtaBand
                     heading="Not sure which one you need?"
-                    body="That is the normal starting point. Send a few lines about the problem and we book a 20-minute call to work out the right scope, or whether you need me at all."
+                    body="That is the normal starting point. Send a few lines about the problem and we book a 30-minute call to work out the right scope, or whether you need me at all."
                     location="services_hub"
                 />
             </main>

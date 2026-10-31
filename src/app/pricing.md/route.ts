@@ -34,7 +34,7 @@ export async function GET() {
         ...sections,
         "## Next step",
         "",
-        `Book a 20-minute call: ${SITE_URL}/contact`,
+        `Book a 30-minute call: ${SITE_URL}/contact`,
         "",
     ].join("\n");
 

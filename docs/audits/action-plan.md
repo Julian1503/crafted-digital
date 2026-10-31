@@ -51,7 +51,7 @@ Una nota de higiene: el agente de seguridad leyó `.env` y `.env.local` durante 
 | S1-02 | [x] | Logo apunta a `/public` (404). Cambiar a `/`. | `header/_components/HeaderLogo.tsx:12` | audit |
 | S1-03 | [x] | Crear `/privacy` y `/terms` (404 hoy; necesarios para Meta Ads y confianza del formulario). | `src/app/privacy/page.tsx`, `src/app/terms/page.tsx` | seo / cro |
 | S1-04 | [x] | Hero: un solo `<h1>` con propuesta de valor, **expuesto** (hoy el h1 real está `visibility:hidden` y el visible dentro de `aria-hidden`, así que la home no tiene h1 accesible); `FloatingTitle` pasa a `<div aria-hidden>`; tags de slide alineados a la oferta. Copy según D-03. | `Hero/HeroSection.tsx:313,343`, `Hero/FloatingTitle.tsx:57`, `hero.constants.ts` | cro / seo / A11Y-01 / COPY-01, COPY-13 |
-| S1-05 | [x] | CTA primario "Book a 20-minute fit call"; repetirlo tras Work, tras Pricing y en el footer. Depende de D-06 (herramienta de reserva). | header, `Work.tsx`, `Pricing.tsx`, `Footer.tsx` | cro |
+| S1-05 | [x] | CTA primario "Book a 30-minute fit call"; repetirlo tras Work, tras Pricing y en el footer. Depende de D-06 (herramienta de reserva). | header, `Work.tsx`, `Pricing.tsx`, `Footer.tsx` | cro |
 | S1-06 | [x] | Contacto en móvil: no montar el `<video>` en `< lg` ni con reduced motion; formulario en la primera pantalla tras el título. | `Contact/ContactSection.tsx:100` | audit / PERF-13 |
 | S1-07 | [x] | `/api/contact`: honeypot (`hp` con valor → 200 falso sin enviar, logueado); rate limit por IP (5/h) con `RateLimitError`; leer `{error}` de cada `resend.emails.send` y lanzar `ServiceUnavailableError`; auto-reply best-effort (try/catch, warning); `validateRequestBody` para 400 con errores de campo; `.max()` en todos los campos, `topics` acotado, `website` solo http(s). | `src/app/api/contact/route.ts`, `Contact/contact-data.ts` | SEC-03/04/05/06, SF-03/04/05/06 |
 | S1-08 | [x] | `ContactForm`: ramificar en `res.ok`; toast de error con el email como enlace y los valores conservados; capturar `err: unknown` y reportarlo; `aria-live`. Disparar el evento de analítica solo en la rama de éxito (MEAS-04). | `Contact/ContactForm.tsx:44-51` | SF-01/02, TS-06/07 |
@@ -134,7 +134,7 @@ Una nota de higiene: el agente de seguridad leyó `.env` y `.env.local` durante 
 | D-03 | Hero: opción A, B o C del informe. | A. | pendiente |
 | D-04 | Formulario corto vs. actual. | Corto (nombre, email, qué querés construir, presupuesto opcional). | pendiente |
 | D-05 | Correr `npm run db:seed` contra la base remota. | **No** hasta completar S0-02 y S0-05. Después sí, o cargar los 5 case studies y el plan desde el admin. | pendiente |
-| D-06 | Herramienta para "Book a 20-minute fit call": Calendly embebido, Cal.com, o el módulo de Bookings propio del admin. | Calendly o Cal.com (menos código, evento de conversión conocido); el módulo propio queda para gestionar. | hecho 2026-10-31: Cal.com embebido en `/contact#book` (evento `julian-delgado-3z9y4u/30min`), evento `fit_call_booked` |
+| D-06 | Herramienta para "Book a 30-minute fit call": Calendly embebido, Cal.com, o el módulo de Bookings propio del admin. | Calendly o Cal.com (menos código, evento de conversión conocido); el módulo propio queda para gestionar. | hecho 2026-10-31: Cal.com embebido en `/contact#book` (evento `julian-delgado-3z9y4u/30min`), evento `fit_call_booked` |
 | D-07 | Rate limit: Upstash Redis, Vercel KV, o memoria en proceso (no sirve en serverless). | Upstash (plan gratis alcanza). | pendiente |
 | D-08 | CAPTCHA en el formulario: Cloudflare Turnstile sí/no. | Sí, invisible; honeypot + rate limit solos no frenan bots con JS. | hecho 2026-10-31: Turnstile en el formulario (`interaction-only`) y verificación en `/api/contact`; se omite si no hay `TURNSTILE_SECRET_KEY` |
 | D-09 | Migrar columnas JSON de `String` a `Json` (`jsonb`) con migración. | Sí, pero en Sprint 3, después de validar que todas las filas parsean. | pendiente |
@@ -317,7 +317,7 @@ Hoy: 5 rutas públicas + anclas. Services y Pricing viven solo como `#services` 
 └── /llms.txt, /pricing.md, /sitemap.xml, /robots.txt
 ```
 
-- IA-01 · Nav header (4 + CTA): Work · Services · Pricing · About · [Book a 20-minute call] · header · HIGH · (S2-01)
+- IA-01 · Nav header (4 + CTA): Work · Services · Pricing · About · [Book a 30-minute call] · header · HIGH · (S2-01)
 - IA-02 · Footer en 3 columnas: Services (Websites, Custom software, Pricing) · Company (About, Case studies, Blog, Contact) · Legal (Privacy, Terms) + redes · `footer.data.ts` · MEDIUM · (S2-14, S3-16)
 - IA-03 · `/contact` como página real (el header ya enlaza ahí): formulario corto, bloque de reserva, email, "Based in Toowoomba, serving Australia-wide" · nueva ruta · HIGH · (S1-01)
 - IA-04 · Breadcrumbs en `/services/*` y `/case-studies/[slug]` con `BreadcrumbList` · · MEDIUM · (S3-15, S3-16)
@@ -442,7 +442,7 @@ Rama: `audit/sprint-0-1` (sin commits todavía). Verificación: `tsc` limpio, li
 - S0-06 descartado por decisión de Julian (los secretos no importan).
 - S0-08 pendiente de Julian: anotar sesiones/usuarios de GA4 de los últimos 30 días.
 
-**Sprint 1**: 21 de 21 ítems implementados; S1-05 queda parcial porque el CTA "Book a 20-minute call" lleva a `/contact` con el formulario; falta la herramienta de reserva (D-06). Además se adelantaron del Sprint 2: labels reales en el formulario, resumen de errores enfocable, `outline-none` eliminado, topics y presupuesto alineados a la oferta (S2-04, S2-05), menú móvil como `<nav>` sin roles de menú, skip link en las páginas de detalle (S2-20 parcial), label "Contact" y tagline del footer (S2-14 parcial).
+**Sprint 1**: 21 de 21 ítems implementados; S1-05 queda parcial porque el CTA "Book a 30-minute call" lleva a `/contact` con el formulario; falta la herramienta de reserva (D-06). Además se adelantaron del Sprint 2: labels reales en el formulario, resumen de errores enfocable, `outline-none` eliminado, topics y presupuesto alineados a la oferta (S2-04, S2-05), menú móvil como `<nav>` sin roles de menú, skip link en las páginas de detalle (S2-20 parcial), label "Contact" y tagline del footer (S2-14 parcial).
 
 **Gate de accesibilidad**: `tests/e2e/a11y.spec.ts` bloquea toda violación serious/critical de axe en las diez páginas públicas y tres viewports. Las tres excepciones (`color-contrast`, `target-size`, `scrollable-region-focusable`) se quitaron el 2026-10-31 tras una corrida completa en verde y un pase final de contraste (ver Sprint 3).
 

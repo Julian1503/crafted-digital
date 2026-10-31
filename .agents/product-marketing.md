@@ -165,7 +165,7 @@ Extracted from site copy (hero, about-me, FAQ, process) and case studies.
 | Attribute | Means | Doesn't mean | Example line |
 |-----------|-------|--------------|--------------|
 | Calm and direct | Short sentences, plain claims, no hype | Cold or clipped | "We align on goals, constraints, and success metrics — so we ship the right thing fast." |
-| Honest | Says what's optional, what it costs, when it's not a fit | Self-deprecating | "No commitment. Just a 20-minute call to see if we're the right fit. I'll be honest if we're not." |
+| Honest | Says what's optional, what it costs, when it's not a fit | Self-deprecating | "No commitment. Just a 30-minute call to see if we're the right fit. I'll be honest if we're not." |
 | Craft-focused / editorial | Attention to typography, detail, quality in every layer | Decorative or fluffy | "From typography to API design, I obsess over the details that build trust." |
 | Human, first-person | "I" and "you"; a person, not a company | Casual slang | "You work directly with me end-to-end. No handoffs, no layers." |
 | Grounded in experience | References real work and real numbers | Bragging | "Over 5 years solving real problems through code — from Argentina to a Senior Engineer role at a Boston-based company, now building from Australia." |
@@ -220,7 +220,7 @@ Extracted from site copy (hero, about-me, FAQ, process) and case studies.
 **Business goal:** At least **2 new direct clients within 6 months** (by 2027-04-30) under the Julian Delgado brand, while keeping the AI4L partnership as base income. Convert a share of direct clients into Ongoing Tech Partner retainers.
 **Sequence:** 1) finish and polish the website, adding the "Custom software & AI automation" offer; 2) agree partner terms and case-study permission with AI4L; 3) publish case studies (The Better Day expanded, then the AI4L projects as capability stories); 4) referrals and LinkedIn posts aimed at NDIS/allied-health, accounting and local businesses, plus the Toowoomba business community; 5) small Meta ads test for the local website product. Expected split of the two clients: one local website job, one software/automation project via referral.
 **Working math:** 2 clients at a typical close rate of 1 in 4 qualified enquiries means roughly 8 qualified enquiries in 6 months, or about 1 to 2 per month. `[Suposición; ajustar con datos reales]`
-**Conversion action:** Submit the contact form (project enquiry) or book the 20-minute fit call. Secondary: newsletter/blog readership, case-study views.
+**Conversion action:** Submit the contact form (project enquiry) or book the 30-minute fit call. Secondary: newsletter/blog readership, case-study views.
 **Current metrics:** Zero direct clients so far; no traffic or lead baseline captured yet. GA4 and GTM are wired via environment variables; the admin has leads, bookings and a dashboard. Record the baseline before ads start.
 
 ## Paid Ads (optional)
@@ -234,7 +234,7 @@ Extracted from site copy (hero, about-me, FAQ, process) and case studies.
 | Action | Means | Value | Feeds bidding? |
 |--------|-------|-------|----------------|
 | Contact form submitted | Project enquiry | AUD 600 (≈ 25% close × AUD 2,450 Starter) | yes |
-| Fit call booked | 20-minute discovery call | AUD 800 | yes |
+| Fit call booked | 30-minute discovery call | AUD 800 | yes |
 | Case study viewed | Interest signal | low | no |
 **Known tracking weaknesses:** GA4/GTM present but conversion events not yet verified; no CAPI or server-side tagging; no offline (closed deal) feedback loop yet.
 **Good lead vs. form fill:** Good lead = Australian business or professional with a real project and budget in the AUD 2k–5k+ range or an MVP brief; not a recruiter, agency pitch or student.

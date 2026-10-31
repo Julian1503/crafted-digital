@@ -42,7 +42,7 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
   const ctaHeading = study.client
     ? `Got a project like ${study.client}?`
     : "Ready to build something like this?";
-  const ctaSubcopy = `Let’s talk about your project — no commitment, just a 20 min call to see if we’re a good fit.`;
+  const ctaSubcopy = `Let’s talk about your project — no commitment, just a 30 min call to see if we’re a good fit.`;
 
   return (
     <motion.div

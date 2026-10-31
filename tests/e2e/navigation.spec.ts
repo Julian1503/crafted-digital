@@ -30,10 +30,10 @@ test.describe("navigation", () => {
             // Below 1024 px the header CTA lives inside the menu; the hero CTA is always on the page.
             await page.goto("/");
             await page.waitForLoadState("networkidle").catch(() => {});
-            await page.getByRole("link", { name: /book a (20-minute )?call/i }).first().click();
+            await page.getByRole("link", { name: /book a (30-minute )?call/i }).first().click();
         } else {
             await page.goto("/case-studies");
-            const cta = page.getByRole("link", { name: /20-minute call/i }).first();
+            const cta = page.getByRole("link", { name: /30-minute call/i }).first();
             await expect(cta).toBeVisible();
             await cta.click();
         }

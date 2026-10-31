@@ -216,7 +216,7 @@ export default function PlanCard({
                         className="text-center font-mono text-[0.7rem] uppercase tracking-[0.14em]"
                         style={{ color: fgDim }}
                     >
-                        No commitment · 20 min call
+                        No commitment · 30 min call
                     </p>
                 </div>
             </div>

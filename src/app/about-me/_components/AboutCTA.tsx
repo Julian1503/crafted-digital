@@ -69,7 +69,7 @@ export function AboutCTA() {
                     className="mb-11 max-w-[38ch] text-[clamp(0.92rem,1.5vw,1.1rem)] leading-[1.85]"
                     style={{ color: "rgba(255,255,255,0.38)" }}
                 >
-                    No commitment. Just a 20-minute call to see if we’re the right fit. I’ll be honest if we’re not.
+                    No commitment. Just a 30-minute call to see if we’re the right fit. I’ll be honest if we’re not.
                 </motion.p>
 
                 <motion.div
