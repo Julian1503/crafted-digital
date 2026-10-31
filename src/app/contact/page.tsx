@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/header/Header";
 import { Footer } from "@/components/layout/footer/Footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { ContactSection } from "@/components/sections/Contact/ContactSection";
+import { BookCallSection } from "@/components/sections/Contact/BookCallSection";
 import { SITE_URL, DEFAULT_OG_IMAGE } from "@/lib/constants/site";
 
 export const metadata: Metadata = {
@@ -25,7 +26,8 @@ export default function ContactPage() {
             <SkipLink />
             <Header />
             <main id="main-content" className="pt-16">
-                <ContactSection asPageHeading />
+                <ContactSection asPageHeading bookingHref="#book" />
+                <BookCallSection />
             </main>
             <Footer />
         </div>

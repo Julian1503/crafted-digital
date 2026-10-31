@@ -10,7 +10,9 @@ import { Resend } from "resend";
 import { formSchema } from "@/components/sections/Contact/contact-data";
 import { withErrorHandling, successResponse, validateRequestBody } from "@/lib/http/api-handler";
 import { consumeRateLimit, getClientKey } from "@/lib/http/rate-limit";
+import { verifyTurnstileToken } from "@/lib/security/turnstile";
 import {
+    BadRequestError,
     InternalServerError,
     RateLimitError,
     ServiceUnavailableError,
@@ -38,6 +40,13 @@ export const POST = withErrorHandling(async (req) => {
     if (data.hp && data.hp.trim().length > 0) {
         console.warn("[contact] honeypot hit", { clientKey });
         return successResponse({ ok: true, skipped: true });
+    }
+
+    // Bot check (Cloudflare Turnstile). Skipped when no secret is configured.
+    const verification = await verifyTurnstileToken(data.turnstileToken, clientKey === "unknown" ? undefined : clientKey);
+    if (!verification.ok) {
+        console.warn("[contact] turnstile rejected", { clientKey, codes: verification.codes });
+        throw new BadRequestError("We couldn’t confirm you’re not a bot. Please try again, or email me directly.");
     }
 
     const to = process.env.CONTACT_TO_EMAIL;

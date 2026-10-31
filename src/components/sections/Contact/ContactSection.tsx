@@ -29,9 +29,11 @@ function useIsDesktop(): boolean {
 interface ContactSectionProps {
     /** Visually bumps the heading to h1 semantics on the standalone /contact page. */
     asPageHeading?: boolean;
+    /** Anchor of the booking calendar on the same page, when there is one. */
+    bookingHref?: string;
 }
 
-export function ContactSection({ asPageHeading = false }: ContactSectionProps) {
+export function ContactSection({ asPageHeading = false, bookingHref }: ContactSectionProps) {
     const [sectionRef, sectionVisible] = useInView<HTMLElement>(0.04);
     const [isSuccess, setIsSuccess]    = React.useState(false);
     const reducedMotion                = usePrefersReducedMotion();
@@ -91,6 +93,18 @@ export function ContactSection({ asPageHeading = false }: ContactSectionProps) {
                             Send a few lines about the problem and I&rsquo;ll reply within 24 hours with the best next step.
                             If that step isn&rsquo;t me, I&rsquo;ll say so.
                         </p>
+                        {bookingHref && (
+                            <p className="-mt-4 mb-8 text-[0.9rem]">
+                                <a
+                                    href={bookingHref}
+                                    className="inline-block py-2 underline underline-offset-4"
+                                    style={{ color: "hsl(var(--hero-accent-dark))" }}
+                                    onClick={() => track("cta_clicked", { location: "contact_intro", label: "Pick a time" })}
+                                >
+                                    Prefer to talk? Pick a time for a call &darr;
+                                </a>
+                            </p>
+                        )}
 
                         {/* Meta strip */}
                         <dl className="flex flex-col gap-0 border-t" style={{ borderColor: "rgba(10,10,10,0.1)" }}>

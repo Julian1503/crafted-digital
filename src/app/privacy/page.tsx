@@ -41,6 +41,8 @@ export default function PrivacyPage() {
                         <h2 className="font-serif text-2xl mt-10 mb-2">What I collect</h2>
                         <ul className="list-disc pl-6 space-y-2">
                             <li><strong>Contact form:</strong> your name, email address and anything you choose to tell me about your project, plus optional company, website, budget, timeline and preferred contact method.</li>
+                            <li><strong>Booking a call:</strong> if you book through the calendar on the contact page, Cal.com collects your name, email address, the time you chose and any notes you add, and sends us both a confirmation.</li>
+                            <li><strong>Bot check:</strong> the contact form uses Cloudflare Turnstile, which looks at browser signals and your IP address to tell people from bots. It does not track you across sites.</li>
                             <li><strong>Email:</strong> if you email me, I keep the correspondence.</li>
                             <li><strong>Analytics:</strong> Google Analytics 4 (through Google Tag Manager) records pages visited, approximate location, device and browser type, and interactions such as clicking a call-to-action or submitting the contact form. IP addresses are not stored by GA4.</li>
                             <li><strong>Server logs:</strong> standard request logs (IP address, user agent, time) kept for security and rate limiting.</li>
@@ -59,6 +61,8 @@ export default function PrivacyPage() {
                         <p>Only the services needed to run this site, each under its own privacy policy:</p>
                         <ul className="list-disc pl-6 space-y-2">
                             <li><strong>Resend</strong> delivers the contact form emails.</li>
+                            <li><strong>Cal.com</strong> runs the booking calendar and stores the bookings.</li>
+                            <li><strong>Cloudflare</strong> (Turnstile) checks that form submissions come from people.</li>
                             <li><strong>Google</strong> (Tag Manager and Analytics) processes analytics data, some of it outside Australia.</li>
                             <li><strong>Cloudinary</strong> and <strong>ImageKit</strong> serve images and video; they see your IP address when files load.</li>
                             <li>The hosting provider that runs the site and its database.</li>

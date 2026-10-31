@@ -40,6 +40,14 @@ test.describe("contact form", () => {
         await expect(page.getByText(/too many messages/i).first()).toBeVisible();
     });
 
+    test("the contact page offers the booking calendar with a plain-link fallback", async ({ page }) => {
+        await page.goto("/contact");
+        await expect(page.getByRole("link", { name: /pick a time/i })).toHaveAttribute("href", "#book");
+        await expect(page.locator("#book")).toBeVisible();
+        const fallback = page.getByRole("link", { name: /open the booking page/i });
+        await expect(fallback).toHaveAttribute("href", /^https:\/\/cal\.com\//);
+    });
+
     test("client-side validation announces the missing fields", async ({ page }) => {
         await page.goto("/contact");
         await page.getByRole("button", { name: /send message/i }).click();

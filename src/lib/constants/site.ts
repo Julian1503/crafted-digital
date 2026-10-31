@@ -7,6 +7,9 @@ export const CONTACT_EMAIL = "julianedelgado@hotmail.com";
 export const CURRENT_YEAR = new Date().getFullYear();
 export const RESPONSE_TIME = "within 24 hours";
 export const FIT_CALL_LABEL = "Book a 20-minute call";
+/** Cal.com event used for the fit call (user/event slug and full URL). */
+export const CAL_LINK = "julian-delgado-3z9y4u/30min";
+export const CAL_BOOKING_URL = `https://cal.com/${CAL_LINK}`;
 
 /**
  * The root `opengraph-image.tsx` is not inherited by a page that sets its own

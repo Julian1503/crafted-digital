@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/hooks/use-sonner";
 import { Loader2 } from "lucide-react";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { formSchema, type ContactFormValues } from "@/components/sections/Contact/contact-data";
 import { FormThemeCtx } from "@/components/sections/Contact/FormThemeCtx";
@@ -18,8 +19,14 @@ import {ContactFormProps} from "@/components/sections/Contact/contact.types";
 import { track } from "@/lib/analytics";
 import { SERVICE_OFFERS } from "@/lib/content/offers";
 
-const KNOWN_PLAN_NAMES = new Set(SERVICE_OFFERS.flatMap((o) => o.plans.map((p) => p.name)));
 import { CONTACT_EMAIL } from "@/lib/constants/site";
+
+const KNOWN_PLAN_NAMES = new Set(SERVICE_OFFERS.flatMap((o) => o.plans.map((p) => p.name)));
+/** Public Turnstile site key; when absent the widget is not rendered and the API skips the check. */
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+/** How long to wait for the Turnstile token when the user submits before the widget finished. */
+const TOKEN_WAIT_MS = 6000;
+const TOKEN_POLL_MS = 150;
 
 interface ApiErrorBody {
     error?: { code?: string; message?: string; retryAfter?: number };
@@ -46,13 +53,15 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
     const [submitError, setSubmitError] = React.useState<string | null>(null);
     const [showDetails, setShowDetails] = React.useState(false);
     const startedRef = React.useRef(false);
+    const turnstileRef = React.useRef<TurnstileInstance | null>(null);
+    const turnstileToken = React.useRef<string | null>(null);
 
     const form = useForm<ContactFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "", email: "", message: "", topics: [],
             budget: "", timeline: "", company: "", website: "",
-            hp: "", contactMethod: undefined,
+            hp: "", contactMethod: undefined, turnstileToken: null,
         },
     });
 
@@ -71,14 +80,27 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
         track("contact_form_started");
     };
 
+    /** Resolves with the Turnstile token, or null after TOKEN_WAIT_MS so the server can answer. */
+    const waitForToken = (): Promise<string | null> =>
+        new Promise((resolve) => {
+            const started = Date.now();
+            const tick = () => {
+                if (turnstileToken.current) return resolve(turnstileToken.current);
+                if (Date.now() - started >= TOKEN_WAIT_MS) return resolve(null);
+                window.setTimeout(tick, TOKEN_POLL_MS);
+            };
+            tick();
+        });
+
     async function onSubmit(values: ContactFormValues) {
         setIsSubmitting(true);
         setSubmitError(null);
         try {
+            const token = TURNSTILE_SITE_KEY ? await waitForToken() : null;
             const res = await fetch("/api/contact", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
+                body: JSON.stringify({ ...values, turnstileToken: token }),
             });
 
             if (!res.ok) {
@@ -106,6 +128,9 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
             track("contact_form_failed", { reason: "network" });
             toast({ title: message, description: `Check your connection and try again, or email ${CONTACT_EMAIL}.`, variant: "error" });
         } finally {
+            // Tokens are single-use: ask for a fresh one for the next attempt.
+            turnstileToken.current = null;
+            turnstileRef.current?.reset();
             setIsSubmitting(false);
         }
     }
@@ -350,6 +375,18 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                             </a>{" "}
                             if it keeps happening.
                         </p>
+                    )}
+
+                    {/* Bot check: invisible unless Cloudflare needs an interaction */}
+                    {TURNSTILE_SITE_KEY && (
+                        <Turnstile
+                            ref={turnstileRef}
+                            siteKey={TURNSTILE_SITE_KEY}
+                            options={{ theme: dark ? "dark" : "light", appearance: "interaction-only", size: "flexible" }}
+                            onSuccess={(token) => { turnstileToken.current = token; }}
+                            onExpire={() => { turnstileToken.current = null; }}
+                            onError={() => { turnstileToken.current = null; }}
+                        />
                     )}
 
                     {/* Submit */}

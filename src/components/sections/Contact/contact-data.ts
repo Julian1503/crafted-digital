@@ -58,6 +58,8 @@ export const formSchema = z.object({
         )
         .optional()
         .nullable(),
+    /** Cloudflare Turnstile token; verified server-side when the secret is configured */
+    turnstileToken: z.string().max(4096).optional().nullable(),
     /** Honeypot field for spam prevention - should remain empty */
     hp: z.string().max(500).optional().nullable(),
 });
