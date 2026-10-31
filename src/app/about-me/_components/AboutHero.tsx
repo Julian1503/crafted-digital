@@ -5,11 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { bg, border, white, mid, dim, accent, E } from "./about-constants";
+import { CURRENT_YEAR } from "@/lib/constants/site";
 
 const STATS = [
-    { n: "40+",    l: "Projects" },
     { n: "5+",     l: "Years" },
     { n: "SE III", l: "Level" },
+    { n: "3",      l: "Industries" },
 ] as const;
 
 export function AboutHero() {
@@ -83,7 +84,7 @@ export function AboutHero() {
                     fontWeight: 300,
                 }}
             >
-                Toowoomba · Australia · 2025
+                Toowoomba · Australia · {CURRENT_YEAR}
             </span>
 
             {/* Content */}

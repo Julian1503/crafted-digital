@@ -1,12 +1,14 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/constants/site";
 
 export default function robots(): MetadataRoute.Robots {
     return {
         rules: {
-            userAgent: '*',
-            allow: '/',
-            disallow: ['/api/', '/private/'],
+            userAgent: "*",
+            allow: "/",
+            // /login stays crawlable so its noindex meta tag is honoured.
+            disallow: ["/api/", "/admin/"],
         },
-        sitemap: 'https://juliandelgado.com.au/sitemap.xml',
+        sitemap: `${SITE_URL}/sitemap.xml`,
     };
 }

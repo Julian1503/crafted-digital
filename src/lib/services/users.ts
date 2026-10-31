@@ -11,6 +11,9 @@ interface PaginationParams {
   active?: boolean;
 }
 
+/** Columns that must never leave the server. */
+const USER_OMIT = { hashedPassword: true } as const;
+
 export async function getUsers(params: PaginationParams = {}) {
   const { page = 1, limit = 20, search, sortBy = "createdAt", sortDir = "desc", active } = params;
   const skip = (page - 1) * limit;
@@ -30,6 +33,7 @@ export async function getUsers(params: PaginationParams = {}) {
       skip,
       take: limit,
       orderBy: { [sortBy]: sortDir },
+      omit: USER_OMIT,
       include: { roleAssigns: { include: { role: true } } },
     }),
     prisma.user.count({ where }),
@@ -41,6 +45,7 @@ export async function getUsers(params: PaginationParams = {}) {
 export async function getUser(id: string) {
   return prisma.user.findUniqueOrThrow({
     where: { id },
+    omit: USER_OMIT,
     include: { roleAssigns: { include: { role: true } } },
   });
 }
@@ -69,6 +74,7 @@ export async function createUser(
         ? { create: data.roleIds.map((roleId) => ({ roleId })) }
         : undefined,
     },
+    omit: USER_OMIT,
     include: { roleAssigns: { include: { role: true } } },
   });
 
@@ -107,6 +113,7 @@ export async function updateUser(
     return tx.user.update({
       where: { id },
       data: updateData,
+      omit: USER_OMIT,
       include: { roleAssigns: { include: { role: true } } },
     });
   });
@@ -119,6 +126,7 @@ export async function deleteUser(id: string, actorId?: string) {
   const user = await prisma.user.update({
     where: { id },
     data: { active: false },
+    omit: USER_OMIT,
   });
   await logAudit({ actorId, action: "delete", entity: "User", entityId: id });
   return user;
@@ -129,6 +137,7 @@ export async function toggleUser(id: string, actorId?: string) {
   const user = await prisma.user.update({
     where: { id },
     data: { active: !existing.active },
+    omit: USER_OMIT,
   });
   await logAudit({
     actorId,

@@ -9,7 +9,7 @@ interface HeaderLogoProps {
 export function HeaderLogo({ opacity, isLight }: HeaderLogoProps) {
     return (
         <Link
-            href="/public"
+            href="/"
             aria-label="Julian Delgado — Home"
             className="shrink-0 leading-none"
             style={{

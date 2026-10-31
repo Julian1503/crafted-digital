@@ -1,11 +1,14 @@
 export interface Slide { img: string; tag: string; year: string; }
 
 export const slides: Slide[] = [
-    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-1", tag: "Creative Direction", year: "2026" },
-    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-2", tag: "Web Development",    year: "2026" },
-    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-3", tag: "Brand Identity",     year: "2026" },
-    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-4", tag: "Digital Design",     year: "2026" },
+    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-1", tag: "Websites",        year: "2026" },
+    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-2", tag: "Web apps",        year: "2026" },
+    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-3", tag: "AI automation",   year: "2026" },
+    { img: "https://res.cloudinary.com/dpnkr4r6w/image/upload/v1772696966/hero-4", tag: "Product design",  year: "2026" },
 ];
+
+export const HERO_HEADLINE = "Custom software, AI automation and websites for Australian small businesses.";
+export const HERO_SUBLINE  = "Built end to end by one senior engineer in Toowoomba. Fixed quotes in AUD, weekly demos, 30 days of support after launch.";
 
 export const INTERVAL  = 5000;
 export const THRESHOLD = 0.58;

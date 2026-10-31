@@ -1,4 +1,5 @@
 import { FAQS } from "@/components/sections/faq-data";
+import { safeJsonLd } from "@/lib/seo/json-ld";
 
 /**
  * FAQPage schema for homepage FAQs.
@@ -20,7 +21,7 @@ export function FAQSchema() {
     return (
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
         />
     );
 }

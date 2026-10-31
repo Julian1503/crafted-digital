@@ -5,17 +5,26 @@ import { ArrowLeft, ArrowRight, Calendar, Clock, User } from "lucide-react";
 import { Header } from "@/components/layout/header/Header";
 import { Footer } from "@/components/layout/footer/Footer";
 import { ReactNode } from "react";
-import { getBlogPostBySlug, getPublishedBlogPosts } from "@/lib/services/blog";
+import { cache } from "react";
+import { getPublishedBlogPostBySlug, getPublishedBlogPosts } from "@/lib/services/blog";
+import { safeJsonLd } from "@/lib/seo/json-ld";
+import { SkipLink } from "@/components/ui/skip-link";
 import { toBlogCardProps } from "@/lib/mappers/blog.mapper";
 import { formatDate } from "@/lib/utils/date";
 
 export const revalidate = 60;
 
+const loadPost = cache((slug: string) => getPublishedBlogPostBySlug(slug));
+const loadPublished = cache(() => getPublishedBlogPosts());
+
 export async function generateStaticParams() {
-    const posts = await getPublishedBlogPosts();
-    return posts.map((post) => ({
-        slug: post.slug,
-    }));
+    try {
+        const posts = await getPublishedBlogPosts();
+        return posts.map((post) => ({ slug: post.slug }));
+    } catch (error: unknown) {
+        console.error("[blog] generateStaticParams skipped", error instanceof Error ? error.message : error);
+        return [];
+    }
 }
 
 export async function generateMetadata({
@@ -24,12 +33,11 @@ export async function generateMetadata({
     params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
     const { slug } = await params;
+    const post = await loadPost(slug);
+    if (!post) return { title: "Blog post not found", robots: { index: false } };
+    const mapped = toBlogCardProps(post);
 
-    try {
-        const post = await getBlogPostBySlug(slug);
-        const mapped = toBlogCardProps(post);
-
-        return {
+    return {
             title: post.title,
             description: post.excerpt ?? mapped.excerpt,
             authors: [{ name: mapped.author }],
@@ -46,11 +54,6 @@ export async function generateMetadata({
                 canonical: `https://juliandelgado.com.au/blog/${post.slug}`,
             },
         };
-    } catch {
-        return {
-            title: "Blog Post Not Found",
-        };
-    }
 }
 
 export default async function BlogPostPage({
@@ -59,18 +62,11 @@ export default async function BlogPostPage({
     params: Promise<{ slug: string }>;
 }) {
     const { slug } = await params;
-
-    let post;
-    try {
-        post = await getBlogPostBySlug(slug);
-    } catch {
-        notFound();
-    }
+    const [post, allPosts] = await Promise.all([loadPost(slug), loadPublished()]);
+    if (!post) notFound();
 
     const mapped = toBlogCardProps(post);
 
-    // Get all published posts for prev/next navigation
-    const allPosts = await getPublishedBlogPosts();
     const currentIndex = allPosts.findIndex((p) => p.slug === slug);
     const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
     const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
@@ -160,9 +156,10 @@ export default async function BlogPostPage({
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-secondary/30">
+            <SkipLink />
             <Header />
 
-            <main className="pt-24">
+            <main id="main-content" className="pt-24">
                 {/* Article Header */}
                 <article className="py-12 md:py-20">
                     <div className="container mx-auto px-4 md:px-6">
@@ -214,7 +211,7 @@ export default async function BlogPostPage({
 
                             <script
                                 type="application/ld+json"
-                                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+                                dangerouslySetInnerHTML={{ __html: safeJsonLd(articleSchema) }}
                             />
                         </div>
                     </div>

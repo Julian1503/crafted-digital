@@ -59,6 +59,16 @@ export async function getBlogPostBySlug(slug: string) {
   });
 }
 
+/**
+ * Public read by slug: only published, non-deleted posts; null when missing.
+ */
+export async function getPublishedBlogPostBySlug(slug: string) {
+  return prisma.blogPost.findFirst({
+    where: { slug, status: ContentStatus.PUBLISHED, deleted: false },
+    include: { author: { select: { id: true, name: true, email: true } } },
+  });
+}
+
 export async function getPublishedBlogPosts() {
   return prisma.blogPost.findMany({
     where: { status: ContentStatus.PUBLISHED, deleted: false },

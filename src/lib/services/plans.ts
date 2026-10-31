@@ -5,6 +5,11 @@ export async function getPlans() {
   return prisma.plan.findMany({ orderBy: { sortOrder: "asc" } });
 }
 
+/** Public pricing: active plans only, in display order. */
+export async function getActivePlans() {
+  return prisma.plan.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" } });
+}
+
 export async function getPlan(id: string) {
   return prisma.plan.findUniqueOrThrow({ where: { id } });
 }

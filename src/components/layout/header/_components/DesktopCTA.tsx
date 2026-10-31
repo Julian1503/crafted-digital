@@ -1,4 +1,6 @@
 import * as React from "react";
+import { track } from "@/lib/analytics";
+import { FIT_CALL_LABEL } from "@/lib/constants/site";
 
 interface DesktopCTAProps {
     visible: boolean;
@@ -22,12 +24,14 @@ export function DesktopCTA({ visible, isLight }: DesktopCTAProps) {
             style={{
                 opacity:       visible ? 1 : 0,
                 transform:     visible ? "translateY(0)" : "translateY(-6px)",
-                transition:    "opacity 0.35s ease, transform 0.35s ease",
+                transition:    "opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s",
                 pointerEvents: visible ? "auto" : "none",
+                visibility:    visible ? "visible" : "hidden",
             }}
         >
             <a
                 href="/contact"
+                onClick={() => track("cta_clicked", { location: "header", label: FIT_CALL_LABEL })}
                 className="group flex items-center gap-2 rounded-full no-underline whitespace-nowrap"
                 style={{
                     border:        borderColor,
@@ -55,7 +59,7 @@ export function DesktopCTA({ visible, isLight }: DesktopCTAProps) {
                     el.style.transform   = "";
                 }}
             >
-                Start a project
+                {FIT_CALL_LABEL}
                 <span
                     className="group-hover:rotate-45 inline-block text-[0.8rem]"
                     style={{ transition: "transform 0.25s" }}

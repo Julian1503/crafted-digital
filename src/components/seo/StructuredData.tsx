@@ -3,6 +3,8 @@
  * Provides LocalBusiness and Service schema markup.
  */
 
+import { safeJsonLd } from "@/lib/seo/json-ld";
+
 /**
  * LocalBusiness schema for Julian Delgado's web development services.
  */
@@ -60,7 +62,7 @@ export function LocalBusinessSchema() {
     return (
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
         />
     );
 }
@@ -90,7 +92,7 @@ export function WebDevelopmentServiceSchema() {
     return (
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
         />
     );
 }
@@ -120,7 +122,7 @@ export function MVPDevelopmentServiceSchema() {
     return (
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
         />
     );
 }
@@ -147,7 +149,7 @@ export function WebSiteSchema() {
     return (
         <script
             type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+            dangerouslySetInnerHTML={{ __html: safeJsonLd(schema) }}
         />
     );
 }

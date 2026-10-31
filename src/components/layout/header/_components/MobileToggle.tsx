@@ -18,7 +18,6 @@ export function MobileToggle({ isOpen, onClick, buttonRef, isLight }: MobileTogg
             aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
-            aria-haspopup="true"
         >
             {isOpen
                 ? <X aria-hidden="true" />

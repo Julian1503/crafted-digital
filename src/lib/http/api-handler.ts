@@ -9,6 +9,7 @@ import {
   ValidationError,
   InternalServerError,
   BadRequestError,
+  RateLimitError,
   isApiError,
 } from "@/lib/errors/api-error";
 
@@ -34,7 +35,11 @@ export function errorResponse(error: unknown): NextResponse {
   console.error("[API Error]", error);
 
   if (isApiError(error)) {
-    return NextResponse.json(error.toJSON(), { status: error.statusCode });
+    const headers: Record<string, string> = {};
+    if (error instanceof RateLimitError && error.retryAfter) {
+      headers["Retry-After"] = String(error.retryAfter);
+    }
+    return NextResponse.json(error.toJSON(), { status: error.statusCode, headers });
   }
 
   // Handle Zod validation errors

@@ -54,14 +54,14 @@ export function FloatingTitle({ metricsReady, startX, startY, startH }: Floating
             aria-hidden="true"
             style={{ position: "fixed", top: 0, left: 0, zIndex: 60, pointerEvents: "none", willChange: "transform, opacity" }}
         >
-            <h1
+            <p
                 className="font-semibold leading-[0.92] tracking-[-0.02em]"
                 style={{ fontSize: "clamp(3.5rem, 8vw, 8rem)", color: "hsl(var(--primary-foreground))", whiteSpace: "nowrap" }}
             >
                 {["Julian", "Delgado"].map((word) => (
                     <span key={word} className="block">{word}</span>
                 ))}
-            </h1>
+            </p>
         </div>
     );
 }

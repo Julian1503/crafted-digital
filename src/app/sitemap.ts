@@ -1,63 +1,44 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
+import { getPublishedCaseStudies } from "@/lib/services/case-studies";
+import { getPublishedBlogPosts } from "@/lib/services/blog";
+import { SITE_URL } from "@/lib/constants/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://juliandelgado.com.au';
+export const revalidate = 3600;
 
-    // Case study slugs for dynamic sitemap entries
-    const caseStudySlugs = [
-        'ai-contract-automation',
-        'tradie-booking-platform',
-        'clinic-management-system',
-    ];
-
-    // Blog post slugs for dynamic sitemap entries
-    const blogSlugs = [
-        'why-australian-businesses-need-custom-websites',
-        'nextjs-vs-wordpress-for-australian-businesses',
-        'how-to-improve-website-speed-for-australian-hosting',
-        'seo-basics-for-tradies-and-service-businesses',
-    ];
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const now = new Date();
 
     const staticPages: MetadataRoute.Sitemap = [
-        {
-            url: baseUrl,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 1,
-        },
-        {
-            url: `${baseUrl}/about-me`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/case-studies`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.9,
-        },
-        {
-            url: `${baseUrl}/blog`,
-            lastModified: new Date(),
-            changeFrequency: 'weekly',
-            priority: 0.9,
-        },
+        { url: SITE_URL,                  lastModified: now, changeFrequency: "weekly",  priority: 1 },
+        { url: `${SITE_URL}/about-me`,    lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+        { url: `${SITE_URL}/case-studies`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+        { url: `${SITE_URL}/contact`,     lastModified: now, changeFrequency: "yearly",  priority: 0.8 },
+        { url: `${SITE_URL}/privacy`,     lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
+        { url: `${SITE_URL}/terms`,       lastModified: now, changeFrequency: "yearly",  priority: 0.2 },
     ];
 
-    const caseStudyPages: MetadataRoute.Sitemap = caseStudySlugs.map((slug) => ({
-        url: `${baseUrl}/case-studies/${slug}`,
-        lastModified: new Date(),
-        changeFrequency: 'monthly' as const,
+    // No try/catch: if the database is down the error propagates and ISR keeps
+    // serving the last good sitemap instead of publishing a truncated one.
+    const [studies, posts] = await Promise.all([getPublishedCaseStudies(), getPublishedBlogPosts()]);
+
+    const caseStudyPages: MetadataRoute.Sitemap = studies.map((s) => ({
+        url: `${SITE_URL}/case-studies/${s.slug}`,
+        lastModified: s.updatedAt ?? s.publishedAt ?? now,
+        changeFrequency: "monthly" as const,
         priority: 0.8,
     }));
 
-    const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
-        url: `${baseUrl}/blog/${slug}`,
-        lastModified: new Date(),
-        changeFrequency: 'monthly' as const,
-        priority: 0.7,
-    }));
+    const blogPages: MetadataRoute.Sitemap = posts.length > 0
+        ? [
+            { url: `${SITE_URL}/blog`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.7 },
+            ...posts.map((p) => ({
+                url: `${SITE_URL}/blog/${p.slug}`,
+                lastModified: p.updatedAt ?? p.publishedAt ?? now,
+                changeFrequency: "monthly" as const,
+                priority: 0.6,
+            })),
+        ]
+        : [];
 
     return [...staticPages, ...caseStudyPages, ...blogPages];
 }

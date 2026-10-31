@@ -4,12 +4,16 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./hero.module.css";
 import {
     cloudinaryUrl,
+    HERO_HEADLINE,
+    HERO_SUBLINE,
     easeInOutQuart,
     INTERVAL,
     lerp, pad,
     slides,
     THRESHOLD
 } from "@/components/sections/Hero/hero.constants";
+import { track } from "@/lib/analytics";
+import { FIT_CALL_LABEL } from "@/lib/constants/site";
 import {FloatingTitle} from "@/components/sections/Hero/FloatingTitle";
 import {MobileDots} from "@/components/sections/Hero/MobileDots";
 import Image from "next/image";
@@ -27,12 +31,12 @@ export default function HeroSection() {
     const touchStartY = useRef<number | null>(null);
 
     // Floating title
-    const ghostRef = useRef<HTMLHeadingElement>(null);
+    const ghostRef = useRef<HTMLParagraphElement>(null);
     const [metrics, setMetrics] = useState({ x: 0, y: 0, h: 0, ready: false });
 
     // Side-sliding elements
     const tagRef        = useRef<HTMLSpanElement>(null);
-    const descRef       = useRef<HTMLParagraphElement>(null);
+    const descRef       = useRef<HTMLDivElement>(null);
     const bottomRowRef  = useRef<HTMLDivElement>(null);
 
     const animatingRef = useRef<boolean>(false);
@@ -191,7 +195,7 @@ export default function HeroSection() {
                         >
                             <Image
                                 src={cloudinaryUrl(slide.img, 1280, 85)}
-                                alt={slide.tag}
+                                alt=""
                                 fill
                                 sizes="100vw"
                                 className={`${styles["hero-img"]} ${
@@ -309,10 +313,10 @@ export default function HeroSection() {
                                 </span>
                             </span>
 
-                            {/* Ghost anchor */}
-                            <h1
+                            {/* Ghost anchor: layout slot the floating name animates from (decorative) */}
+                            <p
                                 ref={ghostRef}
-                                aria-label="Julian Delgado"
+                                aria-hidden="true"
                                 className="font-semibold leading-[0.92] tracking-[-0.02em]"
                                 style={{
                                     fontSize:   "clamp(3.2rem, 8vw, 8rem)",
@@ -326,22 +330,38 @@ export default function HeroSection() {
                                         <span className="block">{word}</span>
                                     </span>
                                 ))}
-                            </h1>
+                            </p>
 
-                            {/* Description — visible on all screen sizes */}
-                            <p
+                            {/* The page heading: what is offered, to whom. Exposed to AT and search. */}
+                            <div
                                 ref={descRef}
-                                className="mt-4 md:mt-6 font-light leading-relaxed max-w-[300px] md:max-w-[320px]"
+                                className="mt-4 md:mt-6 max-w-[34ch]"
                                 style={{
-                                    fontSize: "clamp(0.78rem, 2.2vw, 0.875rem)",
-                                    color:    "hsl(var(--primary-foreground) / 0.42)",
-                                    opacity:    0,
+                                    // Visible in SSR HTML: this is the page's only h1 and its LCP text.
+                                    opacity:    1,
                                     transition: "opacity 0.5s ease",
                                     willChange: "transform, opacity",
                                 }}
                             >
-                                Crafting digital experiences that connect brands with people — from concept to pixel.
-                            </p>
+                                <h1
+                                    className="font-medium leading-[1.3] tracking-[-0.01em] text-balance"
+                                    style={{
+                                        fontSize: "clamp(1rem, 2.4vw, 1.2rem)",
+                                        color:    "hsl(var(--primary-foreground) / 0.92)",
+                                    }}
+                                >
+                                    {HERO_HEADLINE}
+                                </h1>
+                                <p
+                                    className="mt-2 font-light leading-relaxed"
+                                    style={{
+                                        fontSize: "clamp(0.8rem, 2vw, 0.875rem)",
+                                        color:    "hsl(var(--primary-foreground) / 0.7)",
+                                    }}
+                                >
+                                    {HERO_SUBLINE}
+                                </p>
+                            </div>
                         </div>
 
                         {/* Right block */}
@@ -405,6 +425,7 @@ export default function HeroSection() {
                             {/* CTA */}
                             <a
                                 href="/contact"
+                                onClick={() => track("cta_clicked", { location: "hero", label: FIT_CALL_LABEL })}
                                 className="group flex items-center gap-[0.75rem] md:gap-[0.9rem] rounded-full no-underline whitespace-nowrap"
                                 style={{
                                     background:    "hsl(var(--hero-accent))",
@@ -429,8 +450,10 @@ export default function HeroSection() {
                                     el.style.boxShadow  = "";
                                 }}
                             >
-                                Start a project
+                                <span className="md:hidden">Book a call</span>
+                                <span className="hidden md:inline">{FIT_CALL_LABEL}</span>
                                 <span
+                                    aria-hidden="true"
                                     className="group-hover:rotate-45 flex items-center justify-center w-6 h-6 md:w-7 md:h-7 rounded-full text-[0.85rem]"
                                     style={{
                                         border:     "1.5px solid hsl(var(--primary-foreground) / 0.4)",

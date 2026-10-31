@@ -14,7 +14,7 @@ export const GET = withErrorHandling(async (req) => {
   const session = await auth();
   if (!session?.user) throw new UnauthorizedError();
   const roles = session.roles || [];
-  if (!checkApiAuth(roles, ["admin", "editor", "viewer"]))
+  if (!checkApiAuth(roles, ["admin"]))
     throw new ForbiddenError();
 
   const params = validateSearchParams(req, paginationSchema);

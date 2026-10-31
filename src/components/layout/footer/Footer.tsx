@@ -113,7 +113,7 @@ export function Footer() {
                             className="text-[0.78rem] leading-relaxed mt-1"
                             style={{ color: "rgba(255,255,255,0.28)", maxWidth: "28ch" }}
                         >
-                            Web development for Australian service businesses.
+                            Custom software, AI automation and websites for Australian small businesses.
                         </p>
 
                         {/* Socials */}

@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     creator: "Julian Delgado",
     publisher: "Julian Delgado",
     icons: {
-        icon: [{ url: "/favicon.png", type: "image/png" }],
+        icon: [{ url: "/favicon.ico", sizes: "any" }],
     },
     openGraph: {
         title: "Julian Delgado | Web Development & Software Solutions for Australian Businesses",
@@ -113,7 +113,7 @@ export default function RootLayout({
                 <Providers>
                     {children}
                 </Providers>
-                <GoogleAnalytics gaId={googleAnalyticsId} />
+                {googleAnalyticsId && !googleTagManagerId && <GoogleAnalytics gaId={googleAnalyticsId} />}
             </body>
         </html>
     );

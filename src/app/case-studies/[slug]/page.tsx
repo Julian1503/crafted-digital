@@ -21,8 +21,14 @@ const loadStudy = cache(async (slug: string) => {
 const loadPublished = cache(() => getPublishedCaseStudies());
 
 export async function generateStaticParams() {
-    const studies = await getPublishedCaseStudies();
-    return studies.map((s) => ({ slug: s.slug }));
+    try {
+        const studies = await getPublishedCaseStudies();
+        return studies.map((s) => ({ slug: s.slug }));
+    } catch (error: unknown) {
+        // No DB at build time: render on demand instead of failing the build.
+        console.error("[case-studies] generateStaticParams skipped", error instanceof Error ? error.message : error);
+        return [];
+    }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

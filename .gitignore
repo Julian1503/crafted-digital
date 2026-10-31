@@ -46,3 +46,12 @@ prisma/dev.db-journal
 src/generated
 
 /src/generated/prisma
+
+# local artifacts (audit 2026-10-31)
+*.db
+*.db-journal
+prisma_*output.txt
+.playwright-mcp/
+.idea/
+test-results/
+playwright-report/

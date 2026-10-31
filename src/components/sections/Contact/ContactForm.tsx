@@ -3,12 +3,10 @@
 import * as React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { useToast } from "@/hooks/use-sonner";
 import { Loader2 } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { formSchema } from "@/components/sections/Contact/contact-data";
+import { formSchema, type ContactFormValues } from "@/components/sections/Contact/contact-data";
 import { FormThemeCtx } from "@/components/sections/Contact/FormThemeCtx";
 import { FieldWrap } from "@/components/sections/Contact/FieldWrap";
 import { LineInput, LineTextarea, LineSelect } from "@/components/sections/Contact/LineInputs";
@@ -17,14 +15,35 @@ import {
     PROJECT_TOPICS, BUDGET_OPTIONS, TIMELINE_OPTIONS, CONTACT_METHODS,
 } from "@/components/sections/Contact/contact.constants";
 import {ContactFormProps} from "@/components/sections/Contact/contact.types";
+import { track } from "@/lib/analytics";
+import { CONTACT_EMAIL } from "@/lib/constants/site";
 
+interface ApiErrorBody {
+    error?: { code?: string; message?: string; retryAfter?: number };
+}
+
+async function readErrorMessage(res: Response): Promise<string> {
+    try {
+        const body = (await res.json()) as ApiErrorBody;
+        if (res.status === 429) {
+            const mins = body.error?.retryAfter ? Math.ceil(body.error.retryAfter / 60) : null;
+            return mins ? `Too many messages from this connection. Try again in about ${mins} min.` : "Too many messages from this connection. Try again later.";
+        }
+        if (res.status === 400 && body.error?.message) return body.error.message;
+    } catch {
+        // ignore body parse errors
+    }
+    return "Couldn't send your message.";
+}
 
 export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
     const C = dark ? DARK_COLORS : LIGHT_COLORS;
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [submitError, setSubmitError] = React.useState<string | null>(null);
+    const startedRef = React.useRef(false);
 
-    const form = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<ContactFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "", email: "", message: "", topics: [],
@@ -33,31 +52,83 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
         },
     });
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
+    const markStarted = () => {
+        if (startedRef.current) return;
+        startedRef.current = true;
+        track("contact_form_started");
+    };
+
+    async function onSubmit(values: ContactFormValues) {
         setIsSubmitting(true);
+        setSubmitError(null);
         try {
             const res = await fetch("/api/contact", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(values),
             });
-            if (!res.ok) console.error("ContactSection form error:", await res.text());
-            onSuccess();
-            toast({ title: "Message sent!", description: "I'll get back to you within 24 hours." });
+
+            if (!res.ok) {
+                const message = await readErrorMessage(res);
+                setSubmitError(message);
+                track("contact_form_failed", { reason: `http_${res.status}` });
+                toast({ title: message, description: `You can also email ${CONTACT_EMAIL} directly.`, variant: "error" });
+                return;
+            }
+
+            const body = (await res.json().catch(() => ({}))) as { ok?: boolean; skipped?: boolean };
+            if (!body.skipped) {
+                track("contact_form_submitted", {
+                    topics: values.topics,
+                    budget: values.budget || "unspecified",
+                    contact_method: values.contactMethod || "unspecified",
+                });
+            }
             form.reset();
-        } catch {
-            toast({ title: "Something went wrong", description: "Please try again or email me directly." });
+            onSuccess();
+        } catch (error: unknown) {
+            const message = "Couldn't reach the server.";
+            console.error("[contact] submit failed", error instanceof Error ? error.message : error);
+            setSubmitError(message);
+            track("contact_form_failed", { reason: "network" });
+            toast({ title: message, description: `Check your connection and try again, or email ${CONTACT_EMAIL}.`, variant: "error" });
         } finally {
             setIsSubmitting(false);
         }
     }
 
     const e = form.formState.errors;
+    const errorList = Object.entries(e)
+        .map(([key, err]) => ({ key, message: (err as { message?: string })?.message }))
+        .filter((x): x is { key: string; message: string } => Boolean(x.message));
 
     return (
         <FormThemeCtx.Provider value={C}>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="flex flex-col gap-7">
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    onFocusCapture={markStarted}
+                    noValidate
+                    className="flex flex-col gap-7"
+                    aria-describedby={submitError ? "contact-submit-error" : undefined}
+                >
+                    {/* Error summary (focusable, announced) */}
+                    {form.formState.isSubmitted && errorList.length > 0 && (
+                        <div
+                            role="alert"
+                            tabIndex={-1}
+                            ref={(el) => { if (el) el.focus(); }}
+                            className="rounded-xl border px-4 py-3 text-[0.8rem]"
+                            style={{ borderColor: "hsl(var(--destructive) / 0.5)", color: C.text }}
+                        >
+                            <p className="font-medium mb-1">Please check {errorList.length === 1 ? "this field" : "these fields"}:</p>
+                            <ul className="list-disc pl-5">
+                                {errorList.map(({ key, message }) => (
+                                    <li key={key}>{message}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
 
                     {/* Name + Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
@@ -65,7 +136,7 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                             <FormItem>
                                 <FieldWrap label="Name" required error={e.name?.message}>
                                     <FormControl>
-                                        <LineInput placeholder="John Doe" autoComplete="name" required {...field} />
+                                        <LineInput placeholder="Jane Citizen" autoComplete="name" required {...field} />
                                     </FormControl>
                                 </FieldWrap>
                                 <FormMessage className="hidden" />
@@ -75,7 +146,7 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                             <FormItem>
                                 <FieldWrap label="Email" required error={e.email?.message}>
                                     <FormControl>
-                                        <LineInput placeholder="john@example.com" type="email" autoComplete="email" required {...field} />
+                                        <LineInput placeholder="jane@yourbusiness.com.au" type="email" inputMode="email" autoComplete="email" spellCheck={false} required {...field} />
                                     </FormControl>
                                 </FieldWrap>
                                 <FormMessage className="hidden" />
@@ -96,11 +167,12 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                         )} />
                         <FormField control={form.control} name="website" render={({ field }) => (
                             <FormItem>
-                                <FieldWrap label="Website" optional>
+                                <FieldWrap label="Website" optional error={e.website?.message}>
                                     <FormControl>
-                                        <LineInput {...field} value={field.value ?? ""} placeholder="https://…" type="url" autoComplete="url" />
+                                        <LineInput {...field} value={field.value ?? ""} placeholder="https://…" type="url" inputMode="url" autoComplete="url" spellCheck={false} />
                                     </FormControl>
                                 </FieldWrap>
+                                <FormMessage className="hidden" />
                             </FormItem>
                         )} />
                     </div>
@@ -108,8 +180,8 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                     {/* Topics */}
                     <FormField control={form.control} name="topics" render={({ field }) => (
                         <FormItem>
-                            <FieldWrap label="What do you want to talk about?">
-                                <div className="flex flex-wrap gap-2 pt-1" role="group" aria-label="Project topics">
+                            <FieldWrap label="What do you want to build?" required error={e.topics?.message}>
+                                <div className="flex flex-wrap gap-2 pt-1" role="group" aria-label="What do you want to build?">
                                     {PROJECT_TOPICS.map((t) => {
                                         const checked = field.value?.includes(t);
                                         return (
@@ -124,7 +196,7 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                                                         : [...(field.value ?? []), t];
                                                     field.onChange(next);
                                                 }}
-                                                className="text-[0.7rem] tracking-[0.08em] rounded-full px-3 py-1.5 border transition-all duration-200"
+                                                className="min-h-[36px] text-[0.75rem] tracking-[0.06em] rounded-full px-3.5 py-1.5 border transition-[background-color,color,border-color] duration-200"
                                                 style={{
                                                     background:  checked ? C.pillBg : "transparent",
                                                     color:       checked ? C.pillText : C.label,
@@ -137,6 +209,7 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                                     })}
                                 </div>
                             </FieldWrap>
+                            <FormMessage className="hidden" />
                         </FormItem>
                     )} />
 
@@ -144,9 +217,9 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
                         <FormField control={form.control} name="budget" render={({ field }) => (
                             <FormItem>
-                                <FieldWrap label="Budget">
+                                <FieldWrap label="Budget" optional>
                                     <FormControl>
-                                        <LineSelect value={field.value ?? ""} onChange={field.onChange}>
+                                        <LineSelect name={field.name} value={field.value ?? ""} onChange={field.onChange} onBlur={field.onBlur}>
                                             {BUDGET_OPTIONS.map(o => (
                                                 <option key={o.value} value={o.value}>{o.label}</option>
                                             ))}
@@ -157,9 +230,9 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                         )} />
                         <FormField control={form.control} name="timeline" render={({ field }) => (
                             <FormItem>
-                                <FieldWrap label="Timeline">
+                                <FieldWrap label="Timeline" optional>
                                     <FormControl>
-                                        <LineSelect value={field.value ?? ""} onChange={field.onChange}>
+                                        <LineSelect name={field.name} value={field.value ?? ""} onChange={field.onChange} onBlur={field.onBlur}>
                                             {TIMELINE_OPTIONS.map(o => (
                                                 <option key={o.value} value={o.value}>{o.label}</option>
                                             ))}
@@ -173,7 +246,7 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                     {/* Preferred contact */}
                     <FormField control={form.control} name="contactMethod" render={({ field }) => (
                         <FormItem>
-                            <FieldWrap label="Preferred contact">
+                            <FieldWrap label="Preferred contact" optional>
                                 <div className="flex gap-3 pt-1" role="radiogroup" aria-label="Preferred contact method">
                                     {CONTACT_METHODS.map((method, index) => {
                                         const selected  = field.value === method;
@@ -187,17 +260,18 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                                                 tabIndex={tabbable ? 0 : -1}
                                                 onClick={() => field.onChange(method)}
                                                 onKeyDown={(ev) => {
-                                                    if (ev.key === "ArrowLeft" || ev.key === "ArrowRight") {
-                                                        ev.preventDefault();
-                                                        const cur  = CONTACT_METHODS.indexOf(field.value ?? "");
-                                                        const next = ev.key === "ArrowRight"
-                                                            ? (cur < CONTACT_METHODS.length - 1 ? cur + 1 : 0)
-                                                            : (cur > 0 ? cur - 1 : CONTACT_METHODS.length - 1);
-                                                        field.onChange(CONTACT_METHODS[next]);
-                                                        (ev.currentTarget.parentElement?.querySelectorAll("button")[next] as HTMLElement)?.focus();
-                                                    }
+                                                    const forward  = ev.key === "ArrowRight" || ev.key === "ArrowDown";
+                                                    const backward = ev.key === "ArrowLeft"  || ev.key === "ArrowUp";
+                                                    if (!forward && !backward) return;
+                                                    ev.preventDefault();
+                                                    const cur  = CONTACT_METHODS.indexOf(field.value ?? "");
+                                                    const next = forward
+                                                        ? (cur < CONTACT_METHODS.length - 1 ? cur + 1 : 0)
+                                                        : (cur > 0 ? cur - 1 : CONTACT_METHODS.length - 1);
+                                                    field.onChange(CONTACT_METHODS[next]);
+                                                    (ev.currentTarget.parentElement?.querySelectorAll("button")[next] as HTMLElement)?.focus();
                                                 }}
-                                                className="text-[0.72rem] tracking-[0.08em] rounded-full px-4 py-1.5 border transition-all duration-200"
+                                                className="min-h-[36px] text-[0.75rem] tracking-[0.06em] rounded-full px-4 py-1.5 border transition-[background-color,color,border-color] duration-200"
                                                 style={{
                                                     background:  selected ? C.pillBg : "transparent",
                                                     color:       selected ? C.pillText : C.label,
@@ -218,29 +292,41 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                         <FormItem>
                             <FieldWrap label="Message" required error={e.message?.message}>
                                 <FormControl>
-                                    <LineTextarea placeholder="Tell me about your project…" required {...field} />
+                                    <LineTextarea placeholder="What are you trying to build, and what's getting in the way today?" required {...field} />
                                 </FormControl>
                             </FieldWrap>
                             <FormMessage className="hidden" />
                         </FormItem>
                     )} />
 
-                    {/* Honeypot */}
+                    {/* Honeypot: hidden from everyone, including assistive tech */}
                     <FormField
                         control={form.control}
                         name="hp"
                         render={({ field }) => (
-                            <div aria-hidden="true" className="absolute -left-[9999px]">
-                                <Input {...field} value={field.value ?? ""} tabIndex={-1} autoComplete="off" />
+                            <div hidden aria-hidden="true">
+                                <label htmlFor="contact-website-url">Leave this empty</label>
+                                <input id="contact-website-url" {...field} value={field.value ?? ""} tabIndex={-1} autoComplete="off" />
                             </div>
                         )}
                     />
+
+                    {submitError && (
+                        <p id="contact-submit-error" role="alert" className="text-[0.8rem]" style={{ color: "hsl(var(--destructive))" }}>
+                            {submitError} Email{" "}
+                            <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-2" style={{ color: C.text }} onClick={() => track("email_clicked", { location: "contact_form_error" })}>
+                                {CONTACT_EMAIL}
+                            </a>{" "}
+                            if it keeps happening.
+                        </p>
+                    )}
 
                     {/* Submit */}
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="group self-start flex items-center gap-3 rounded-full font-medium tracking-wide disabled:opacity-60"
+                        aria-busy={isSubmitting}
+                        className="group self-start flex items-center gap-3 rounded-full font-medium tracking-wide disabled:opacity-60 min-h-[44px]"
                         style={{
                             background:    "hsl(var(--hero-accent))",
                             color:         "#fff",
@@ -248,17 +334,17 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                             fontSize:      "0.78rem",
                             letterSpacing: "0.07em",
                             textTransform: "uppercase",
-                            transition:    "background 0.25s, transform 0.2s",
+                            transition:    "background-color 0.25s, transform 0.2s",
                         }}
-                        onMouseEnter={e => {
+                        onMouseEnter={ev => {
                             if (!isSubmitting) {
-                                (e.currentTarget as HTMLElement).style.background = "hsl(var(--hero-accent-dark))";
-                                (e.currentTarget as HTMLElement).style.transform  = "translateY(-2px)";
+                                (ev.currentTarget as HTMLElement).style.background = "hsl(var(--hero-accent-dark))";
+                                (ev.currentTarget as HTMLElement).style.transform  = "translateY(-2px)";
                             }
                         }}
-                        onMouseLeave={e => {
-                            (e.currentTarget as HTMLElement).style.background = "hsl(var(--hero-accent))";
-                            (e.currentTarget as HTMLElement).style.transform  = "";
+                        onMouseLeave={ev => {
+                            (ev.currentTarget as HTMLElement).style.background = "hsl(var(--hero-accent))";
+                            (ev.currentTarget as HTMLElement).style.transform  = "";
                         }}
                     >
                         {isSubmitting ? (
@@ -268,8 +354,9 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                             </>
                         ) : (
                             <>
-                                Send Message
+                                Send message
                                 <span
+                                    aria-hidden="true"
                                     className="inline-flex items-center justify-center w-6 h-6 rounded-full text-[0.75rem] group-hover:rotate-45"
                                     style={{ border: "1.5px solid rgba(255,255,255,0.4)", transition: "transform 0.25s" }}
                                 >
@@ -279,8 +366,8 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                         )}
                     </button>
 
-                    <p className="text-[0.68rem]" style={{ color: C.subtext }}>
-                        No commitment · I&apos;ll reply within 24 hours
+                    <p className="text-[0.72rem]" style={{ color: C.subtext }}>
+                        No commitment. I reply within 24 hours, even if the answer is that I&rsquo;m not the right fit.
                     </p>
                 </form>
             </Form>

@@ -5,9 +5,8 @@ const FOOTER_LINKS: FooterItem[] = [
     { label: "Services",     type: "section", id: "services"      },
     { label: "Process",      type: "section", id: "process"       },
     { label: "Pricing",      type: "section", id: "pricing"       },
-    { label: "ContactSection",      type: "section", id: "contact"       },
+    { label: "Contact",      type: "route",   href: "/contact"      },
     { label: "Case Studies", type: "route",   href: "/case-studies" },
-    { label: "Blog",         type: "route",   href: "/blog"         },
     { label: "About",        type: "route",   href: "/about-me"     },
 ];
 
