@@ -9,7 +9,7 @@ marketing and enrolment site (React, TypeScript, Vite, Tailwind, shadcn/ui, Supa
 
 | Questions | Results |
 |---|---|
-| ![Questions](01-strategy-assessment-questions.png) | ![Results](02-strategy-assessment-results.png) |
+| ![Questions](../../public/img/projects/ai4l-features/01-strategy-assessment-questions.png) | ![Results](../../public/img/projects/ai4l-features/02-strategy-assessment-results.png) |
 
 A free, six-minute self-assessment that lead-gens for the business. Visitors enter a first name and
 answer 18 multiple-choice questions grouped into six pillars: Leadership, Governance, Capability,
@@ -26,7 +26,7 @@ Adoption, Agentic Maturity and Ways of Working.
 
 ## 2. Agentic AI ROI and Opportunity Cost Calculator
 
-![ROI calculator](03-agentic-roi-calculator.png)
+![ROI calculator](../../public/img/projects/ai4l-features/03-agentic-roi-calculator.png)
 
 A three-step consultation tool (Industry, Agents, Calculate) that turns vague "AI could help" claims
 into a dollar figure.
@@ -40,7 +40,7 @@ into a dollar figure.
 
 ## 3. Course Basket with Volume Pricing and Stripe Checkout
 
-![Basket](04-basket-volume-pricing.png)
+![Basket](../../public/img/projects/ai4l-features/04-basket-volume-pricing.png)
 
 A multi-course basket so visitors can enrol several people, or several courses, in a single payment.
 
@@ -53,7 +53,7 @@ A multi-course basket so visitors can enrol several people, or several courses, 
 
 ## 4. AI Concierge Chat Widget
 
-![Chat concierge](05-ai-chat-concierge.png)
+![Chat concierge](../../public/img/projects/ai4l-features/05-ai-chat-concierge.png)
 
 Integration of the "Rachel" virtual concierge across the whole site, replacing the earlier chatbot.
 

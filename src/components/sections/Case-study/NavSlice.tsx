@@ -63,7 +63,7 @@ export function NavSlice({ study, direction }: NavSliceProps) {
       {/* Content */}
       <div className={`relative z-10 ${isPrev ? "" : "text-right"}`}>
         <span
-          className="block text-[0.5rem] tracking-[0.3em] uppercase mb-3 transition-colors duration-300"
+          className="block text-[0.7rem] tracking-[0.3em] uppercase mb-3 transition-colors duration-300"
           style={{ color: DARK.dim }}
         >
           {isPrev ? "← Previous" : "Next →"}

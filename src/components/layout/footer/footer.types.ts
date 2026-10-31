@@ -1,6 +1,9 @@
-type FooterItem =
-    | { label: string; type: "section"; id: string }
-    | { label: string; type: "route"; href: string };
+export interface FooterLink {
+    label: string;
+    href: string;
+}
 
-
-export type { FooterItem };
+export interface FooterGroup {
+    title: string;
+    links: FooterLink[];
+}

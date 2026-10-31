@@ -25,27 +25,28 @@ const firaSans = Fira_Sans({
 export const viewport: Viewport = {
     width: "device-width",
     initialScale: 1,
-    colorScheme: "light"
+    colorScheme: "light",
+    themeColor: "#f9fafb",
 };
 
 export const metadata: Metadata = {
     metadataBase: new URL("https://juliandelgado.com.au"),
     title: {
-        default: "Custom Web Development for Australian Businesses | Julian Delgado",
+        default: "Custom Software, AI Automation and Websites for Australian Small Businesses | Julian Delgado",
         template: "%s | Julian Delgado"
     },
     description:
-        "Julian Delgado helps Australian service businesses launch custom websites, web apps, and MVPs. Based in Toowoomba, QLD — working with clients Australia-wide. Get a premium digital product built fast.",
+        "Julian Delgado builds custom software, AI automation and websites for Australian small businesses: fixed prices in AUD, weekly demos, 30 days of support. Based in Toowoomba, QLD, clients Australia-wide.",
     keywords: [
+        "custom software developer Queensland",
+        "small business automation Australia",
+        "custom CRM for small business",
+        "AI automation for NDIS providers",
+        "web developer Toowoomba",
         "web developer Australia",
-        "software developer Queensland",
         "Next.js developer",
-        "custom web application",
-        "MVP development Australia",
         "website for tradies",
-        "business website Australia",
-        "React developer Australia",
-        "Toowoomba web developer"
+        "business website Australia"
     ],
     authors: [{ name: "Julian Delgado", url: "https://juliandelgado.com.au" }],
     creator: "Julian Delgado",
@@ -54,9 +55,9 @@ export const metadata: Metadata = {
         icon: [{ url: "/favicon.ico", sizes: "any" }],
     },
     openGraph: {
-        title: "Julian Delgado | Web Development & Software Solutions for Australian Businesses",
+        title: "Julian Delgado | Custom Software, AI Automation and Websites for Australian Small Businesses",
         description:
-            "Full-stack web developer based in Toowoomba, QLD, building high-performance websites, web apps & MVPs for service businesses across Australia. Get a premium digital product that loads fast, ranks high, and converts visitors into clients.",
+            "One senior engineer from discovery to launch: custom software, AI automation with a human approval step, and websites that bring enquiries. Fixed prices in AUD, Toowoomba, QLD, clients Australia-wide.",
         type: "website",
         url: "https://juliandelgado.com.au",
         siteName: "Julian Delgado",
@@ -64,10 +65,9 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Julian Delgado | Web Development for Australian Businesses",
+        title: "Julian Delgado | Custom Software, AI Automation and Websites",
         description:
-            "Custom websites and web apps for Australian service businesses. Based in Toowoomba, servicing Australia-wide.",
-        creator: "@juliandelgado",
+            "Custom software, AI automation and websites for Australian small businesses. Based in Toowoomba, clients Australia-wide.",
     },
     robots: {
         index: true,
@@ -97,13 +97,8 @@ export default function RootLayout({
             {googleTagManagerId && <GoogleTagManager gtmId={googleTagManagerId} />}
             <head>
                 <StructuredData />
-                <title>Custom Web Development for Australian Businesses | Julian Delgado</title>
-                {/* Preload the LCP hero image for faster discovery */}
-                <link
-                    rel="preconnect"
-                    href="https://images.unsplash.com"
-                    crossOrigin=""
-                />
+                {/* The hero slides and section videos come from Cloudinary */}
+                <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="" />
             </head>
             <body
                 className={`${dmSerif.variable} ${firaSans.variable} antialiased`}

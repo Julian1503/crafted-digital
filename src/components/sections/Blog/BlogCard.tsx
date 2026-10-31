@@ -25,7 +25,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         >
             <article
                 className={cn(
-                    "w-full overflow-hidden rounded-3xl border border-border bg-card transition-all",
+                    "w-full overflow-hidden rounded-3xl border border-border bg-card transition-[box-shadow,border-color]",
                     "hover:shadow-xl hover:border-secondary/50",
                     "grid grid-cols-1 md:grid-cols-6 md:aspect-[3/2]"
                 )}

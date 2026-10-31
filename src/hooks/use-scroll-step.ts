@@ -32,14 +32,21 @@ export function useScrollStep(
 
     const [step,        setStep]        = React.useState(0);
     const [rawProgress, setRawProgress] = React.useState(0);
+    const lastRaw = React.useRef(0);
 
     React.useEffect(() => {
         return smooth.on("change", (v) => {
-            setRawProgress(v);
-            setStep(Math.max(0, Math.min(Math.floor(v * totalSteps), totalSteps - 1)));
-            if (!sectionEntered && v > 0.015) setSectionEntered(true);
+            // Only re-render when something visible changes: the integer step,
+            // or the chapter-track fill moving by at least 1%.
+            const next = Math.max(0, Math.min(Math.floor(v * totalSteps), totalSteps - 1));
+            setStep((prev) => (prev === next ? prev : next));
+            if (Math.abs(v - lastRaw.current) >= 0.01) {
+                lastRaw.current = v;
+                setRawProgress(v);
+            }
+            if (v > 0.015) setSectionEntered((prev) => prev || true);
         });
-    }, [smooth, totalSteps, sectionEntered]);
+    }, [smooth, totalSteps]);
 
     return {scrollYProgress: smooth, step, rawProgress, sectionEntered};
 }

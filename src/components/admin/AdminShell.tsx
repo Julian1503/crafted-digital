@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
+import { useLocalStorageState } from "@/hooks/use-local-storage-state";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -33,6 +34,7 @@ interface AdminShellProps {
 
 const SIDEBAR_KEY = "admin-sidebar-collapsed";
 const GROUPS_KEY = "admin-sidebar-groups";
+const DEFAULT_GROUPS: Record<string, boolean> = Object.fromEntries(NAV_GROUPS.map((g) => [g.title, true]));
 
 /* ------------------------------------------------------------------ */
 /*  Component                                                         */
@@ -41,53 +43,24 @@ const GROUPS_KEY = "admin-sidebar-groups";
 export function AdminShell({ user, children }: AdminShellProps) {
   const pathname = usePathname();
 
-  // Sidebar collapsed state
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  // Expanded groups (open by default)
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
-    () =>
-      Object.fromEntries(NAV_GROUPS.map((g) => [g.title, true]))
+  // Sidebar state persisted per browser (server renders the defaults).
+  const [collapsed, setCollapsed] = useLocalStorageState<boolean>(SIDEBAR_KEY, false);
+  const [expandedGroups, setExpandedGroups] = useLocalStorageState<Record<string, boolean>>(
+    GROUPS_KEY,
+    DEFAULT_GROUPS
   );
 
-  // Hydrate from localStorage
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(SIDEBAR_KEY);
-      if (stored !== null) setCollapsed(stored === "true");
-      const groups = localStorage.getItem(GROUPS_KEY);
-      if (groups) setExpandedGroups(JSON.parse(groups));
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  // Persist sidebar state
-  useEffect(() => {
-    try {
-      localStorage.setItem(SIDEBAR_KEY, String(collapsed));
-    } catch {
-      // ignore
-    }
-  }, [collapsed]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(GROUPS_KEY, JSON.stringify(expandedGroups));
-    } catch {
-      // ignore
-    }
-  }, [expandedGroups]);
-
-  // Close mobile drawer on navigation
-  useEffect(() => {
+  // The mobile drawer closes on every navigation. Resetting state while
+  // rendering when a prop changes is the React-sanctioned alternative to an effect.
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [seenPathname, setSeenPathname] = useState(pathname);
+  if (seenPathname !== pathname) {
+    setSeenPathname(pathname);
     setMobileOpen(false);
-  }, [pathname]);
+  }
 
-  const toggleGroup = useCallback((title: string) => {
+  const toggleGroup = (title: string) =>
     setExpandedGroups((prev) => ({ ...prev, [title]: !prev[title] }));
-  }, []);
 
   const isActive = (href: string) =>
     href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);

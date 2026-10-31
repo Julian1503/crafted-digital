@@ -101,11 +101,10 @@ function PrinciplePanel({ p, index, scrollYProgress }: { p: (typeof PRINCIPLES_D
             {/* Large number watermark */}
             <div
                 aria-hidden
-                className="pointer-events-none absolute bottom-[-0.08em] left-[clamp(0.5rem,3.5vw,4rem)] select-none font-serif text-[clamp(13rem,26vw,24rem)] font-normal leading-none tracking-[-0.06em]"
+                data-watermark={p.n}
+                className="watermark pointer-events-none absolute bottom-[-0.08em] left-[clamp(0.5rem,3.5vw,4rem)] select-none font-serif text-[clamp(13rem,26vw,24rem)] font-normal leading-none tracking-[-0.06em]"
                 style={{ color: "rgba(255,255,255,0.028)" }}
-            >
-                {p.n}
-            </div>
+            />
 
             {/* ── Text content ───────────────────────────────────────────────
                 Desktop: left panel, max 44vw.
@@ -124,9 +123,9 @@ function PrinciplePanel({ p, index, scrollYProgress }: { p: (typeof PRINCIPLES_D
                     className="mb-8 inline-flex items-center gap-[0.6rem] rounded-[4px] border px-[0.8rem] py-[0.35rem]"
                     style={{ borderColor: border }}
                 >
-                    <span className="font-mono text-[0.5rem] tracking-[0.2em]" style={{ color: accent }}>{p.n}</span>
+                    <span className="font-mono text-[0.7rem] tracking-[0.2em]" style={{ color: accent }}>{p.n}</span>
                     <span className="inline-block h-[10px] w-px" style={{ background: border }} />
-                    <span className="font-mono text-[0.5rem] uppercase tracking-[0.22em]" style={{ color: dim }}>Principle</span>
+                    <span className="font-mono text-[0.7rem] uppercase tracking-[0.22em]" style={{ color: dim }}>Principle</span>
                 </div>
 
                 <h2

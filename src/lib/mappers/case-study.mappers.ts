@@ -32,7 +32,7 @@
  * }
  */
 
-import type { CaseStudyBase, CaseStudyDetail, StudyData, ApproachStep, ResultItem } from "@/components/sections/Case-study/case-study.types";
+import type { CaseStudyBase, StudyData, ApproachStep, ResultItem } from "@/components/sections/Case-study/case-study.types";
 import type { Project, ProjectStat } from "@/components/sections/Work/work.types";
 import { parseResultMetric } from "@/components/sections/Case-study/case-study.constants";
 
@@ -50,6 +50,7 @@ export interface PrismaCaseStudy {
   solutions:   string | null;
   results:     string | null;
   publishedAt: Date   | null;
+  updatedAt?:  Date   | null;
   author:      { id: string; name: string | null; email: string } | null;
 }
 
@@ -184,7 +185,8 @@ export function parseCaseStudyBody(raw: string): {
       category:         b.category,
       testimonial:      b.testimonial,
     };
-  } catch {
+  } catch (error: unknown) {
+    console.error("[case-study] body JSON could not be parsed", error instanceof Error ? error.message : error);
     return null;
   }
 }
@@ -230,27 +232,6 @@ export function toCaseStudyCardProps(study: PrismaCaseStudy): CaseStudyBase {
   };
 }
 
-export function toCaseStudyDetailProps(study: PrismaCaseStudy): CaseStudyDetail | null {
-  const body = parseCaseStudyBody(study.body);
-  if (!body) return null;
-
-  return {
-    slug:         study.slug,
-    title:        study.title,
-    client:       extractClient(study),
-    category:     extractCategory(study),
-    description:  study.summary    ?? "",
-    image:        study.coverImage ?? "/placeholder-case-study.webp",
-    gallery:      extractGallery(study.gallery),
-    challenge:    body.challenge,
-    approach:     body.approach,
-    solution:     body.solution,
-    results:      body.results,
-    technologies: body.technologies,
-    testimonial:  body.testimonial,
-  };
-}
-
 /** Full StudyData used by CaseStudyView — includes all V2 rich fields */
 export function toStudyData(study: PrismaCaseStudy & { customer?: { name: string } | null; caseStudyIndustries?: { industry: { name: string } }[] }): StudyData | null {
   const body = parseCaseStudyBody(study.body);
@@ -267,6 +248,8 @@ export function toStudyData(study: PrismaCaseStudy & { customer?: { name: string
     image:            study.coverImage ?? "/placeholder-case-study.webp",
     gallery:          extractGallery(study.gallery),
     year,
+    publishedAt:      study.publishedAt ? new Date(study.publishedAt).toISOString() : undefined,
+    updatedAt:        study.updatedAt   ? new Date(study.updatedAt).toISOString()   : undefined,
     challenge:        body.challenge,
     problemHeadline:  body.problemHeadline,
     approach:         body.approach,

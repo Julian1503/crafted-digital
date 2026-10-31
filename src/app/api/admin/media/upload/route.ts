@@ -6,10 +6,9 @@ import { createMediaAsset } from "@/lib/services/media";
 import { MediaProvider } from "@/generated/prisma/enums";
 import { withErrorHandling, successResponse } from "@/lib/http/api-handler";
 import { UnauthorizedError, ForbiddenError, BadRequestError } from "@/lib/errors/api-error";
+import { checkUpload, MAX_UPLOAD_FILES } from "@/lib/media/validate-upload";
 
 export const runtime = "nodejs";
-
-const ALLOWED_MIME = new Set(["image/png", "image/jpeg", "image/webp"]);
 
 function isMediaProvider(value: unknown): value is MediaProvider {
     return value === "cloudinary" || value === "imagekit";
@@ -33,24 +32,26 @@ export const POST = withErrorHandling(async (req) => {
     const rawFolder = form.get("folder")?.toString();
     const folder = normalizeFolder(rawFolder) || "general";
 
-    const files = form.getAll("files") as File[];
+    const files = form.getAll("files").filter((f): f is File => f instanceof File);
     if (!files.length)
         throw new BadRequestError("No files provided");
+    if (files.length > MAX_UPLOAD_FILES)
+        throw new BadRequestError(`At most ${MAX_UPLOAD_FILES} files per upload`);
 
     const created = [];
     for (const file of files) {
-        if (!(file instanceof File)) continue;
-
-        if (!ALLOWED_MIME.has(file.type))
-            throw new BadRequestError(`Unsupported file type: ${file.type}`);
-
         const buffer = Buffer.from(await file.arrayBuffer());
+
+        // The browser's `file.type` is advisory; the bytes decide, and the
+        // stored name is regenerated so nothing user-controlled reaches the CDN path.
+        const check = checkUpload(file, buffer);
+        if (!check.ok) throw new BadRequestError(check.reason);
 
         const uploaded = await uploadWithProvider({
             provider,
             fileBuffer: buffer,
-            originalName: file.name,
-            mimeType: file.type,
+            originalName: check.filename,
+            mimeType: check.mimeType,
             folder,
         });
 

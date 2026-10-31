@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-const PUBLIC_PAGES = ["/", "/about-me", "/case-studies", "/contact", "/privacy", "/terms"];
+const PUBLIC_PAGES = ["/", "/services", "/services/websites", "/services/custom-software", "/pricing", "/about-me", "/case-studies", "/contact", "/privacy", "/terms"];
 
 test.describe("navigation", () => {
     test("every internal link on the home page resolves without a 404", async ({ page, request }) => {

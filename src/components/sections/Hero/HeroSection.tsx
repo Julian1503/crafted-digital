@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./hero.module.css";
 import {
-    cloudinaryUrl,
+    cloudinaryLoader,
     HERO_HEADLINE,
     HERO_SUBLINE,
     easeInOutQuart,
@@ -215,7 +215,8 @@ export default function HeroSection() {
                             className={`${styles["hero-slide"]} absolute inset-0 overflow-hidden`}
                         >
                             <Image
-                                src={cloudinaryUrl(slide.img, 1280, 85)}
+                                loader={cloudinaryLoader}
+                                src={slide.img}
                                 alt=""
                                 fill
                                 sizes="100vw"

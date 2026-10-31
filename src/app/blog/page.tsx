@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/lib/constants/site";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
     description:
         "Practical web development insights, guides, and tips for Australian service businesses. Learn how to build better websites, improve SEO, and grow your online presence.",
     openGraph: {
+        images: [DEFAULT_OG_IMAGE],
         title: "Blog | Web Development Tips for Australian Businesses",
         description:
             "Practical web development insights and guides for Australian service businesses.",

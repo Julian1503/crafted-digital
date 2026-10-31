@@ -4,7 +4,7 @@ import { test, expect } from "@playwright/test";
  * Precondition: the dev server points at a database with at least the seeded
  * published case studies; the sitemap test walks every listed URL.
  */
-const PAGES = ["/", "/about-me", "/case-studies", "/contact", "/privacy", "/terms"];
+const PAGES = ["/", "/services", "/services/websites", "/services/custom-software", "/pricing", "/about-me", "/case-studies", "/contact", "/privacy", "/terms"];
 
 test.describe("seo basics", () => {
     test.beforeEach(async ({}, testInfo) => {
@@ -32,6 +32,21 @@ test.describe("seo basics", () => {
         const h1 = page.getByRole("heading", { level: 1 });
         await expect(h1).toHaveCount(1);
         await expect(h1).toContainText(/software|websites|automation/i);
+    });
+
+    test("an unknown case study is a real 404, not a 200 with a sorry page", async ({ request }) => {
+        const res = await request.get("/case-studies/this-slug-does-not-exist");
+        expect(res.status()).toBe(404);
+    });
+
+    test("llms.txt and pricing.md are served as text", async ({ request }) => {
+        const llms = await request.get("/llms.txt");
+        expect(llms.status()).toBe(200);
+        expect(llms.headers()["content-type"]).toContain("text/plain");
+        expect(await llms.text()).toContain("# Julian Delgado");
+        const pricing = await request.get("/pricing.md");
+        expect(pricing.status()).toBe(200);
+        expect(pricing.headers()["content-type"]).toContain("text/markdown");
     });
 
     test("login is not indexable", async ({ page }) => {

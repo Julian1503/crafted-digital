@@ -269,7 +269,7 @@ export default function NotFound() {
                     maxWidth: "36ch",
                     lineHeight: 1.9,
                 }}>
-                    The page you're looking for doesn't exist —<br />
+                    The page you&rsquo;re looking for doesn&rsquo;t exist,<br />
                     or it moved while I was shipping something else.
                 </p>
 

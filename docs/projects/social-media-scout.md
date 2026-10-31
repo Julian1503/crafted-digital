@@ -18,22 +18,22 @@ It is business-agnostic: everything it knows about the organisation (what it off
 ## Screenshots
 
 ### Operations dashboard
-![Operations dashboard](./dashboard.webp)
+![Operations dashboard](../../public/img/projects/social-media-scout/dashboard.webp)
 
 Health at a glance: posts scraped, comments posted, items waiting for review, conversion funnel (scanned → classified → generated → posted → replies), circuit-breaker state, groups by compliance status and a live audit trail of every action.
 
 ### Human review queue
-![Human review queue](./review-queue.webp)
+![Human review queue](../../public/img/projects/social-media-scout/review-queue.webp)
 
 The core safety feature. Each row pairs the original post with the AI-suggested comment and the group it came from; a person decides to **Approve**, **Edit** or **Skip**. Nothing reaches Facebook without passing here (unless a group is explicitly configured otherwise).
 
 ### Scraped posts and AI classification
-![Scraped posts](./scraped-posts.webp)
+![Scraped posts](../../public/img/projects/social-media-scout/scraped-posts.webp)
 
 Every post the scraper has seen, filterable by group, status, intent, relevance range and date. Relevance is shown as a bar with its score, skipped posts are dimmed with the exact skip reason (`below_threshold`, `group_prohibits_business_mentions`), so decisions are explainable instead of a black box.
 
 ### Pipeline control
-![Pipeline control](./pipeline.webp)
+![Pipeline control](../../public/img/projects/social-media-scout/pipeline.webp)
 
 Launch mock or live runs with a dry-run toggle, watch logs per job, and see the scheduled tasks (scrape window, follow-up checks, daily digest). Groups are staggered across the window so activity doesn't look robotic.
 

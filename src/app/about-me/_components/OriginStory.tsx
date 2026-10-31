@@ -75,7 +75,7 @@ export function OriginStory() {
                         {/* Milestones */}
                         <FadeUp delay={0.28}>
                             <div className="mt-12 border-t pt-8" style={{ borderColor: border }}>
-                                <p className="mb-5 font-mono text-[0.5rem] uppercase tracking-[0.26em]" style={{ color: dim }}>
+                                <p className="mb-5 font-mono text-[0.7rem] uppercase tracking-[0.26em]" style={{ color: dim }}>
                                     Milestones
                                 </p>
 

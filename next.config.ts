@@ -39,7 +39,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
     poweredByHeader: false,
     experimental: {
-        optimizeCss: true,
+        optimizePackageImports: ["lucide-react", "framer-motion"],
     },
     async headers() {
         return [

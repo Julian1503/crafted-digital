@@ -91,17 +91,19 @@ export function HeroSection({ study }: { study: StudyData }) {
           >
             {study.category}
           </span>
-          {study.year && (
+          {(study.publishedAt || study.year) && (
             <time
-              dateTime={String(study.year)}
+              dateTime={study.publishedAt ?? String(study.year)}
               className="font-mono text-[0.7rem] tracking-[0.22em]"
-              style={{ color: "rgba(255,255,255,0.25)" }}
+              style={{ color: "rgba(255,255,255,0.6)" }}
             >
-              {study.year}
+              {study.publishedAt
+                ? new Date(study.publishedAt).toLocaleDateString("en-AU", { month: "short", year: "numeric", timeZone: "UTC" })
+                : study.year}
             </time>
           )}
           <span
-            className="font-mono text-[0.5rem] tracking-[0.18em] flex items-center gap-1"
+            className="font-mono text-[0.7rem] tracking-[0.18em] flex items-center gap-1"
             style={{ color: "rgba(255,255,255,0.2)" }}
           >
             <span aria-hidden="true">◷</span> {readTime}

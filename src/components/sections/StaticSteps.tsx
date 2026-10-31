@@ -34,7 +34,7 @@ export function StaticSteps({ id, label, heading, intro, steps, theme, srOnly = 
     const dark = theme === "dark";
     const fg      = dark ? "rgba(255,255,255,0.92)" : "rgba(10,10,10,0.9)";
     const body    = dark ? "rgba(255,255,255,0.78)" : "rgba(10,10,10,0.7)";
-    const muted   = dark ? "rgba(255,255,255,0.6)"  : "rgba(10,10,10,0.55)";
+    const muted   = dark ? "rgba(255,255,255,0.6)"  : "rgba(10,10,10,0.62)";
     const border  = dark ? "rgba(255,255,255,0.1)"  : "rgba(10,10,10,0.1)";
     const chipBg  = dark ? "rgba(255,255,255,0.08)" : "rgba(10,10,10,0.05)";
     const bg      = dark ? "#0c0c0c" : "hsl(var(--background))";
@@ -67,7 +67,7 @@ export function StaticSteps({ id, label, heading, intro, steps, theme, srOnly = 
                             </span>
                             <div>
                                 {step.eyebrow && (
-                                    <p className="text-[0.72rem] tracking-[0.16em] uppercase mb-2" style={{ color: "hsl(var(--hero-accent))" }}>{step.eyebrow}</p>
+                                    <p className="text-[0.72rem] tracking-[0.16em] uppercase mb-2" style={{ color: dark ? "hsl(var(--hero-accent-light))" : "hsl(var(--hero-accent))" }}>{step.eyebrow}</p>
                                 )}
                                 <h3 className="font-serif font-normal leading-[1.1] tracking-[-0.02em] mb-3 text-balance" style={{ fontSize: "clamp(1.4rem, 3.5vw, 2.1rem)", color: fg }}>
                                     {step.title}

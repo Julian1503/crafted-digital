@@ -11,28 +11,28 @@ A private CRM and marketing-automation workspace for a small training business: 
 ## What it does
 
 ### Contacts: the source of truth
-![Contacts dashboard](./contacts-dashboard.webp)
+![Contacts dashboard](../../public/img/projects/CRM-Ai4L/contacts-dashboard.webp)
 
 A live overview of the whole database: customers, prospects, newsletter subscribers and course-consent counts at a glance. Search and filter by job type, state, tags, organisation and industry, switch between Leads, Customers, Prospects, Newsletter and Courses views, and export the current selection to CSV or EmailOctopus. Status and subscription state are colour-coded so the difference between a customer, a prospect and an unsubscribed contact is visible without opening anything.
 
-![Contact detail drawer](./contact-detail.webp)
+![Contact detail drawer](../../public/img/projects/CRM-Ai4L/contact-detail.webp)
 
 Each contact opens in a side drawer with organisation, role, job type, tags and location. Contacts are never hard-deleted: "remove" is a soft delete, and archived contacts keep their history.
 
 ### Segments: reusable audiences
-![Segments](./segments.webp)
+![Segments](../../public/img/projects/CRM-Ai4L/segments.webp)
 
 Build an audience from tags, state, job type, status, service or organisation and see the live count of reachable contacts before saving. Segments always exclude archived contacts and anyone who has not consented to the kind of email being sent, and individuals can be added or removed by hand.
 
 ### Campaigns: draft, review, approve, send
-![Campaigns](./campaigns.webp)
+![Campaigns](../../public/img/projects/CRM-Ai4L/campaigns.webp)
 
 Campaigns move through a strict lifecycle (draft → in review → approved → sending → sent). Approval is deliberate and attributable, and the rules are enforced by the database itself (triggers and constraints), not just the UI, so an unapproved campaign cannot be sent even by a buggy client. Claude can draft the campaign copy for a segment, but nothing it writes can send on its own.
 
 Other pieces behind this screen: recurring newsletters on a schedule, per-campaign results, and separate consent streams for newsletters and for course/program offers.
 
 ### Content Studio: write once, publish per channel
-![Content Studio](./content-studio.webp)
+![Content Studio](../../public/img/projects/CRM-Ai4L/content-studio.webp)
 
 Turn a single brief (topic, audience, objective) into channel-specific drafts for Facebook, Instagram and email, grounded in the brand's approved facts and tone. Every variant is reviewed and approved on its own before publishing.
 

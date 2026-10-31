@@ -53,7 +53,7 @@ export const CONTACT_METHODS = ["Email", "Call"];
  */
 export const LIGHT_COLORS: FormColors = {
     label:       "rgba(10,10,10,0.62)",
-    optional:    "rgba(10,10,10,0.5)",
+    optional:    "rgba(10,10,10,0.62)",
     text:        "rgba(10,10,10,0.88)",
     placeholder: "rgba(10,10,10,0.4)",
     border:      "rgba(10,10,10,0.2)",
@@ -61,7 +61,7 @@ export const LIGHT_COLORS: FormColors = {
     pillBg:      "rgba(10,10,10,0.88)",
     pillText:    "#fff",
     pillBorder:  "rgba(10,10,10,0.2)",
-    subtext:     "rgba(10,10,10,0.55)",
+    subtext:     "rgba(10,10,10,0.62)",
 };
 
 export const DARK_COLORS: FormColors = {

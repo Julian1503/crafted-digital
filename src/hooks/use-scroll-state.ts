@@ -26,29 +26,32 @@ export function useScrollState(isHome: boolean): ScrollState {
 
     // — Scroll: fade del hero superior (igual que antes) —
     React.useLayoutEffect(() => {
-        const onScroll = () => {
+        // Looked up once: the hero that hides the logo does not change while mounted.
+        const hasHideLogoHero = !!document.querySelector("[data-hide-logo]");
+        let raf = 0;
+
+        const update = () => {
+            raf = 0;
             const s         = window.scrollY;
             const threshold = window.innerHeight * HERO_THRESHOLD;
             const raw       = Math.min(s / threshold, 1);
 
-            setIsScrolled(s > 12);
+            setIsScrolled((prev) => { const next = s > 12; return prev === next ? prev : next; });
+            if (isHome) setPastHero((prev) => { const next = s >= window.innerHeight * 0.9; return prev === next ? prev : next; });
 
-            if (isHome) setPastHero(s >= window.innerHeight * 0.9);
-
-            const hasHideLogoHero = !!document.querySelector("[data-hide-logo]");
-            if (hasHideLogoHero) {
-                const logoP = raw < LOGO_FADE_START
-                    ? 0
-                    : (raw - LOGO_FADE_START) / (1 - LOGO_FADE_START);
-                setLogoOpacity(logoP);
-            } else {
-                setLogoOpacity(1);
-            }
+            const logoP = hasHideLogoHero
+                ? (raw < LOGO_FADE_START ? 0 : (raw - LOGO_FADE_START) / (1 - LOGO_FADE_START))
+                : 1;
+            // Round to 2 decimals so tiny scroll deltas do not re-render the header.
+            const rounded = Math.round(logoP * 100) / 100;
+            setLogoOpacity((prev) => (prev === rounded ? prev : rounded));
         };
 
-        onScroll();
+        const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+
+        update();
         window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
+        return () => { window.removeEventListener("scroll", onScroll); if (raf) cancelAnimationFrame(raf); };
     }, [isHome]);
 
     React.useEffect(() => {

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/lib/constants/site";
 import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/layout/header/Header";
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     description:
         "Explore real examples of web development and software projects delivered for Australian businesses. See how Julian Delgado helps service businesses build digital products that convert.",
     openGraph: {
+        images: [DEFAULT_OG_IMAGE],
         title: "Case Studies | Web Development Projects for Australian Businesses",
         description:
             "Real examples of web development projects delivered for Australian service businesses.",
@@ -101,7 +103,7 @@ function ProjectSlice({
                     <div className="flex items-center gap-3">
                         <span
                             className="font-mono text-[0.7rem] tracking-[0.28em] uppercase"
-                            style={{ color: "rgba(255,255,255,0.22)" }}
+                            style={{ color: "rgba(255,255,255,0.6)" }}
                         >
                             {String(index + 1).padStart(2, "0")}
                         </span>
@@ -111,7 +113,7 @@ function ProjectSlice({
                         />
                         <span
                             className="text-[0.7rem] tracking-[0.22em] uppercase"
-                            style={{ color: "rgba(255,255,255,0.22)" }}
+                            style={{ color: "rgba(255,255,255,0.6)" }}
                         >
                             {study.industry ?? study.category ?? "Project"}
                         </span>
@@ -119,7 +121,7 @@ function ProjectSlice({
 
                     {/* Arrow — slides in from left on hover */}
                     <span
-                        className="arrow-icon inline-flex items-center justify-center w-9 h-9 rounded-full text-[0.7rem] shrink-0 transition-all duration-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
+                        className="arrow-icon inline-flex items-center justify-center w-9 h-9 rounded-full text-[0.7rem] shrink-0 transition-[opacity,transform] duration-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
                         style={{
                             border: "1px solid rgba(255,255,255,0.2)",
                             color:  "rgba(255,255,255,0.7)",
@@ -239,7 +241,7 @@ export default async function CaseStudiesPage() {
                     <Link
                         href="/#work"
                         className="inline-flex items-center gap-2 mb-10 transition-colors duration-200"
-                        style={{ color: "rgba(255,255,255,0.28)", fontSize: "0.72rem", letterSpacing: "0.08em" }}
+                        style={{ color: "rgba(255,255,255,0.62)", fontSize: "0.72rem", letterSpacing: "0.08em" }}
                     >
                         <span aria-hidden="true" style={{ fontSize: "0.8rem" }}>←</span>
                         <span className="uppercase tracking-[0.15em] text-[0.7rem]">Back</span>
@@ -249,14 +251,14 @@ export default async function CaseStudiesPage() {
                     <div className="flex items-center gap-3 mb-8">
                         <span
                             className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none"
-                            style={{ color: "rgba(255,255,255,0.22)" }}
+                            style={{ color: "rgba(255,255,255,0.6)" }}
                         >
                             Work
                         </span>
                         <span className="h-px w-7 shrink-0" style={{ background: "rgba(255,255,255,0.1)" }} aria-hidden="true" />
                         <span
                             className="font-mono text-[0.7rem] tracking-[0.2em] uppercase"
-                            style={{ color: "rgba(255,255,255,0.22)" }}
+                            style={{ color: "rgba(255,255,255,0.6)" }}
                         >
                             {caseStudies.length} projects
                         </span>
@@ -276,7 +278,7 @@ export default async function CaseStudiesPage() {
                         </h1>
                         <p
                             className="max-w-[38ch] text-[0.85rem] leading-relaxed md:text-right pb-2"
-                            style={{ color: "rgba(255,255,255,0.28)" }}
+                            style={{ color: "rgba(255,255,255,0.62)" }}
                         >
                             Real projects, real results. Each one shows the problem, approach, and outcomes delivered for Australian businesses.
                         </p>
@@ -316,14 +318,14 @@ export default async function CaseStudiesPage() {
                         </p>
                         <p
                             className="text-[0.82rem] leading-relaxed"
-                            style={{ color: "rgba(255,255,255,0.32)", maxWidth: "40ch" }}
+                            style={{ color: "rgba(255,255,255,0.66)", maxWidth: "40ch" }}
                         >
                             Let’s talk about your project — no commitment, just a 20 min call.
                         </p>
                     </div>
 
                     <Link
-                        href="/#contact"
+                        href="/contact"
                         className="group flex items-center gap-2.5 rounded-full font-medium shrink-0"
                         style={{
                             background:    "hsl(var(--hero-accent))",

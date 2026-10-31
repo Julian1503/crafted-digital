@@ -24,7 +24,7 @@ export function MediaAsset({
                 poster={media.poster}
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
                 className="absolute inset-0 h-full w-full object-cover"
                 style={{ filter: MEDIA_FILTER }}
             >
@@ -38,8 +38,8 @@ export function MediaAsset({
             src={media.src}
             alt={alt}
             fill
-            sizes="100vw"
-            priority
+            sizes="(min-width: 1024px) 48vw, 100vw"
+            loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
             style={{ filter: MEDIA_FILTER }}
         />

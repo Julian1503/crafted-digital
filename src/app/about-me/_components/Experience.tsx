@@ -42,11 +42,12 @@ function ExperienceItem({
 }) {
     const ref      = useRef<HTMLDivElement>(null);
     const inView   = useInView(ref, { once: false, margin: "-28% 0px -28% 0px" });
-    const appeared = useRef(false);
+    // Once an item has been seen it stays visible; a second observer with
+    // `once` avoids reading a ref during render.
+    const appeared = useInView(ref, { once: true, margin: "-28% 0px -28% 0px" });
     const [hovered, setHovered] = useState(false);
 
     useEffect(() => {
-        if (inView && !appeared.current) appeared.current = true;
         onInView(index, inView);
     }, [inView, index, onInView]);
 
@@ -54,7 +55,7 @@ function ExperienceItem({
         <motion.div
             ref={ref}
             initial={{ opacity: 0, x: 20 }}
-            animate={appeared.current || inView ? { opacity: 1, x: 0 } : {}}
+            animate={appeared || inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.65, delay: 0.05, ease: E }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
@@ -150,8 +151,8 @@ export function Experience({ experienceHighlights }: { experienceHighlights: str
                     style={{ gridTemplateColumns: "44px 160px 1fr", borderColor: border }}
                 >
                     <div />
-                    <p className="font-mono text-[0.5rem] uppercase tracking-[0.22em] text-white/[0.14]">Period</p>
-                    <p className="font-mono text-[0.5rem] uppercase tracking-[0.22em] text-white/[0.14]">Role & Context</p>
+                    <p className="font-mono text-[0.7rem] uppercase tracking-[0.22em] text-white/[0.58]">Period</p>
+                    <p className="font-mono text-[0.7rem] uppercase tracking-[0.22em] text-white/[0.58]">Role & Context</p>
                 </div>
 
                 <div className="flex items-stretch gap-0">

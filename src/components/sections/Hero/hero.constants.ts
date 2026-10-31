@@ -20,12 +20,12 @@ export const pad = (n: number): string => String(n + 1).padStart(2, "0");
 export const cloudinaryUrl = (base: string, width: number, quality = 80): string =>
     base.replace("/upload/", `/upload/w_${width},q_${quality},f_auto/`);
 
-export const buildSrcSet = (base: string): string => [
-    `${cloudinaryUrl(base, 480,  75)} 480w`,
-    `${cloudinaryUrl(base, 768,  80)} 768w`,
-    `${cloudinaryUrl(base, 1280, 85)} 1280w`,
-    `${cloudinaryUrl(base, 1920, 90)} 1920w`,
-].join(", ");
+/**
+ * next/image loader that lets Cloudinary do the resizing and format negotiation
+ * (one optimiser instead of two). Quality capped at 75 to match next.config.
+ */
+export const cloudinaryLoader = ({ src, width, quality }: { src: string; width: number; quality?: number }): string =>
+    cloudinaryUrl(src, width, Math.min(quality ?? 75, 75));
 
 export function easeInOutQuart(t: number): number {
     return t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;

@@ -1,4 +1,7 @@
 import { prisma } from "@/lib/db/prisma";
+import { csvRow } from "@/lib/utils/csv";
+
+const CSV_BATCH_SIZE = 500;
 import { logAudit } from "@/lib/services/audit";
 
 interface LeadPaginationParams {
@@ -154,29 +157,22 @@ export async function exportLeadsCsv(params: LeadPaginationParams = {}): Promise
     };
   }
 
-  const leads = await prisma.lead.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-  });
+  const header = csvRow(["ID", "Source", "Name", "Email", "Phone", "Message", "Status", "Tags", "Created At"]);
+  const rows: string[] = [];
 
-  const header = "ID,Source,Name,Email,Phone,Message,Status,Tags,Created At";
-  const rows = leads.map((l: {
-    id: string; source: string; name: string; email: string;
-    phone: string | null; message: string | null; status: string;
-    tags: string | null; createdAt: Date;
-  }) =>
-    [
-      l.id,
-      l.source,
-      `"${(l.name ?? "").replace(/"/g, '""')}"`,
-      l.email,
-      l.phone ?? "",
-      `"${(l.message ?? "").replace(/"/g, '""').replace(/\n/g, " ")}"`,
-      l.status,
-      l.tags ?? "",
-      l.createdAt.toISOString(),
-    ].join(",")
-  );
+  // Walk the table in pages so a large export never runs one unbounded query.
+  for (let skip = 0; ; skip += CSV_BATCH_SIZE) {
+    const batch = await prisma.lead.findMany({
+      where,
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: CSV_BATCH_SIZE,
+      skip,
+    });
+    for (const l of batch) {
+      rows.push(csvRow([l.id, l.source, l.name, l.email, l.phone, l.message, l.status, l.tags, l.createdAt]));
+    }
+    if (batch.length < CSV_BATCH_SIZE) break;
+  }
 
   return [header, ...rows].join("\n");
 }

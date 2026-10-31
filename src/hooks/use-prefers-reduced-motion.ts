@@ -1,14 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { REDUCED_MOTION_QUERY, useMediaQuery } from "@/hooks/use-media-query";
 
-export function usePrefersReducedMotion() {
-  const [prefersReduced, setPrefersReduced] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReduced(mql.matches);
-    const handler = (e: MediaQueryListEvent) => setPrefersReduced(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return prefersReduced;
+/** True when the OS asks for reduced motion; false during SSR and the first paint. */
+export function usePrefersReducedMotion(): boolean {
+  return useMediaQuery(REDUCED_MOTION_QUERY, false);
 }

@@ -113,7 +113,7 @@ export function ApproachSection({ study }: ApproachSectionProps) {
             transition={{ duration: 1, delay: 0.4 }}
           >
             <p
-              className="font-mono text-[0.5rem] tracking-[0.24em] uppercase mb-8"
+              className="font-mono text-[0.7rem] tracking-[0.24em] uppercase mb-8"
               style={{ color: LIGHT.dim }}
             >
               Process

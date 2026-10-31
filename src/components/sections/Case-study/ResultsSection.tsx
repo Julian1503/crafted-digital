@@ -194,7 +194,7 @@ export function ResultsSection({ study }: { study: StudyData }) {
                 transition={{ duration: 0.6, delay: 0.2 }}
             >
             <span
-                className="font-mono text-[0.5rem] tracking-[0.22em] uppercase"
+                className="font-mono text-[0.7rem] tracking-[0.22em] uppercase"
                 style={{ color: DARK.dim }}
             >
               {items.length} outcomes

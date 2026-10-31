@@ -1,9 +1,14 @@
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { logAudit } from "@/lib/services/audit";
 import { reviveDates } from "@/lib/db/revive-dates";
 
 export const PLANS_TAG = "plans";
+
+/** Drop the cached public pricing; called after each admin write. */
+function invalidatePublic() {
+  revalidateTag(PLANS_TAG, "max");
+}
 
 export async function getPlans() {
   return prisma.plan.findMany({ orderBy: { sortOrder: "asc" } });
@@ -53,6 +58,7 @@ export async function createPlan(
   });
 
   await logAudit({ actorId, action: "create", entity: "Plan", entityId: plan.id });
+  invalidatePublic();
   return plan;
 }
 
@@ -77,12 +83,14 @@ export async function updatePlan(
   });
 
   await logAudit({ actorId, action: "update", entity: "Plan", entityId: id });
+  invalidatePublic();
   return plan;
 }
 
 export async function deletePlan(id: string, actorId?: string) {
   const plan = await prisma.plan.delete({ where: { id } });
   await logAudit({ actorId, action: "delete", entity: "Plan", entityId: id });
+  invalidatePublic();
   return plan;
 }
 
@@ -93,4 +101,5 @@ export async function reorderPlans(items: { id: string; sortOrder: number }[], a
     )
   );
   await logAudit({ actorId, action: "reorder", entity: "Plan", metadata: { count: items.length } });
+  invalidatePublic();
 }

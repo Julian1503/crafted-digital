@@ -49,7 +49,7 @@ export function Header() {
     };
 
     const isItemActive = (item: NavItem): boolean => {
-        if (item.type === "route")   return pathname === item.href;
+        if (item.type === "route")   return pathname === item.href || pathname.startsWith(`${item.href}/`);
         if (!isHome)                 return false;
         return activeSection === item.id;
     };

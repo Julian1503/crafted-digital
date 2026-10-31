@@ -1,44 +1,36 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth/auth";
 import { checkApiAuth } from "@/lib/auth/rbac";
 import { getIntegration, updateIntegration } from "@/lib/services/integrations";
 import { integrationSchema } from "@/lib/validations";
+import { withErrorHandling, successResponse, validateRequestBody } from "@/lib/http/api-handler";
+import { UnauthorizedError, ForbiddenError, NotFoundError } from "@/lib/errors/api-error";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || [];
-    if (!checkApiAuth(roles, ["admin"]))
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+type RouteContext = { params: Promise<{ id: string }> };
 
-    const integration = await getIntegration(id);
-    if (!integration) return NextResponse.json({ error: "Not found" }, { status: 404 });
-    return NextResponse.json(integration);
-  } catch (error) {
-    console.error("GET /api/admin/integrations/[id] error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
+async function requireAdmin() {
+  const session = await auth();
+  if (!session?.user) throw new UnauthorizedError();
+  if (!checkApiAuth(session.roles || [], ["admin"])) throw new ForbiddenError();
+  return session;
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const { id } = await params;
-    const session = await auth();
-    if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    const roles = session.roles || [];
-    if (!checkApiAuth(roles, ["admin"]))
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+export const GET = withErrorHandling(async (_req: NextRequest, ctx?: unknown) => {
+  const { id } = await (ctx as RouteContext).params;
+  await requireAdmin();
 
-    const body = await req.json();
-    const parsed = integrationSchema.partial().safeParse(body);
-    if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  const integration = await getIntegration(id);
+  if (!integration) throw new NotFoundError("Integration", id);
+  return successResponse(integration);
+});
 
-    const integration = await updateIntegration(id, parsed.data, session.user.id);
-    return NextResponse.json(integration);
-  } catch (error) {
-    console.error("PATCH /api/admin/integrations/[id] error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
+export const PATCH = withErrorHandling(async (req: NextRequest, ctx?: unknown) => {
+  const { id } = await (ctx as RouteContext).params;
+  const session = await requireAdmin();
+
+  const data = await validateRequestBody(req, integrationSchema.partial());
+  if (!(await getIntegration(id))) throw new NotFoundError("Integration", id);
+
+  const integration = await updateIntegration(id, data, session.user.id);
+  return successResponse(integration);
+});

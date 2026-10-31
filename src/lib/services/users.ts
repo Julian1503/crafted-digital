@@ -1,6 +1,38 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
 import { logAudit } from "@/lib/services/audit";
+import { BadRequestError } from "@/lib/errors/api-error";
+
+const ADMIN_ROLE = "admin";
+
+/** True when `id` is an active user holding the admin role. */
+async function isActiveAdmin(id: string): Promise<boolean> {
+  const count = await prisma.user.count({
+    where: { id, active: true, roleAssigns: { some: { role: { name: ADMIN_ROLE } } } },
+  });
+  return count > 0;
+}
+
+async function countActiveAdmins(): Promise<number> {
+  return prisma.user.count({
+    where: { active: true, roleAssigns: { some: { role: { name: ADMIN_ROLE } } } },
+  });
+}
+
+/**
+ * Refuses a change that would leave the site without an active admin, or
+ * that would lock the acting admin out of their own session.
+ */
+async function assertAdminRemains(targetId: string, actorId: string | undefined, losesAdmin: boolean) {
+  if (!losesAdmin) return;
+  if (!(await isActiveAdmin(targetId))) return;
+  if (actorId && actorId === targetId) {
+    throw new BadRequestError("You cannot remove your own admin access or deactivate yourself");
+  }
+  if ((await countActiveAdmins()) <= 1) {
+    throw new BadRequestError("At least one active admin must remain");
+  }
+}
 
 interface PaginationParams {
   page?: number;
@@ -94,6 +126,13 @@ export async function updateUser(
   },
   actorId?: string
 ) {
+  let losesAdmin = data.active === false;
+  if (data.roleIds) {
+    const adminRole = await prisma.role.findUnique({ where: { name: ADMIN_ROLE }, select: { id: true } });
+    if (adminRole && !data.roleIds.includes(adminRole.id)) losesAdmin = true;
+  }
+  await assertAdminRemains(id, actorId, losesAdmin);
+
   const updateData: Record<string, unknown> = {};
   if (data.name !== undefined) updateData.name = data.name;
   if (data.email !== undefined) updateData.email = data.email;
@@ -123,6 +162,7 @@ export async function updateUser(
 }
 
 export async function deleteUser(id: string, actorId?: string) {
+  await assertAdminRemains(id, actorId, true);
   const user = await prisma.user.update({
     where: { id },
     data: { active: false },
@@ -134,6 +174,7 @@ export async function deleteUser(id: string, actorId?: string) {
 
 export async function toggleUser(id: string, actorId?: string) {
   const existing = await prisma.user.findUniqueOrThrow({ where: { id } });
+  await assertAdminRemains(id, actorId, existing.active);
   const user = await prisma.user.update({
     where: { id },
     data: { active: !existing.active },

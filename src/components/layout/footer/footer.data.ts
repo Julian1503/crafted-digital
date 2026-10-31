@@ -1,13 +1,24 @@
-import {FooterItem} from "@/components/layout/footer/footer.types";
+import {FooterGroup} from "@/components/layout/footer/footer.types";
 
-const FOOTER_LINKS: FooterItem[] = [
-    { label: "Work",         type: "section", id: "work"          },
-    { label: "Services",     type: "section", id: "services"      },
-    { label: "Process",      type: "section", id: "process"       },
-    { label: "Pricing",      type: "section", id: "pricing"       },
-    { label: "Contact",      type: "route",   href: "/contact"      },
-    { label: "Case Studies", type: "route",   href: "/case-studies" },
-    { label: "About",        type: "route",   href: "/about-me"     },
+/** Three columns: what I sell, who I am, how to reach me (contact is rendered separately). */
+const FOOTER_GROUPS: FooterGroup[] = [
+    {
+        title: "Services",
+        links: [
+            { label: "Websites",                        href: "/services/websites"        },
+            { label: "Custom software & AI automation", href: "/services/custom-software" },
+            { label: "Pricing",                         href: "/pricing"                  },
+            { label: "How it works",                    href: "/services#process-heading" },
+        ],
+    },
+    {
+        title: "Company",
+        links: [
+            { label: "Work",         href: "/case-studies" },
+            { label: "About",        href: "/about-me"     },
+            { label: "Contact",      href: "/contact"      },
+        ],
+    },
 ];
 
-export {FOOTER_LINKS};
+export {FOOTER_GROUPS};

@@ -189,7 +189,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
                                         />
                                     ) : (
                                         <span
-                                            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[0.5rem] font-semibold uppercase tracking-[0.12em]"
+                                            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-semibold uppercase tracking-[0.12em]"
                                             style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}
                                         >
                                             {project.testimonial.author.split(" ").map(n => n[0]).join("")}

@@ -23,7 +23,7 @@ test.describe("mobile menu", () => {
         await page.goto("/");
         await page.waitForLoadState("networkidle").catch(() => {});
         await page.getByRole("button", { name: /open navigation menu/i }).click();
-        await page.locator("#mobile-menu").getByRole("link", { name: "Case Studies" }).click();
+        await page.locator("#mobile-menu").getByRole("link", { name: "Work" }).click();
         await expect(page).toHaveURL(/\/case-studies$/);
     });
 });

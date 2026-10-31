@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useScroll } from "framer-motion";
 import { DARK, LIGHT, ACCENT } from "@/components/sections/Case-study/case-study.constants";
 import { CaseStudyViewProps } from "@/components/sections/Case-study/case-study.types";
 
@@ -34,16 +33,8 @@ import { NavSlice }           from "@/components/sections/Case-study/NavSlice";
  *  ⑫  CTA            – DARK
  */
 export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProps) {
-  const [scrollPct, setScrollPct] = useState(0);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const doc = document.documentElement;
-      setScrollPct(doc.scrollTop / (doc.scrollHeight - doc.clientHeight) || 0);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  // A MotionValue drives the progress bar without re-rendering the view on scroll.
+  const { scrollYProgress } = useScroll();
 
   const g = study.gallery ?? [];
 
@@ -61,14 +52,9 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {/* Reading progress bar — fixed, top of viewport */}
-      <div
+      <motion.div
         className="fixed top-0 left-0 z-50 h-[2px] w-full pointer-events-none"
-        style={{
-          background:      ACCENT,
-          transform:       `scaleX(${scrollPct})`,
-          transformOrigin: "left",
-          transition:      "transform 0.05s linear",
-        }}
+        style={{ background: ACCENT, scaleX: scrollYProgress, transformOrigin: "left" }}
         aria-hidden="true"
       />
 

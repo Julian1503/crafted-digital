@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 import type { ProviderUploadInput, ProviderUploadResult } from "./types";
 
 cloudinary.config({
@@ -11,7 +11,7 @@ export async function uploadCloudinary(input: ProviderUploadInput): Promise<Prov
     const folder = input.folder || process.env.CLOUDINARY_FOLDER || "crafted-digital";
 
     // Upload using upload_stream so we can pass Buffer
-    const result = await new Promise<any>((resolve, reject) => {
+    const result = await new Promise<UploadApiResponse>((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
             {
                 folder,

@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { DEFAULT_OG_IMAGE } from "@/lib/constants/site";
 import {Header} from "@/components/layout/header/Header";
 import {Footer} from "@/components/layout/footer/Footer";
 import {SkipLink} from "@/components/ui/skip-link";
@@ -10,6 +12,20 @@ import {
 } from "@/lib/mappers/content-block.mapper";
 
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+    title: { absolute: "About Julian Delgado: software engineer and product designer, Toowoomba QLD" },
+    description:
+        "Five years of professional engineering, Software Engineer III at a tax-compliance software company, now building custom software, AI automation and websites for Australian small businesses from Toowoomba, QLD.",
+    alternates: { canonical: "https://juliandelgado.com.au/about-me" },
+    openGraph: {
+        images: [DEFAULT_OG_IMAGE],
+        title: "About Julian Delgado",
+        description: "Software engineer and product designer building custom software, AI automation and websites for Australian small businesses.",
+        url: "https://juliandelgado.com.au/about-me",
+        type: "profile",
+    },
+};
 
 const DEFAULT_PRINCIPLES = [
     {

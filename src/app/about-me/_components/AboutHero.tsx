@@ -139,7 +139,7 @@ export function AboutHero() {
                     >
                         {STATS.map(({ n, l }) => (
                             <div key={l}>
-                                <p className="mb-1 font-mono text-[0.5rem] uppercase tracking-[0.22em]" style={{ color: dim }}>{l}</p>
+                                <p className="mb-1 font-mono text-[0.7rem] uppercase tracking-[0.22em]" style={{ color: dim }}>{l}</p>
                                 <p className="font-serif text-[1.5rem] leading-none tracking-[-0.03em]" style={{ color: white }}>{n}</p>
                             </div>
                         ))}
@@ -210,11 +210,11 @@ export function AboutHero() {
                                 className="inline-block h-[7px] w-[7px] shrink-0 rounded-full"
                                 style={{ background: accent, animation: "heroPulse 2.2s infinite" }}
                             />
-                            <span className="font-mono text-[0.5rem] uppercase tracking-[0.2em]" style={{ color: dim }}>
+                            <span className="font-mono text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: dim }}>
                                 Available for projects
                             </span>
                         </div>
-                        <span className="font-mono text-[0.5rem] uppercase tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.16)" }}>
+                        <span className="font-mono text-[0.7rem] uppercase tracking-[0.18em]" style={{ color: "rgba(255,255,255,0.58)" }}>
                             Toowoomba, QLD, AU — 27.56° S, 151.95° E
                         </span>
                     </motion.div>

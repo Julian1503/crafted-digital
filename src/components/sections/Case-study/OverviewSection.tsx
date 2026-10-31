@@ -60,7 +60,7 @@ export function OverviewSection({ study }: OverviewSectionProps) {
               style={{ borderColor: LIGHT.border }}
             >
               <dt
-                className="font-mono text-[0.5rem] tracking-[0.26em] uppercase"
+                className="font-mono text-[0.7rem] tracking-[0.26em] uppercase"
                 style={{ color: LIGHT.dim }}
               >
                 {item.label}

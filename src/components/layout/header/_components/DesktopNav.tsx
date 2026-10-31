@@ -13,7 +13,7 @@ interface DesktopNavProps {
 export function DesktopNav({ isHome, isLight, isItemActive, onSectionClick }: DesktopNavProps) {
     const navColor       = isLight ? "rgba(10,10,10,0.72)" : "hsl(var(--primary-foreground) / 0.78)";
     const navColorHover  = isLight ? "rgba(10,10,10,1)"    : "hsl(var(--primary-foreground) / 1)";
-    const navColorActive = "hsl(var(--hero-accent))";
+    const navColorActive = isLight ? "hsl(var(--hero-accent))" : "hsl(var(--hero-accent-light))";
 
     return (
         <nav

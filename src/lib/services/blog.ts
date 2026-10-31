@@ -1,9 +1,13 @@
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { reviveDates } from "@/lib/db/revive-dates";
 
 export const BLOG_TAG = "blog";
 const PUBLIC_CACHE_SECONDS = 60;
+/** Drop every cached public blog read; called after each admin write. */
+function invalidatePublic() {
+  revalidateTag(BLOG_TAG, "max");
+}
 import { logAudit } from "@/lib/services/audit";
 import { generateSlug } from "@/lib/utils/slug";
 import { ensureUniqueSlug } from "@/lib/utils/slug.server";
@@ -145,6 +149,7 @@ export async function createBlogPost(
   });
 
   await logAudit({ actorId, action: "create", entity: "BlogPost", entityId: post.id });
+  invalidatePublic();
   return post;
 }
 
@@ -181,6 +186,7 @@ export async function updateBlogPost(
   });
 
   await logAudit({ actorId, action: "update", entity: "BlogPost", entityId: id });
+  invalidatePublic();
   return post;
 }
 
@@ -201,6 +207,7 @@ export async function deleteBlogPost(id: string, actorId?: string) {
     data: { sortOrder: { decrement: 1 } },
   });
   await logAudit({ actorId, action: "delete", entity: "BlogPost", entityId: id });
+  invalidatePublic();
   return post;
 }
 
@@ -212,6 +219,7 @@ export async function reorderBlogPosts(items: { id: string; sortOrder: number }[
   );
   await renormalizeIfNeeded(actorId);
   await logAudit({ actorId, action: "reorder", entity: "BlogPost", metadata: { count: items.length } });
+  invalidatePublic();
 }
 
 /** Renormalizes all sortOrders to multiples of 1000 when gaps get too small */
@@ -252,4 +260,5 @@ export async function bulkUpdateStatus(ids: string[], status: string, actorId?: 
     entity: "BlogPost",
     metadata: { ids, status },
   });
+  invalidatePublic();
 }

@@ -21,7 +21,7 @@ export default function PrivacyPage() {
             <Header />
             <main id="main-content" className="pt-28 pb-24">
                 <article className="mx-auto max-w-[68ch] px-4 sm:px-6 md:px-8 prose-legal">
-                    <p className="text-[0.7rem] tracking-[0.2em] uppercase mb-4" style={{ color: "rgba(10,10,10,0.55)" }}>
+                    <p className="text-[0.7rem] tracking-[0.2em] uppercase mb-4" style={{ color: "rgba(10,10,10,0.62)" }}>
                         Legal
                     </p>
                     <h1 className="font-serif font-normal leading-[1.05] tracking-[-0.02em] mb-3 text-balance" style={{ fontSize: "clamp(2.2rem, 5vw, 3.6rem)" }}>

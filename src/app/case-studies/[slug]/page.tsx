@@ -10,6 +10,11 @@ import { getPublishedCaseStudyBySlug, getPublishedCaseStudies } from "@/lib/serv
 import { SkipLink } from "@/components/ui/skip-link";
 import { toStudyData } from "@/lib/mappers/case-study.mappers";
 import { CaseStudyView } from "@/components/sections/Case-study/CaseStudyView";
+import { safeJsonLd } from "@/lib/seo/json-ld";
+import { breadcrumbJsonLd } from "@/components/ui/breadcrumbs";
+import { BUSINESS_ID, PERSON_ID } from "@/components/seo/StructuredData";
+import { DEFAULT_OG_IMAGE, SITE_URL } from "@/lib/constants/site";
+import type { StudyData } from "@/components/sections/Case-study/case-study.types";
 
 export const revalidate = 60;
 
@@ -36,14 +41,39 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const study = await loadStudy(slug);
     if (!study) return { title: "Case study not found", robots: { index: false } };
     return {
-        title: `${study.title} | Case Study`,
+        title: `${study.title}: case study`,
         description: study.description,
         openGraph: {
             title: `${study.title} | Julian Delgado`, description: study.description,
-            type: "article", url: `https://juliandelgado.com.au/case-studies/${study.slug}`,
-            images: study.image ? [study.image] : [],
+            type: "article", url: `${SITE_URL}/case-studies/${study.slug}`,
+            images: study.image ? [study.image] : [DEFAULT_OG_IMAGE],
+            publishedTime: study.publishedAt,
+            modifiedTime: study.updatedAt,
+            authors: [`${SITE_URL}/about-me`],
         },
-        alternates: { canonical: `https://juliandelgado.com.au/case-studies/${study.slug}` },
+        alternates: { canonical: `${SITE_URL}/case-studies/${study.slug}` },
+    };
+}
+
+function articleJsonLd(study: StudyData) {
+    const url = `${SITE_URL}/case-studies/${study.slug}`;
+    const image = study.image ? (study.image.startsWith("/") ? `${SITE_URL}${study.image}` : study.image) : undefined;
+    return {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "@id": `${url}#article`,
+        headline: study.title,
+        description: study.description,
+        image: image ? [image] : undefined,
+        url,
+        mainEntityOfPage: url,
+        inLanguage: "en-AU",
+        author: { "@id": PERSON_ID },
+        publisher: { "@id": BUSINESS_ID },
+        datePublished: study.publishedAt,
+        dateModified: study.updatedAt ?? study.publishedAt,
+        about: study.client ? { "@type": "Organization", name: study.client } : undefined,
+        keywords: [study.category, ...study.technologies].filter(Boolean).join(", "),
     };
 }
 
@@ -61,6 +91,17 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <SkipLink />
             <Header />
             <main id="main-content">
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(articleJsonLd(study)) }} />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: safeJsonLd(breadcrumbJsonLd([
+                            { name: "Home", href: "/" },
+                            { name: "Case studies", href: "/case-studies" },
+                            { name: study.title, href: `/case-studies/${study.slug}` },
+                        ])),
+                    }}
+                />
                 <CaseStudyView study={study} prevStudy={prevStudy ?? null} nextStudy={nextStudy ?? null} />
             </main>
             <Footer />

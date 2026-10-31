@@ -25,7 +25,7 @@ export function FullBleedMedia({ step }: { step: Step }) {
                     </video>
                 )}
                 {!hasVideo && hasImage && (
-                    <Image src={step.image!} alt={step.title} fill sizes="100vw" className="object-cover" style={{ filter: "saturate(0.75) brightness(0.55)" }} priority />
+                    <Image src={step.image!} alt="" fill sizes="100vw" className="object-cover" style={{ filter: "saturate(0.75) brightness(0.55)" }} loading="lazy" />
                 )}
                 {!hasVideo && !hasImage && (
                     <div className="absolute inset-0" style={{ background: BG, backgroundImage: "radial-gradient(rgba(255,255,255,0.015) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />

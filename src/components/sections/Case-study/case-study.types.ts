@@ -35,6 +35,9 @@ export interface StudyData {
   category: string;
   client: string;
   year?: string | number;
+  /** ISO dates from the CMS, when published. */
+  publishedAt?: string;
+  updatedAt?: string;
   gallery?: string[];
   stats?: Stat[];
 
@@ -73,16 +76,6 @@ export interface CaseStudyBase {
   category: string;
   description: string;
   image: string;
-}
-
-export interface CaseStudyDetail extends CaseStudyBase {
-  gallery: string[];
-  challenge: string;
-  approach: string[];
-  solution: string;
-  results: string[];
-  technologies: string[];
-  testimonial?: Testimonial;
 }
 
 export interface NavStudy {

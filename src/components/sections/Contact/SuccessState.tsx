@@ -13,7 +13,7 @@ export function SuccessState({ onReset }: SuccessStateProps) {
         <div className="flex flex-col justify-center min-h-[480px] py-8" role="status" aria-live="polite">
             <span
                 className="block font-mono text-[0.7rem] tracking-[0.25em] uppercase mb-8"
-                style={{ color: "rgba(10,10,10,0.55)" }}
+                style={{ color: "rgba(10,10,10,0.62)" }}
             >
                 Message sent
             </span>

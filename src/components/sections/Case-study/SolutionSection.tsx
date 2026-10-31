@@ -79,7 +79,7 @@ export function SolutionSection({ study }: SolutionSectionProps) {
           {/* Tech stack as pills */}
           <div>
             <motion.p
-              className="font-mono text-[0.5rem] tracking-[0.28em] uppercase mb-6"
+              className="font-mono text-[0.7rem] tracking-[0.28em] uppercase mb-6"
               style={{ color: DARK.label }}
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}

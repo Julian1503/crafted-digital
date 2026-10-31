@@ -193,7 +193,7 @@ export function Pricing({ plans }: PricingProps) {
 
                     <button
                         type="button"
-                        onClick={() => scrollToId("contact")}
+                        onClick={() => { if (!scrollToId("contact")) window.location.assign("/contact"); }}
                         className="whitespace-nowrap bg-transparent font-mono text-[0.66rem] tracking-[0.1em] text-black/[0.28] transition-colors duration-200 hover:text-black/[0.82]"
                     >
                         Not sure which plan? Message me →

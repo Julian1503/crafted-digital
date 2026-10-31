@@ -45,15 +45,16 @@ export const services: Service[] = [
 ];
 
 export const L = {
-    label:       "rgba(10,10,10,0.55)",
+    label:       "rgba(10,10,10,0.62)",
     labelMid:    "rgba(10,10,10,0.62)",
     body:        "rgba(10,10,10,0.7)",
     heading:     "rgba(10,10,10,0.9)",
     headingWeak: "rgba(10,10,10,0.65)",
     border:      "rgba(10,10,10,0.08)",
     borderSub:   "rgba(10,10,10,0.06)",
-    accent:      "hsl(var(--hero-accent))",
-    accentBorder:"hsla(var(--hero-accent) / 0.35)",
+    // Concrete values: framer-motion cannot interpolate hsl(var(--x)).
+    accent:      "#c0392b",
+    accentBorder:"rgba(192, 57, 43, 0.35)",
     bg:          "hsl(var(--background))",
-    mono:        "rgba(10,10,10,0.55)",
+    mono:        "rgba(10,10,10,0.62)",
 };

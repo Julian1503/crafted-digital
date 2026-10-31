@@ -25,7 +25,7 @@ export default function PlanCard({
 }) {
     const delay = index * 100;
     const fgMid = light ? "rgba(255,255,255,0.78)" : "rgba(10,10,10,0.68)";
-    const fgDim = light ? "rgba(255,255,255,0.6)"  : "rgba(10,10,10,0.55)";
+    const fgDim = light ? "rgba(255,255,255,0.6)"  : "rgba(10,10,10,0.62)";
 
     const mouseRef = React.useRef<{ x: number; y: number; active: boolean }>({
         x: 0.5,

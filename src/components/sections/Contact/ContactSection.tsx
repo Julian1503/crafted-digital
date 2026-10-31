@@ -61,9 +61,9 @@ export function ContactSection({ asPageHeading = false }: ContactSectionProps) {
                     }}
                     aria-hidden="true"
                 >
-                    <span className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none" style={{ color: "rgba(10,10,10,0.5)" }}>006</span>
+                    <span className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none" style={{ color: "rgba(10,10,10,0.62)" }}>006</span>
                     <span className="h-px w-7 shrink-0" style={{ background: "rgba(10,10,10,0.15)" }} />
-                    <span className="text-[0.7rem] tracking-[0.2em] uppercase" style={{ color: "rgba(10,10,10,0.5)" }}>Contact</span>
+                    <span className="text-[0.7rem] tracking-[0.2em] uppercase" style={{ color: "rgba(10,10,10,0.62)" }}>Contact</span>
                 </div>
 
                 {/* Split layout */}
@@ -105,7 +105,7 @@ export function ContactSection({ asPageHeading = false }: ContactSectionProps) {
                                     className="flex items-start justify-between gap-6 py-3 border-b"
                                     style={{ borderColor: "rgba(10,10,10,0.08)" }}
                                 >
-                                    <dt className="text-[0.7rem] tracking-[0.16em] uppercase shrink-0" style={{ color: "rgba(10,10,10,0.55)" }}>{label}</dt>
+                                    <dt className="text-[0.7rem] tracking-[0.16em] uppercase shrink-0" style={{ color: "rgba(10,10,10,0.62)" }}>{label}</dt>
                                     <dd className="text-[0.85rem] text-right" style={{ color: "rgba(10,10,10,0.78)" }}>
                                         {href
                                             ? <a href={href} className="transition-colors duration-200 inline-block py-2 -my-2" style={{ color: "hsl(var(--hero-accent-dark))" }} onClick={() => track("email_clicked", { location: "contact_section" })}>{value}</a>

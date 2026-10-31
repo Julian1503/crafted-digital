@@ -1,10 +1,14 @@
-import { unstable_cache } from "next/cache";
+import { revalidateTag, unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { reviveDates } from "@/lib/db/revive-dates";
 
 /** Cache tag for every public case-study read; call `revalidateTag(CASE_STUDIES_TAG)` after admin writes. */
 export const CASE_STUDIES_TAG = "case-studies";
 const PUBLIC_CACHE_SECONDS = 60;
+/** Drop every cached public case-study read; called after each admin write. */
+function invalidatePublic() {
+    revalidateTag(CASE_STUDIES_TAG, "max");
+}
 import { logAudit } from "@/lib/services/audit";
 import { generateSlug } from "@/lib/utils/slug";
 import { ensureUniqueSlug } from "@/lib/utils/slug.server";
@@ -148,6 +152,7 @@ export async function createCaseStudy(
     });
 
     await logAudit({ actorId, action: "create", entity: "CaseStudy", entityId: caseStudy.id });
+    invalidatePublic();
     return caseStudy;
 }
 
@@ -184,6 +189,7 @@ export async function updateCaseStudy(
     });
 
     await logAudit({ actorId, action: "update", entity: "CaseStudy", entityId: id });
+    invalidatePublic();
     return caseStudy;
 }
 
@@ -194,6 +200,7 @@ export async function deleteCaseStudy(id: string, actorId?: string) {
     });
 
     await logAudit({ actorId, action: "delete", entity: "CaseStudy", entityId: id });
+    invalidatePublic();
     return caseStudy;
 }
 
@@ -205,6 +212,7 @@ export async function reorderCaseStudies(items: { id: string; sortOrder: number 
     );
     await renormalizeIfNeeded(actorId);
     await logAudit({ actorId, action: "reorder", entity: "CaseStudy", metadata: { count: items.length } });
+    invalidatePublic();
 }
 
 /** Renormalizes all sortOrders to multiples of 1000 when gaps get too small */
@@ -246,5 +254,6 @@ export async function toggleFeatured(id: string, actorId?: string) {
         entityId: id,
         metadata: { featured: caseStudy.featured },
     });
+    invalidatePublic();
     return caseStudy;
 }

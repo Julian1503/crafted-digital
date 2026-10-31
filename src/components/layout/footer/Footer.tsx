@@ -5,10 +5,10 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useInView } from "framer-motion";
-import { scrollToId, setUrlClean } from "@/lib/utils";
-import { FOOTER_LINKS } from "@/components/layout/footer/footer.data";
+import { setUrlClean } from "@/lib/utils";
+import { FOOTER_GROUPS } from "@/components/layout/footer/footer.data";
 import { track } from "@/lib/analytics";
 import { CURRENT_YEAR } from "@/lib/constants/site";
 
@@ -52,17 +52,11 @@ function AnimatedWord({ word, delay = 0 }: { word: string; delay?: number }) {
 }
 
 export function Footer() {
-    const router   = useRouter();
     const pathname = usePathname();
     const isHome   = pathname === "/";
 
     const nameRef = React.useRef<HTMLAnchorElement>(null);
     const inView  = useInView(nameRef, { once: true, margin: "-60px" });
-
-    const navigateToSection = (id: string) => {
-        if (isHome) { const ok = scrollToId(id); if (ok) setUrlClean(); return; }
-        router.push(`/?section=${encodeURIComponent(id)}`);
-    };
 
     return (
         <footer
@@ -90,11 +84,11 @@ export function Footer() {
 
                 {/* Top row: brand + nav + socials */}
                 <div
-                    className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-10 md:gap-16 pb-12 border-b"
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.4fr_auto_auto_auto] gap-10 md:gap-14 pb-12 border-b"
                     style={{ borderColor: "rgba(255,255,255,0.07)" }}
                 >
                     {/* Brand */}
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 sm:col-span-2 md:col-span-1">
                         <Link
                             ref={nameRef}
                             href="/"
@@ -168,34 +162,19 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    {/* Nav */}
-                    <nav aria-label="Footer navigation" className="flex flex-col gap-2.5">
-                        <span className="font-mono text-[0.7rem] tracking-[0.22em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.6)" }}>
-                            Navigation
-                        </span>
-                        {FOOTER_LINKS.map(item => {
-                            if (item.type === "section") {
-                                return (
-                                    <a
-                                        key={item.id}
-                                        href={`/#${item.id}`}
-                                        onClick={e => { if (isHome) { e.preventDefault(); navigateToSection(item.id); } }}
-                                        className="text-[0.8rem]"
-                                        style={linkStyle}
-                                        onMouseEnter={linkHover}
-                                        onMouseLeave={linkLeave}
-                                    >
-                                        {item.label}
-                                    </a>
-                                );
-                            }
-                            return (
-                                <Link key={item.href} href={item.href} className="text-[0.85rem]" style={linkStyle} onMouseEnter={linkHover} onMouseLeave={linkLeave}>
-                                    {item.label}
+                    {/* Link columns */}
+                    {FOOTER_GROUPS.map(group => (
+                        <nav key={group.title} aria-label={group.title} className="flex flex-col gap-2.5">
+                            <span className="font-mono text-[0.7rem] tracking-[0.22em] uppercase mb-1" style={{ color: "rgba(255,255,255,0.6)" }}>
+                                {group.title}
+                            </span>
+                            {group.links.map(link => (
+                                <Link key={link.href} href={link.href} className="text-[0.85rem]" style={linkStyle} onMouseEnter={linkHover} onMouseLeave={linkLeave}>
+                                    {link.label}
                                 </Link>
-                            );
-                        })}
-                    </nav>
+                            ))}
+                        </nav>
+                    ))}
 
                     {/* Contact strip */}
                     <div className="flex flex-col gap-2.5">

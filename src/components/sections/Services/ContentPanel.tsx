@@ -6,7 +6,7 @@ interface ServiceItem {
 }
 
 const L = {
-    label:       "rgba(10,10,10,0.55)",
+    label:       "rgba(10,10,10,0.62)",
     labelMid:    "rgba(10,10,10,0.62)",
     body:        "rgba(10,10,10,0.7)",
     heading:     "rgba(10,10,10,0.9)",

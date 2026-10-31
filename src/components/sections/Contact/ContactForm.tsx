@@ -16,6 +16,9 @@ import {
 } from "@/components/sections/Contact/contact.constants";
 import {ContactFormProps} from "@/components/sections/Contact/contact.types";
 import { track } from "@/lib/analytics";
+import { SERVICE_OFFERS } from "@/lib/content/offers";
+
+const KNOWN_PLAN_NAMES = new Set(SERVICE_OFFERS.flatMap((o) => o.plans.map((p) => p.name)));
 import { CONTACT_EMAIL } from "@/lib/constants/site";
 
 interface ApiErrorBody {
@@ -52,6 +55,15 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
             hp: "", contactMethod: undefined,
         },
     });
+
+    // Arriving from a plan CTA (`/contact?plan=…`): name the plan in the message.
+    // Only known plan names are accepted so a crafted link cannot inject text.
+    React.useEffect(() => {
+        const plan = new URLSearchParams(window.location.search).get("plan");
+        if (plan && KNOWN_PLAN_NAMES.has(plan) && !form.getValues("message")) {
+            form.setValue("message", `I’m interested in the ${plan} plan. `);
+        }
+    }, [form]);
 
     const markStarted = () => {
         if (startedRef.current) return;

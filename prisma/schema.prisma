@@ -51,6 +51,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -60,6 +61,8 @@ model Session {
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -100,6 +103,7 @@ model RolePermission {
   permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@unique([roleId, permissionId])
+  @@index([permissionId])
 }
 
 model UserRole {
@@ -111,6 +115,7 @@ model UserRole {
   role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roleId])
+  @@index([roleId])
 }
 
 // ─── AUDIT LOGGING ───────────────────────────────────────────────────
@@ -157,9 +162,10 @@ model BlogPost {
 
   author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
 
-  @@index([status])
-  @@index([slug])
+  // Public list: published, not deleted, newest first. Slug is already unique.
+  @@index([status, deleted, publishedAt])
   @@index([sortOrder])
+  @@index([authorId])
 }
 
 // ─── CONTENT: CASE STUDIES ───────────────────────────────────────────
@@ -206,9 +212,10 @@ model CaseStudy {
   caseStudyIndustries   CaseStudyIndustry[]
   caseStudyTechnologies CaseStudyTechnology[]
 
-  @@index([status])
-  @@index([slug])
-  @@index([sortOrder])
+  // Public list: published, not deleted, in display order. Slug is already unique.
+  @@index([status, deleted, sortOrder])
+  @@index([authorId])
+  @@index([customerId])
 }
 
 model Industry {
@@ -257,6 +264,7 @@ model CaseStudyTechnology {
   technology Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
 
   @@id([caseStudyId, technologyId])
+  @@index([technologyId])
 }
 
 model CaseStudyTool {
@@ -267,6 +275,7 @@ model CaseStudyTool {
   tool      Tool      @relation(fields: [toolId], references: [id], onDelete: Cascade)
 
   @@id([caseStudyId, toolId])
+  @@index([toolId])
 }
 
 // ─── CONTENT BLOCKS ──────────────────────────────────────────────────
@@ -321,6 +330,7 @@ model MediaAsset {
   @@index([mimeType])
   @@index([provider])
   @@index([providerFileId])
+  @@index([createdBy])
 }
 
 // ─── CRM ─────────────────────────────────────────────────────────────
@@ -353,6 +363,9 @@ model LeadNote {
 
   lead   Lead  @relation(fields: [leadId], references: [id], onDelete: Cascade)
   author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([leadId])
+  @@index([authorId])
 }
 
 model Booking {
@@ -383,6 +396,9 @@ model BookingNote {
 
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   author  User?   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([bookingId])
+  @@index([authorId])
 }
 
 // ─── BILLING ─────────────────────────────────────────────────────────
@@ -401,7 +417,8 @@ model Plan {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@index([sortOrder])
+  // Public pricing: active plans in display order.
+  @@index([active, sortOrder])
 }
 
 model Coupon {
