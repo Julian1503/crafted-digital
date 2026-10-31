@@ -5,7 +5,7 @@ import { Header } from "@/components/layout/header/Header";
 import { Footer } from "@/components/layout/footer/Footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { getPublishedCaseStudies } from "@/lib/services/case-studies";
-import { toCaseStudyCardProps } from "@/lib/mappers/case-study.mapper";
+import { toCaseStudyCardProps } from "@/lib/mappers/case-study.mappers";
 
 export const revalidate = 60;
 

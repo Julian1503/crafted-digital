@@ -3,7 +3,7 @@
  * Contains the list of services displayed in the Services section.
  */
 import { Service } from "@/components/sections/Services/services.types";
-import { Palette, Code2, LineChart } from "lucide-react";
+import { Palette, Code2, LineChart, Workflow } from "lucide-react";
 
 /**
  * List of available services offered.
@@ -33,6 +33,14 @@ export const services: Service[] = [
             "Strategic guidance and rapid development to help Australian startups and businesses validate ideas quickly. From initial concept to production-ready MVP.",
         bullets: ["MVP roadmaps", "Architecture planning", "Scalable foundations"],
         icon: LineChart,
+    },
+    {
+        title: "Custom Software & AI Automation",
+        outcome: "Internal tools that take the repetitive work off your plate.",
+        description:
+            "CRMs, client portals, approval workflows and AI assistants built around how your business already runs. Every AI feature keeps a person in control, with an approval step, an audit trail and tests behind it.",
+        bullets: ["CRMs & client portals", "Workflow & email automation", "AI assistants with human approval"],
+        icon: Workflow,
     },
 ];
 
