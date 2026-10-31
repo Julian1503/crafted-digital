@@ -15,7 +15,9 @@ export default function FeaturedCard({ project, visible, reduced }: {
 
     const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
         if (reduced) return;
-        const rect = cardRef.current!.getBoundingClientRect();
+        const el = cardRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
         const cx = (e.clientX - rect.left) / rect.width  - 0.5; // -0.5 → 0.5
         const cy = (e.clientY - rect.top)  / rect.height - 0.5;
         cancelAnimationFrame(rafRef.current);
@@ -44,7 +46,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
         >
-            <Link href={href} style={{ display: "block" }}>
+            <Link href={href} aria-label={`${project.title}: read the case study`} style={{ display: "block" }} className="rounded-sm">
                 <div
                     style={{
                         transform: reduced
@@ -63,7 +65,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
                             <Image
 
                                 src={project.image}
-                                alt={project.title}
+                                alt=""
                                 fill
                                 priority
                                 sizes="100vw"
@@ -87,9 +89,9 @@ export default function FeaturedCard({ project, visible, reduced }: {
                         <div className="absolute top-6 left-6 sm:left-10 flex items-center gap-3">
                             {project.industry && (
                                 <span
-                                    className="text-[0.58rem] tracking-[0.2em] uppercase border rounded-full px-2.5 py-1"
+                                    className="text-[0.7rem] tracking-[0.2em] uppercase border rounded-full px-2.5 py-1"
                                     style={{
-                                        color: "rgba(255,255,255,0.55)",
+                                        color: "rgba(255,255,255,0.74)",
                                         borderColor: "rgba(255,255,255,0.18)",
                                         background: "rgba(0,0,0,0.25)",
                                         backdropFilter: "blur(8px)",
@@ -101,8 +103,8 @@ export default function FeaturedCard({ project, visible, reduced }: {
                             {project.year && (
                                 <time
                                     dateTime={String(project.year)}
-                                    className="font-mono text-[0.58rem]"
-                                    style={{ color: "rgba(255,255,255,0.35)" }}
+                                    className="font-mono text-[0.7rem]"
+                                    style={{ color: "rgba(255,255,255,0.74)" }}
                                 >
                                     {project.year}
                                 </time>
@@ -112,12 +114,13 @@ export default function FeaturedCard({ project, visible, reduced }: {
                         {/* "View Case Study" — top right */}
                         <div
                             className="absolute top-6 right-6 sm:right-10 flex items-center gap-2"
-                            style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.7rem", letterSpacing: "0.08em" }}
+                            style={{ color: "rgba(255,255,255,0.74)", fontSize: "0.7rem", letterSpacing: "0.08em" }}
                         >
-                            <span className="hidden sm:inline uppercase tracking-[0.15em] text-[0.58rem]">
+                            <span className="hidden sm:inline uppercase tracking-[0.15em] text-[0.7rem]">
                                 View case study
                             </span>
                             <span
+                                aria-hidden="true"
                                 className="inline-flex items-center justify-center w-7 h-7 rounded-full"
                                 style={{ border: "1px solid rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.6)" }}
                             >
@@ -157,8 +160,8 @@ export default function FeaturedCard({ project, visible, reduced }: {
                                             {stat.prefix}{stat.numericValue}{stat.suffix}
                                         </p>
                                         <p
-                                            className="mt-1.5 text-[0.65rem] tracking-[0.1em] uppercase"
-                                            style={{ color: "rgba(255,255,255,0.32)" }}
+                                            className="mt-1.5 text-[0.7rem] tracking-[0.1em] uppercase"
+                                            style={{ color: "rgba(255,255,255,0.74)" }}
                                         >
                                             {stat.label}
                                         </p>
@@ -172,7 +175,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
                             <blockquote className="flex-1 flex flex-col gap-3">
                                 <p
                                     className="text-[0.82rem] leading-[1.75] italic"
-                                    style={{ color: "rgba(255,255,255,0.42)", maxWidth: "52ch" }}
+                                    style={{ color: "rgba(255,255,255,0.74)", maxWidth: "52ch" }}
                                 >
                                     &ldquo;{project.testimonial.quote}&rdquo;
                                 </p>
@@ -186,7 +189,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
                                         />
                                     ) : (
                                         <span
-                                            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[0.5rem] font-semibold uppercase"
+                                            className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[0.5rem] font-semibold uppercase tracking-[0.12em]"
                                             style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}
                                         >
                                             {project.testimonial.author.split(" ").map(n => n[0]).join("")}
@@ -196,7 +199,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
                                         <p className="text-[0.72rem] font-medium" style={{ color: "rgba(255,255,255,0.75)" }}>
                                             {project.testimonial.author}
                                         </p>
-                                        <p className="text-[0.65rem]" style={{ color: "rgba(255,255,255,0.32)" }}>
+                                        <p className="text-[0.7rem]" style={{ color: "rgba(255,255,255,0.74)" }}>
                                             {project.testimonial.role}
                                         </p>
                                     </div>

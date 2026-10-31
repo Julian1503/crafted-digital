@@ -81,7 +81,7 @@ export function HeroSection({ study }: { study: StudyData }) {
 
         <div className="flex items-center gap-3 flex-wrap justify-end">
           <span
-            className="text-[0.55rem] tracking-[0.18em] uppercase border rounded-full px-2.5 py-1"
+            className="text-[0.7rem] tracking-[0.18em] uppercase border rounded-full px-2.5 py-1"
             style={{
               color: "rgba(255,255,255,0.42)",
               borderColor: "rgba(255,255,255,0.12)",
@@ -94,7 +94,7 @@ export function HeroSection({ study }: { study: StudyData }) {
           {study.year && (
             <time
               dateTime={String(study.year)}
-              className="font-mono text-[0.52rem] tracking-[0.22em]"
+              className="font-mono text-[0.7rem] tracking-[0.22em]"
               style={{ color: "rgba(255,255,255,0.25)" }}
             >
               {study.year}
@@ -155,7 +155,7 @@ export function HeroSection({ study }: { study: StudyData }) {
           transition={{ delay: 1.0, duration: 0.7 }}
         >
           <div className="w-10 h-px" style={{ background: ACCENT }} aria-hidden="true" />
-          <span className="font-mono text-[0.48rem] tracking-[0.26em] uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+          <span className="font-mono text-[0.7rem] tracking-[0.26em] uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
             Scroll to read
           </span>
         </motion.div>

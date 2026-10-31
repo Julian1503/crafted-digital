@@ -19,7 +19,7 @@ export function HeaderLogo({ opacity, isLight }: HeaderLogoProps) {
             }}
         >
             <span
-                className="font-bold tracking-[-0.02em] whitespace-nowrap font-cormorant"
+                className="font-serif font-normal tracking-[-0.02em] whitespace-nowrap"
                 style={{
                     fontSize: "1.1rem",
                     color:    isLight ? "#0a0a0a" : "hsl(var(--primary-foreground))",

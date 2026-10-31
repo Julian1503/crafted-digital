@@ -6,7 +6,7 @@ export function ChapterLabel({ index, label, theme = "dark" }: ChapterLabelProps
   return (
     <div className="flex items-center gap-3 mb-10 md:mb-14">
       <span
-        className="font-mono text-[0.52rem] tracking-[0.3em] uppercase"
+        className="font-mono text-[0.7rem] tracking-[0.3em] uppercase"
         style={{ color: ACCENT }}
       >
         {index}
@@ -17,7 +17,7 @@ export function ChapterLabel({ index, label, theme = "dark" }: ChapterLabelProps
         aria-hidden="true"
       />
       <span
-        className="text-[0.55rem] tracking-[0.24em] uppercase"
+        className="text-[0.7rem] tracking-[0.24em] uppercase"
         style={{ color: T.label }}
       >
         {label}

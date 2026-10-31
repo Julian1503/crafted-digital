@@ -51,7 +51,7 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
   const ctaHeading = study.client
     ? `Got a project like ${study.client}?`
     : "Ready to build something like this?";
-  const ctaSubcopy = `Let's talk about your project — no commitment, just a 20 min call to see if we're a good fit.`;
+  const ctaSubcopy = `Let’s talk about your project — no commitment, just a 20 min call to see if we’re a good fit.`;
 
   return (
     <motion.div
@@ -79,7 +79,7 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
       <OverviewSection study={study} />
 
       {/* ③ Image break */}
-      {g[0] && <ImageBreak src={g[0]} height="65vh" brightness={0.78} saturation={0.7} />}
+      {g[0] && <ImageBreak src={g[0]} alt={`${study.title}: screenshot 1`} height="65vh" brightness={0.78} saturation={0.7} />}
 
       {/* ④ Problem — DARK */}
       <ProblemSection study={study} />
@@ -88,13 +88,13 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
       <ApproachSection study={study} />
 
       {/* ⑥ Image break */}
-      {g[1] && <ImageBreak src={g[1]} height="55vh" brightness={0.80} saturation={0.72} />}
+      {g[1] && <ImageBreak src={g[1]} alt={`${study.title}: screenshot 2`} height="55vh" brightness={0.80} saturation={0.72} />}
 
       {/* ⑦ Solution — DARK */}
       <SolutionSection study={study} />
 
       {/* ⑧ Image break (wider aspect for solution screenshots) */}
-      {g[2] && <ImageBreak src={g[2]} height="58vh" brightness={0.85} saturation={0.78} />}
+      {g[2] && <ImageBreak src={g[2]} alt={`${study.title}: screenshot 3`} height="58vh" brightness={0.85} saturation={0.78} />}
 
       {/* ⑨ Results — deep dark */}
       <ResultsSection study={study} />
@@ -146,7 +146,7 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 shrink-0">
             <Link
-              href="/#contact"
+              href="/contact"
               className="group flex items-center gap-2.5 rounded-full font-medium transition-transform duration-200 hover:-translate-y-0.5"
               style={{
                 background:    ACCENT,
@@ -159,7 +159,7 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
             >
               Start your project
               <span
-                className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[0.62rem] group-hover:rotate-45 transition-transform duration-300"
+                className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[0.7rem] group-hover:rotate-45 transition-transform duration-300"
                 style={{ border: "1.5px solid rgba(255,255,255,0.4)" }}
                 aria-hidden="true"
               >↗</span>

@@ -36,7 +36,8 @@ export function cn(...inputs: ClassValue[]) {
 export function scrollToId(id: string): boolean {
     const el = document.getElementById(id);
     if (!el) return false;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    const reduce = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     return true;
 }
 

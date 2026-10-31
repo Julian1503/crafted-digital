@@ -21,9 +21,9 @@ export default function ScrollHint({ visible }: { visible: boolean }) {
                         transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
                     />
                     <span
-                        className="font-mono text-[0.48rem] tracking-[0.3em] uppercase"
+                        className="font-mono text-[0.7rem] tracking-[0.3em] uppercase"
                         style={{
-                            color: "rgba(255,255,255,0.2)",
+                            color: "rgba(255,255,255,0.6)",
                             writingMode: "vertical-rl",
                             letterSpacing: "0.3em",
                         }}

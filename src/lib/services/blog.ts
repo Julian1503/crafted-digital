@@ -1,4 +1,9 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
+import { reviveDates } from "@/lib/db/revive-dates";
+
+export const BLOG_TAG = "blog";
+const PUBLIC_CACHE_SECONDS = 60;
 import { logAudit } from "@/lib/services/audit";
 import { generateSlug } from "@/lib/utils/slug";
 import { ensureUniqueSlug } from "@/lib/utils/slug.server";
@@ -62,19 +67,33 @@ export async function getBlogPostBySlug(slug: string) {
 /**
  * Public read by slug: only published, non-deleted posts; null when missing.
  */
+const readPublishedBlogPostBySlug = unstable_cache(
+  async (slug: string) =>
+    prisma.blogPost.findFirst({
+      where: { slug, status: ContentStatus.PUBLISHED, deleted: false },
+      include: { author: { select: { id: true, name: true, email: true } } },
+    }),
+  ["blog-post-by-slug"],
+  { revalidate: PUBLIC_CACHE_SECONDS, tags: [BLOG_TAG] }
+);
+
 export async function getPublishedBlogPostBySlug(slug: string) {
-  return prisma.blogPost.findFirst({
-    where: { slug, status: ContentStatus.PUBLISHED, deleted: false },
-    include: { author: { select: { id: true, name: true, email: true } } },
-  });
+  return reviveDates(await readPublishedBlogPostBySlug(slug));
 }
 
+const readPublishedBlogPosts = unstable_cache(
+  async () =>
+    prisma.blogPost.findMany({
+      where: { status: ContentStatus.PUBLISHED, deleted: false },
+      orderBy: { sortOrder: "asc" },
+      include: { author: { select: { id: true, name: true, email: true } } },
+    }),
+  ["published-blog-posts"],
+  { revalidate: PUBLIC_CACHE_SECONDS, tags: [BLOG_TAG] }
+);
+
 export async function getPublishedBlogPosts() {
-  return prisma.blogPost.findMany({
-    where: { status: ContentStatus.PUBLISHED, deleted: false },
-    orderBy: { sortOrder: "asc" },
-    include: { author: { select: { id: true, name: true, email: true } } },
-  });
+  return reviveDates(await readPublishedBlogPosts());
 }
 
 export async function createBlogPost(

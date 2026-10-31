@@ -37,5 +37,18 @@ export function useMobileMenu(): MobileMenuState {
         }
     }, [isOpen]);
 
+    // Close when focus leaves the menu and the toggle (disclosure pattern)
+    React.useEffect(() => {
+        if (!isOpen) return;
+        const onFocusIn = (e: FocusEvent) => {
+            const t = e.target as Node | null;
+            if (!t) return;
+            if (menuRef.current?.contains(t) || toggleButtonRef.current?.contains(t)) return;
+            setIsOpen(false);
+        };
+        document.addEventListener("focusin", onFocusIn);
+        return () => document.removeEventListener("focusin", onFocusIn);
+    }, [isOpen]);
+
     return { isOpen, setIsOpen, menuRef, toggleButtonRef };
 }

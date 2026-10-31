@@ -28,7 +28,7 @@ export function NavSlice({ study, direction }: NavSliceProps) {
         >
           <Image
             src={study.image}
-            alt={study.title}
+            alt=""
             fill
             sizes="50vw"
             className="object-cover"
@@ -71,7 +71,7 @@ export function NavSlice({ study, direction }: NavSliceProps) {
 
         {study.category && (
           <span
-            className="block text-[0.55rem] tracking-[0.2em] uppercase mb-2"
+            className="block text-[0.7rem] tracking-[0.2em] uppercase mb-2"
             style={{ color: ACCENT }}
           >
             {study.category}
@@ -91,7 +91,7 @@ export function NavSlice({ study, direction }: NavSliceProps) {
             className={`
               mt-3 text-[0.75rem] leading-[1.7]
               overflow-hidden max-h-0 opacity-0
-              group-hover:max-h-[5rem] group-hover:opacity-100
+              group-hover:max-h-[5rem] group-hover:opacity-100 group-focus-visible:max-h-[5rem] group-focus-visible:opacity-100
               transition-[max-height,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
               ${isPrev ? "" : "ml-auto"}
             `}
@@ -105,9 +105,9 @@ export function NavSlice({ study, direction }: NavSliceProps) {
         <span
           className={`
             inline-flex items-center gap-1.5 mt-4
-            text-[0.55rem] tracking-[0.18em] uppercase
-            opacity-0 group-hover:opacity-100
-            translate-y-1 group-hover:translate-y-0
+            text-[0.7rem] tracking-[0.18em] uppercase
+            opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100
+            translate-y-1 group-hover:translate-y-0 group-focus-visible:translate-y-0
             transition-[opacity,transform] duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]
             ${isPrev ? "" : "ml-auto"}
           `}

@@ -8,19 +8,19 @@ export function ChapterLabel({ n, label }: { n: string; label: string }) {
     return (
         <div className="mb-10 flex items-center gap-3">
             <span
-                className="rounded-[4px] border px-[0.3rem] py-[0.65rem] font-mono text-[0.62rem] tracking-[0.14em]"
+                className="rounded-[4px] border px-[0.3rem] py-[0.65rem] font-mono text-[0.7rem] tracking-[0.14em]"
                 style={{ color: accent, borderColor: border }}
             >
                 {n}
             </span>
             <span
-                className="font-mono text-[0.56rem] uppercase tracking-[0.26em]"
+                className="font-mono text-[0.7rem] uppercase tracking-[0.26em]"
                 style={{ color: dim }}
             >
                 {label}
             </span>
             <span className="h-px flex-1" style={{ background: border }} />
-            <span className="font-mono text-[0.58rem] text-white/[0.10]">_</span>
+            <span className="font-mono text-[0.7rem] text-white/[0.10]">_</span>
         </div>
     );
 }

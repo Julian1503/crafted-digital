@@ -1,10 +1,16 @@
 import { z } from "zod";
 
+/** Columns admin lists may sort by. Anything else falls back to the service default. */
+export const SORTABLE_COLUMNS = [
+  "createdAt", "updatedAt", "publishedAt", "sortOrder", "title", "name", "email",
+  "status", "date", "price", "featured", "active", "filename", "size", "key", "action", "entity",
+] as const;
+
 export const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(20),
   search: z.string().optional(),
-  sortBy: z.string().optional(),
+  sortBy: z.enum(SORTABLE_COLUMNS).optional(),
   sortDir: z.enum(["asc", "desc"]).optional().default("desc"),
   status: z.string().optional(),
   tags: z.string().optional(),

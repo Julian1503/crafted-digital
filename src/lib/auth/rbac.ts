@@ -13,7 +13,8 @@ export async function requireRole(allowedRoles: UserRole[]) {
   const session = await requireAuth();
   const roles = (session.roles as string[]) || [];
   const hasRole = roles.some((r) => allowedRoles.includes(r as UserRole));
-  if (!hasRole) redirect("/admin?error=forbidden");
+  // Redirecting back into /admin would loop for a user with no role at all.
+  if (!hasRole) redirect("/login?error=forbidden");
   return session;
 }
 

@@ -20,8 +20,9 @@ import {
     motion,
     useReducedMotion,
     AnimatePresence,
-    useScroll,
 } from "framer-motion";
+import { StaticSteps } from "@/components/sections/StaticSteps";
+import { useMediaQuery, DESKTOP_QUERY, REDUCED_MOTION_QUERY } from "@/hooks/use-media-query";
 import { services } from "@/components/sections/Services/services-data";
 import {useScrollStep} from "@/hooks/use-scroll-step";
 import {ImagePanel, MediaAsset} from "@/components/sections/Services/ImagePanel";
@@ -68,7 +69,7 @@ const SERVICE_MEDIA: ServiceMedia[] = [
 // ─── Add-ons ──────────────────────────────────────────────────────────────────
 
 const ADD_ONS = [
-    "SEO Optimization",
+    "SEO optimisation",
     "Performance Audits",
     "CMS Integration",
     "API Development",
@@ -82,7 +83,44 @@ const ADD_ONS = [
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+const STATIC_STEPS = services.map((s) => ({
+    title: s.title,
+    description: s.description,
+    bullets: s.bullets,
+    eyebrow: s.outcome,
+}));
+
 export function Services() {
+    // SSR and phones/tablets get the linear list; the sticky scene is a desktop enhancement.
+    const isDesktop      = useMediaQuery(DESKTOP_QUERY, false);
+    const reducedByQuery = useMediaQuery(REDUCED_MOTION_QUERY, false);
+    const useStatic      = !isDesktop || reducedByQuery;
+
+    if (useStatic) {
+        return (
+            <>
+                <StaticSteps
+                    id="services"
+                    label="002 · Services"
+                    heading="What I build"
+                    intro="Three ways to work together, from a fixed-price website to custom software with AI in the loop."
+                    steps={STATIC_STEPS}
+                    theme="light"
+                />
+                <div style={{ background: L.bg }}>
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 pb-12">
+                        <Marquee items={ADD_ONS} />
+                    </div>
+                </div>
+            </>
+        );
+    }
+
+    return <ServicesScene />;
+}
+
+/** Desktop-only sticky scene. Owns the scroll hooks so the target ref is always mounted. */
+function ServicesScene() {
     const prefersReducedMotion = useReducedMotion();
     const containerRef = React.useRef<HTMLDivElement>(null);
     const totalSteps = (services as ServiceItem[]).length;
@@ -91,18 +129,21 @@ export function Services() {
 
     return (
         <>
+            {/* Reading-order copy for assistive tech: the sticky scene only mounts the active step. */}
+            <StaticSteps id="services-list" label="Services" heading="What I build" steps={STATIC_STEPS} theme="light" srOnly />
+
             {/* ─── Scroll space ─────────────────────────────────────────── */}
             <div
                 ref={containerRef}
                 id="services"
                 data-header-theme="light"
-                aria-label="Services section"
+                aria-hidden="true"
                 style={{ height: `${(totalSteps + 0.5) * 100}vh` }}
             >
                 {/* ─── Sticky viewport ──────────────────────────────────── */}
                 <div
                     className="sticky top-0 overflow-hidden"
-                    style={{ height: "100vh", background: L.bg }}
+                    style={{ height: "100svh", background: L.bg }}
                 >
                     {/* ── Mobile full-bleed background media (below text) ── */}
                     {sectionEntered && (
@@ -182,7 +223,7 @@ export function Services() {
                                 transition={{ duration: 0.5 }}
                             >
                                 <span
-                                    className="text-[0.58rem] tracking-[0.28em] uppercase"
+                                    className="text-[0.7rem] tracking-[0.28em] uppercase"
                                     style={{ color: L.label }}
                                 >
                                     Scroll to explore
@@ -209,7 +250,7 @@ export function Services() {
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 pt-16 pb-2">
                     <div className="mb-4 flex items-center gap-3">
                         <span
-                            className="font-mono text-[0.62rem] tracking-[0.25em] uppercase select-none"
+                            className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none"
                             style={{ color: L.label }}
                         >
                             Add-ons

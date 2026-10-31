@@ -26,6 +26,8 @@ export default function ProjectRow({ project, index, total, isHovered, onHover, 
             }}
             onMouseEnter={onHover}
             onMouseLeave={onLeave}
+            onFocusCapture={onHover}
+            onBlurCapture={onLeave}
         >
             {/* Hover fill bar */}
             <div
@@ -40,19 +42,20 @@ export default function ProjectRow({ project, index, total, isHovered, onHover, 
 
             <Link
                 href={href}
-                className="relative flex items-center gap-4 sm:gap-8 py-5 md:py-7"
+                aria-label={`${project.title}: read the case study`}
+                className="relative flex items-center gap-4 sm:gap-8 py-5 md:py-7 rounded-sm"
                 style={{ paddingLeft: 0, paddingRight: 0 }}
             >
                 {/* Index number */}
                 <span
-                    className="shrink-0 font-mono text-[0.58rem] tracking-[0.22em] w-6 transition-colors duration-300"
-                    style={{ color: isHovered ? "hsl(var(--hero-accent))" : "rgba(255,255,255,0.2)" }}
+                    className="shrink-0 font-mono text-[0.7rem] tracking-[0.22em] w-6 transition-colors duration-300"
+                    style={{ color: isHovered ? "hsl(var(--hero-accent))" : "rgba(255,255,255,0.6)" }}
                 >
                     {String(index + 1).padStart(2, "0")}
                 </span>
 
                 {/* Title — char-by-char lift */}
-                <span className="flex-1 min-w-0 overflow-hidden" aria-label={project.title}>
+                <span className="flex-1 min-w-0 overflow-hidden" aria-hidden="true">
                     <span
                         className="block font-serif font-normal leading-none tracking-[-0.025em]"
                         style={{ fontSize: "clamp(1.4rem, 3.2vw, 2.8rem)" }}
@@ -63,7 +66,7 @@ export default function ProjectRow({ project, index, total, isHovered, onHover, 
                                 aria-hidden="true"
                                 style={{
                                     display:    "inline-block",
-                                    color:      isHovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.5)",
+                                    color:      isHovered ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.8)",
                                     transform:  isHovered ? "translateY(0) skewX(0deg)" : "translateY(0.15em) skewX(-2deg)",
                                     transition: `transform 420ms cubic-bezier(0.16,1,0.3,1) ${cd(i)}ms,
                                                  color 320ms ease ${cd(i) * 0.3}ms`,
@@ -78,8 +81,8 @@ export default function ProjectRow({ project, index, total, isHovered, onHover, 
 
                 {/* Category */}
                 <span
-                    className="hidden sm:block shrink-0 text-[0.62rem] uppercase tracking-[0.16em] transition-colors duration-300"
-                    style={{ color: isHovered ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.2)" }}
+                    className="hidden sm:block shrink-0 text-[0.7rem] uppercase tracking-[0.16em] transition-colors duration-300"
+                    style={{ color: isHovered ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.6)" }}
                 >
                     {project.industry ?? project.category}
                 </span>
@@ -88,8 +91,8 @@ export default function ProjectRow({ project, index, total, isHovered, onHover, 
                 {project.year && (
                     <time
                         dateTime={String(project.year)}
-                        className="hidden md:block shrink-0 font-mono text-[0.58rem] transition-colors duration-300"
-                        style={{ color: isHovered ? "rgba(255,255,255,0.38)" : "rgba(255,255,255,0.16)" }}
+                        className="hidden md:block shrink-0 font-mono text-[0.7rem] transition-colors duration-300"
+                        style={{ color: isHovered ? "rgba(255,255,255,0.38)" : "rgba(255,255,255,0.55)" }}
                     >
                         {project.year}
                     </time>
@@ -97,7 +100,7 @@ export default function ProjectRow({ project, index, total, isHovered, onHover, 
 
                 {/* Arrow */}
                 <span
-                    className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full text-[0.62rem]"
+                    className="shrink-0 inline-flex h-7 w-7 items-center justify-center rounded-full text-[0.7rem]"
                     aria-hidden="true"
                     style={{
                         border:     "1px solid rgba(255,255,255,0.14)",

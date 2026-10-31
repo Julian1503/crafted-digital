@@ -34,13 +34,13 @@ export function WhatIBuilt() {
                                 The impact <br /><em>I leave.</em>
                             </h2>
 
-                            {/* Stats — 3 cols always, they're short enough */}
+                            {/* Stats — 3 cols always, they’re short enough */}
                             <div className="mt-12 grid grid-cols-3 gap-6">
                                 {METRICS.map(({ n, val, lbl }) => (
                                     <div key={n}>
-                                        <p className="mb-2 font-mono text-[0.48rem] tracking-[0.18em]" style={{ color: dim }}>{n}</p>
+                                        <p className="mb-2 font-mono text-[0.7rem] tracking-[0.18em]" style={{ color: dim }}>{n}</p>
                                         <p className="mb-1 font-serif text-[clamp(1.2rem,2.8vw,2rem)] leading-none tracking-[-0.03em]" style={{ color: white }}>{val}</p>
-                                        <p className="font-mono text-[0.46rem] uppercase tracking-[0.16em]" style={{ color: dim }}>{lbl}</p>
+                                        <p className="font-mono text-[0.7rem] uppercase tracking-[0.16em]" style={{ color: dim }}>{lbl}</p>
                                     </div>
                                 ))}
                             </div>
@@ -51,7 +51,7 @@ export function WhatIBuilt() {
                     <div>
                         <FadeUp delay={0.08}>
                             <p className="mb-[1.4rem] text-[clamp(0.92rem,1.4vw,1.05rem)] leading-[1.92]" style={{ color: mid }}>
-                                Across the teams I&apos;ve worked with, I&apos;ve always been drawn to the same
+                                Across the teams I’ve worked with, I’ve always been drawn to the same
                                 kind of problem — the slow, manual, frustrating workflows that waste time and
                                 quietly drain people every day.
                             </p>

@@ -18,6 +18,7 @@
 import * as React from "react";
 import { FAQS } from "@/components/sections/faq-data";
 import { useInView } from "@/hooks/use-in-view";
+import { track } from "@/lib/analytics";
 
 // ─── FAQ Row ──────────────────────────────────────────────────────────────────
 
@@ -37,7 +38,9 @@ function FaqRow({
     visible: boolean;
 }) {
     // When something else is open, this row fades hard
-    const rowOpacity = !visible ? 0 : open ? 1 : anyOpen ? 0.22 : 1;
+    const rowOpacity = !visible ? 0 : open ? 1 : anyOpen ? 0.55 : 1;
+    const buttonId = `faq-q-${index}`;
+    const panelId  = `faq-a-${index}`;
 
     return (
         <div
@@ -47,10 +50,13 @@ function FaqRow({
                 transition: `opacity 500ms ease, transform 600ms cubic-bezier(0.16,1,0.3,1) ${index * 70}ms`,
             }}
         >
+            <h3 className="m-0 font-normal">
             <button
+                id={buttonId}
                 type="button"
-                onClick={onToggle}
+                onClick={() => { onToggle(); track("faq_opened", { question: faq.question }); }}
                 aria-expanded={open}
+                aria-controls={panelId}
                 className="w-full text-left group"
             >
                 <div className="flex items-start gap-5 md:gap-8 pt-6 pb-4 relative">
@@ -88,7 +94,7 @@ function FaqRow({
                             }}
                         >
                             <span
-                                className="text-[0.55rem] tracking-[0.25em] uppercase"
+                                className="text-[0.7rem] tracking-[0.25em] uppercase"
                                 style={{ color: "hsl(var(--hero-accent))" }}
                             >
                                 {faq.category ?? "General"}
@@ -102,7 +108,7 @@ function FaqRow({
                                 fontSize:   open
                                     ? "clamp(1.35rem, 2.8vw, 2.1rem)"
                                     : "clamp(1rem, 1.8vw, 1.3rem)",
-                                color:      open ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.55)",
+                                color:      open ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.78)",
                                 fontStyle:  open ? "italic" : "normal",
                                 transition: "font-size 400ms cubic-bezier(0.16,1,0.3,1), color 350ms ease, font-style 350ms ease",
                             }}
@@ -115,7 +121,7 @@ function FaqRow({
                     <div
                         className="shrink-0 mt-3 md:mt-4"
                         style={{
-                            color:      open ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.15)",
+                            color:      open ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.5)",
                             transform:  open ? "rotate(45deg)" : "rotate(0deg)",
                             transition: "transform 350ms cubic-bezier(0.16,1,0.3,1), color 300ms ease",
                             fontSize:   "1.1rem",
@@ -127,13 +133,21 @@ function FaqRow({
                     </div>
                 </div>
             </button>
+            </h3>
 
             {/* ── Answer ── */}
             <div
+                id={panelId}
+                role="region"
+                aria-labelledby={buttonId}
+                inert={!open}
                 style={{
                     display:          "grid",
                     gridTemplateRows: open ? "1fr" : "0fr",
                     transition:       "grid-template-rows 450ms cubic-bezier(0.16,1,0.3,1)",
+                    visibility:       open ? "visible" : "hidden",
+                    transitionProperty: "grid-template-rows, visibility",
+                    transitionDelay:  open ? "0ms, 0ms" : "0ms, 450ms",
                 }}
             >
                 <div className="overflow-hidden">
@@ -155,9 +169,9 @@ function FaqRow({
                             }}
                         />
                         <p
-                            className="text-[0.85rem] leading-[1.88]"
+                            className="text-[0.92rem] leading-[1.85]"
                             style={{
-                                color:      "rgba(255,255,255,0.4)",
+                                color:      "rgba(255,255,255,0.8)",
                                 maxWidth:   "54ch",
                                 opacity:    open ? 1 : 0,
                                 transform:  open ? "translateY(0)" : "translateY(8px)",
@@ -206,13 +220,13 @@ export function FAQ() {
                 >
                     <div className="flex items-center gap-3 mb-10">
                         <span
-                            className="font-mono text-[0.62rem] tracking-[0.25em] uppercase select-none"
-                            style={{ color: "rgba(255,255,255,0.2)" }}
+                            className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none"
+                            style={{ color: "rgba(255,255,255,0.6)" }}
                         >
                             005
                         </span>
                         <span className="h-px w-7 shrink-0" style={{ background: "rgba(255,255,255,0.1)" }} aria-hidden="true" />
-                        <span className="text-[0.62rem] tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.2)" }}>
+                        <span className="text-[0.7rem] tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.6)" }}>
                             FAQ
                         </span>
                     </div>
@@ -226,8 +240,8 @@ export function FAQ() {
                             Common questions
                         </h2>
                         <p
-                            className="max-w-[36ch] text-[0.85rem] leading-relaxed md:text-right"
-                            style={{ color: "rgba(255,255,255,0.25)" }}
+                            className="max-w-[36ch] text-[0.9rem] leading-relaxed md:text-right"
+                            style={{ color: "rgba(255,255,255,0.68)" }}
                         >
                             Everything you need to know about working with me.
                         </p>
@@ -257,15 +271,16 @@ export function FAQ() {
                         transition: "opacity 700ms ease 700ms",
                     }}
                 >
-                    <span className="text-[0.75rem]" style={{ color: "rgba(255,255,255,0.22)" }}>
+                    <span className="text-[0.85rem]" style={{ color: "rgba(255,255,255,0.68)" }}>
                         Still have questions?
                     </span>
                     <a
                         href="mailto:julianedelgado@hotmail.com"
-                        className="text-[0.75rem] border-b transition-colors duration-200"
-                        style={{ color: "rgba(255,255,255,0.45)", borderColor: "rgba(255,255,255,0.12)" }}
+                        className="text-[0.85rem] border-b transition-colors duration-200 inline-block py-2"
+                        style={{ color: "rgba(255,255,255,0.85)", borderColor: "rgba(255,255,255,0.3)" }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#fff"; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.45)"; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.85)"; }}
+                        onClick={() => track("email_clicked", { location: "faq" })}
                     >
                         Email me directly →
                     </a>

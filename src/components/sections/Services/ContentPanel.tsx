@@ -6,9 +6,9 @@ interface ServiceItem {
 }
 
 const L = {
-    label:       "rgba(10,10,10,0.22)",
-    labelMid:    "rgba(10,10,10,0.38)",
-    body:        "rgba(10,10,10,0.45)",
+    label:       "rgba(10,10,10,0.55)",
+    labelMid:    "rgba(10,10,10,0.62)",
+    body:        "rgba(10,10,10,0.7)",
     heading:     "rgba(10,10,10,0.9)",
     border:      "rgba(10,10,10,0.08)",
     borderSub:   "rgba(10,10,10,0.06)",
@@ -47,10 +47,10 @@ export function ContentPanel({ service, index, total, isActive, isPrev }: Conten
         >
             {/* Section label */}
             <motion.div className="flex items-center gap-3 mb-10" animate={{ opacity: isActive ? 1 : 0 }} transition={{ duration: 0.4, delay: d(0.08) }}>
-                <span className="font-mono text-[0.62rem] tracking-[0.25em] uppercase select-none" style={{ color: L.label }}>002</span>
+                <span className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none" style={{ color: L.label }}>002</span>
                 <span className="h-px w-7 shrink-0" style={{ background: L.border }} aria-hidden="true" />
-                <span className="text-[0.62rem] tracking-[0.2em] uppercase" style={{ color: L.label }}>Services</span>
-                <span className="ml-auto font-mono text-[0.58rem] tracking-[0.2em] tabular-nums" style={{ color: L.label }}>
+                <span className="text-[0.7rem] tracking-[0.2em] uppercase" style={{ color: L.label }}>Services</span>
+                <span className="ml-auto font-mono text-[0.7rem] tracking-[0.2em] tabular-nums" style={{ color: L.label }}>
                     {String(index + 1).padStart(2, "0")}&thinsp;/&thinsp;{String(total).padStart(2, "0")}
                 </span>
             </motion.div>
@@ -58,7 +58,7 @@ export function ContentPanel({ service, index, total, isActive, isPrev }: Conten
             {/* Tag */}
             {service.tag && (
                 <motion.span
-                    className="self-start text-[0.62rem] tracking-[0.2em] uppercase border rounded-full px-3 py-1.5 mb-5"
+                    className="self-start text-[0.7rem] tracking-[0.2em] uppercase border rounded-full px-3 py-1.5 mb-5"
                     style={{ color: L.accent, borderColor: L.accentBorder }}
                     animate={{ opacity: isActive ? 1 : 0, x: isActive ? 0 : -10 }}
                     transition={{ duration: 0.4, delay: d(0.12) }}
@@ -107,8 +107,8 @@ export function ContentPanel({ service, index, total, isActive, isPrev }: Conten
                             animate={{ opacity: isActive ? 1 : 0, x: isActive ? 0 : -8 }}
                             transition={{ duration: 0.32, delay: d(0.3 + i * 0.04) }}
                         >
-                            <dt className="text-[0.65rem] tracking-[0.16em] uppercase" style={{ color: L.labelMid }}>{bullet}</dt>
-                            <dd style={{ color: L.accent, fontSize: "0.55rem" }} aria-hidden="true">✦</dd>
+                            <dt className="text-[0.7rem] tracking-[0.16em] uppercase" style={{ color: L.labelMid }}>{bullet}</dt>
+                            <dd style={{ color: L.accent, fontSize: "0.7rem" }} aria-hidden="true">✦</dd>
                         </motion.div>
                     ))}
                 </motion.dl>
@@ -126,7 +126,7 @@ export function ContentPanel({ service, index, total, isActive, isPrev }: Conten
                     </span>
                 )}
                 {service.duration && (
-                    <span className="text-[0.65rem] tracking-[0.12em] uppercase border rounded-full px-3 py-1.5" style={{ color: L.labelMid, borderColor: L.border }}>
+                    <span className="text-[0.7rem] tracking-[0.12em] uppercase border rounded-full px-3 py-1.5" style={{ color: L.labelMid, borderColor: L.border }}>
                         {service.duration}
                     </span>
                 )}

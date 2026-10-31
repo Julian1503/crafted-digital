@@ -29,8 +29,8 @@ export function ChapterTrack({ steps, active, rawProgress, total }: ChapterTrack
                         <motion.span
                             className="absolute top-3 left-0 font-mono text-[0.5rem] tracking-[0.22em] uppercase whitespace-nowrap"
                             animate={{
-                                opacity: i === active ? 1 : 0.28,
-                                color:   i === active ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.25)",
+                                opacity: i === active ? 1 : 0.7,
+                                color:   i === active ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.6)",
                             }}
                             transition={{ duration: 0.4 }}
                         >

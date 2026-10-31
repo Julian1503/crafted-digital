@@ -49,7 +49,7 @@ function StepRow({ step, index, total }: StepRowProps) {
       <div>
         {step.title && step.title !== `Step ${String(index + 1).padStart(2, "0")}` && (
           <p
-            className="text-[0.65rem] tracking-[0.2em] uppercase font-medium mb-3"
+            className="text-[0.7rem] tracking-[0.2em] uppercase font-medium mb-3"
             style={{ color: ACCENT }}
           >
             {step.title}
@@ -130,7 +130,7 @@ export function ApproachSection({ study }: ApproachSectionProps) {
                     style={{ background: LIGHT.border }}
                   />
                   <span
-                    className="font-mono text-[0.48rem] tracking-wider"
+                    className="font-mono text-[0.7rem] tracking-wider"
                     style={{ color: LIGHT.dim }}
                   >
                     {String(i + 1).padStart(2, "0")}

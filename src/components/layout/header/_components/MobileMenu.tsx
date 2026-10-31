@@ -28,7 +28,7 @@ export function MobileMenu({
     const bg          = isLight ? "rgba(255,255,255,0.97)"  : "rgba(10,10,10,0.95)";
     const borderColor = isLight ? "rgba(0,0,0,0.08)"        : "rgba(255,255,255,0.08)";
     const divider     = isLight ? "rgba(0,0,0,0.06)"        : "rgba(255,255,255,0.06)";
-    const textDefault = isLight ? "rgba(0,0,0,0.6)"         : "rgba(255,255,255,0.55)";
+    const textDefault = isLight ? "rgba(0,0,0,0.72)"        : "rgba(255,255,255,0.78)";
     const textActive  = isLight ? "rgba(0,0,0,0.92)"        : "rgba(255,255,255,0.95)";
     const dotActive   = isLight ? "hsl(var(--hero-accent))" : "hsl(var(--hero-accent))";
 
@@ -37,7 +37,7 @@ export function MobileMenu({
             ref={menuRef as React.RefObject<HTMLElement>}
             id="mobile-menu"
             aria-label="Mobile navigation"
-            className="absolute top-full left-0 right-0 border-b flex flex-col shadow-2xl animate-in slide-in-from-top-5"
+            className="absolute top-full left-0 right-0 border-b flex flex-col shadow-2xl animate-in slide-in-from-top-5 max-h-[calc(100svh-64px)] overflow-y-auto overscroll-contain"
             style={{
                 background:     bg,
                 backdropFilter: "blur(24px)",

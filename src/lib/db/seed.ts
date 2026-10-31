@@ -416,7 +416,7 @@ const caseStudies = [
   "testimonial": {
     "quote": "The website feels like a true extension of my work. It presents the projects with clarity and elegance, and gives my portfolio a much stronger professional presence.",
     "author": "Lourdes Ynigo",
-    "role": "Graduate of Architect"
+    "role": "Architecture graduate"
   }
 }`,
     coverImage:

@@ -47,7 +47,7 @@ export function OriginStory() {
                             <p className="mb-[1.4rem] text-[clamp(0.92rem,1.4vw,1.05rem)] leading-[1.92]" style={{ color: mid }}>
                                 It started in 2017 with a Java course in Tucumán. One year, one
                                 promise: learn enough to enter the industry. I went every day,
-                                genuinely excited. Within a few weeks I realised I wasn&apos;t just
+                                genuinely excited. Within a few weeks I realised I wasn’t just
                                 learning to code — I was learning to think. To break a problem down
                                 until only the solution remains.
                             </p>
@@ -64,7 +64,7 @@ export function OriginStory() {
 
                         <FadeUp delay={0.22}>
                             <p className="text-[clamp(0.92rem,1.4vw,1.05rem)] leading-[1.92]" style={{ color: mid }}>
-                                I&apos;d always passed the Sovos office on the bus to university.
+                                I’d always passed the Sovos office on the bus to university.
                                 Every time I looked up at that building I thought: one day. In 2020,
                                 that day came. In October 2023 I graduated from UTN. Then I moved to
                                 Australia — still employed, still building. And in 2024, started my
@@ -80,7 +80,7 @@ export function OriginStory() {
                                 </p>
 
                                 {/* Horizontal scroll on mobile so items never crush */}
-                                <div className="overflow-x-auto">
+                                <div className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-4" tabIndex={0} role="region" aria-label="Career milestones timeline, scrolls sideways">
                                     <div className="relative flex min-w-max gap-0 pb-1 md:min-w-0">
                                         {/* Connecting line */}
                                         <div
@@ -97,7 +97,7 @@ export function OriginStory() {
                                                     }}
                                                 />
                                                 <p className="mb-1 font-serif text-[0.95rem] tracking-[-0.02em]" style={{ color: white }}>{y}</p>
-                                                <p className="font-mono text-[0.44rem] uppercase tracking-[0.14em] leading-[1.4]" style={{ color: dim }}>{l}</p>
+                                                <p className="font-mono text-[0.7rem] uppercase tracking-[0.14em] leading-[1.4]" style={{ color: dim }}>{l}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -128,7 +128,7 @@ export function OriginStory() {
 
                                 <div className="absolute left-5 top-5">
                                     <span
-                                        className="rounded-[4px] px-[0.65rem] py-[0.3rem] font-mono text-[0.46rem] uppercase tracking-[0.22em]"
+                                        className="rounded-[4px] px-[0.65rem] py-[0.3rem] font-mono text-[0.7rem] uppercase tracking-[0.22em]"
                                         style={{ color: "rgba(255,255,255,0.5)", background: "rgba(0,0,0,0.4)", backdropFilter: "blur(8px)" }}
                                     >
                                         APRIL 2023 / Aconcagua, Argentina
@@ -139,7 +139,7 @@ export function OriginStory() {
                                     <p className="mb-[0.4rem] font-serif text-[0.9rem] italic leading-[1.6]" style={{ color: "rgba(255,255,255,0.55)" }}>
                                         &quot;The same mindset that gets you up a mountain gets you through a hard sprint.&quot;
                                     </p>
-                                    <p className="font-mono text-[0.44rem] uppercase tracking-[0.2em]" style={{ color: accent }}>— Julian</p>
+                                    <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: accent }}>— Julian</p>
                                 </div>
                             </div>
                         </FadeUp>

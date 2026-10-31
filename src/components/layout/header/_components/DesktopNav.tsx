@@ -11,13 +11,13 @@ interface DesktopNavProps {
 }
 
 export function DesktopNav({ isHome, isLight, isItemActive, onSectionClick }: DesktopNavProps) {
-    const navColor       = isLight ? "rgba(10,10,10,0.6)"  : "hsl(var(--primary-foreground) / 0.5)";
-    const navColorHover  = isLight ? "rgba(10,10,10,1)"    : "hsl(var(--primary-foreground) / 0.85)";
+    const navColor       = isLight ? "rgba(10,10,10,0.72)" : "hsl(var(--primary-foreground) / 0.78)";
+    const navColorHover  = isLight ? "rgba(10,10,10,1)"    : "hsl(var(--primary-foreground) / 1)";
     const navColorActive = "hsl(var(--hero-accent))";
 
     return (
         <nav
-            className="hidden md:flex items-center gap-6 flex-1 justify-center"
+            className="hidden lg:flex items-center gap-6 flex-1 justify-center"
             aria-label="Main navigation"
         >
             {NAV_ITEMS.map(item => {
@@ -33,7 +33,7 @@ export function DesktopNav({ isHome, isLight, isItemActive, onSectionClick }: De
                 );
 
                 const sharedProps = {
-                    className: "relative text-sm font-medium whitespace-nowrap",
+                    className: "relative text-sm font-medium whitespace-nowrap py-3 px-1 -my-3",  // 44 px tall hit area
                     style:     { color, transition: "color 0.25s ease" } as React.CSSProperties,
                     onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
                         if (!active) (e.currentTarget as HTMLElement).style.color = navColorHover;

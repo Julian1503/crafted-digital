@@ -45,8 +45,8 @@ export function BottomPanel({ step }: BottomPanelProps) {
 
                 <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-10">
                     <motion.p
-                        className="text-[0.85rem] leading-[1.75] max-w-[44ch]"
-                        style={{ color: "rgba(255,255,255,0.45)" }}
+                        className="text-[0.92rem] leading-[1.75] max-w-[46ch]"
+                        style={{ color: "rgba(255,255,255,0.8)" }}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: d(0.22) }}
@@ -64,8 +64,8 @@ export function BottomPanel({ step }: BottomPanelProps) {
                             {step.bullets.map((b, i) => (
                                 <motion.span
                                     key={b}
-                                    className="text-[0.62rem] tracking-[0.1em] rounded-full px-3 py-1.5"
-                                    style={{ color: "rgba(255,255,255,0.5)", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+                                    className="text-[0.72rem] tracking-[0.1em] rounded-full px-3 py-1.5"
+                                    style={{ color: "rgba(255,255,255,0.85)", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)" }}
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ duration: 0.3, delay: d(0.32 + i * 0.04) }}

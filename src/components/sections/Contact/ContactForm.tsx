@@ -41,6 +41,7 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = React.useState(false);
     const [submitError, setSubmitError] = React.useState<string | null>(null);
+    const [showDetails, setShowDetails] = React.useState(false);
     const startedRef = React.useRef(false);
 
     const form = useForm<ContactFormValues>({
@@ -154,29 +155,6 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                         )} />
                     </div>
 
-                    {/* Company + Website */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
-                        <FormField control={form.control} name="company" render={({ field }) => (
-                            <FormItem>
-                                <FieldWrap label="Company" optional>
-                                    <FormControl>
-                                        <LineInput {...field} value={field.value ?? ""} placeholder="Acme Pty Ltd" autoComplete="organization" />
-                                    </FormControl>
-                                </FieldWrap>
-                            </FormItem>
-                        )} />
-                        <FormField control={form.control} name="website" render={({ field }) => (
-                            <FormItem>
-                                <FieldWrap label="Website" optional error={e.website?.message}>
-                                    <FormControl>
-                                        <LineInput {...field} value={field.value ?? ""} placeholder="https://…" type="url" inputMode="url" autoComplete="url" spellCheck={false} />
-                                    </FormControl>
-                                </FieldWrap>
-                                <FormMessage className="hidden" />
-                            </FormItem>
-                        )} />
-                    </div>
-
                     {/* Topics */}
                     <FormField control={form.control} name="topics" render={({ field }) => (
                         <FormItem>
@@ -212,6 +190,57 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                             <FormMessage className="hidden" />
                         </FormItem>
                     )} />
+
+                    {/* Message */}
+                    <FormField control={form.control} name="message" render={({ field }) => (
+                        <FormItem>
+                            <FieldWrap label="Message" required error={e.message?.message}>
+                                <FormControl>
+                                    <LineTextarea placeholder="What are you trying to build, and what's getting in the way today?" required {...field} />
+                                </FormControl>
+                            </FieldWrap>
+                            <FormMessage className="hidden" />
+                        </FormItem>
+                    )} />
+
+                    {/* Optional details, collapsed by default so the first ask stays short */}
+                    <div>
+                        <button
+                            type="button"
+                            onClick={() => setShowDetails(v => !v)}
+                            aria-expanded={showDetails}
+                            aria-controls="contact-optional-details"
+                            className="min-h-[44px] text-[0.78rem] tracking-[0.06em] uppercase inline-flex items-center gap-2"
+                            style={{ color: C.text }}
+                        >
+                            <span aria-hidden="true" className="inline-block transition-transform duration-200" style={{ transform: showDetails ? "rotate(45deg)" : "none" }}>+</span>
+                            {showDetails ? "Hide project details" : "Add project details (optional)"}
+                        </button>
+                    </div>
+
+                    <div id="contact-optional-details" hidden={!showDetails} className="flex flex-col gap-7">
+                    {/* Company + Website */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
+                        <FormField control={form.control} name="company" render={({ field }) => (
+                            <FormItem>
+                                <FieldWrap label="Company" optional>
+                                    <FormControl>
+                                        <LineInput {...field} value={field.value ?? ""} placeholder="Acme Pty Ltd" autoComplete="organization" />
+                                    </FormControl>
+                                </FieldWrap>
+                            </FormItem>
+                        )} />
+                        <FormField control={form.control} name="website" render={({ field }) => (
+                            <FormItem>
+                                <FieldWrap label="Website" optional error={e.website?.message}>
+                                    <FormControl>
+                                        <LineInput {...field} value={field.value ?? ""} placeholder="https://…" type="url" inputMode="url" autoComplete="url" spellCheck={false} />
+                                    </FormControl>
+                                </FieldWrap>
+                                <FormMessage className="hidden" />
+                            </FormItem>
+                        )} />
+                    </div>
 
                     {/* Budget + Timeline */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-7">
@@ -287,17 +316,7 @@ export function ContactForm({ onSuccess, dark = false }: ContactFormProps) {
                         </FormItem>
                     )} />
 
-                    {/* Message */}
-                    <FormField control={form.control} name="message" render={({ field }) => (
-                        <FormItem>
-                            <FieldWrap label="Message" required error={e.message?.message}>
-                                <FormControl>
-                                    <LineTextarea placeholder="What are you trying to build, and what's getting in the way today?" required {...field} />
-                                </FormControl>
-                            </FieldWrap>
-                            <FormMessage className="hidden" />
-                        </FormItem>
-                    )} />
+                    </div>
 
                     {/* Honeypot: hidden from everyone, including assistive tech */}
                     <FormField

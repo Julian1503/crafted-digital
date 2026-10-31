@@ -6,7 +6,7 @@ import { bg, border, white, dim, accent, LINE, E } from "./about-constants";
 import { ChapterLabel, FadeUp } from "./ChapterLabel";
 
 const EXPERIENCE = [
-    { period: "2024 – Present", company: "Julian Delgado",    role: "Software Developer",   body: "I've started my own business, taking on freelance projects and collaborations. I'm passionate about building solutions that make a difference, and I'm always open to new opportunities.", stack: ["Node.js", "Java / Spring", "Next.js / React"] },
+    { period: "2024 – Present", company: "Julian Delgado",    role: "Software Developer",   body: "I’ve started my own business, taking on freelance projects and collaborations. I’m passionate about building solutions that make a difference, and I’m always open to new opportunities.", stack: ["Node.js", "Java / Spring", "Next.js / React"] },
     { period: "2023 – 2024",   company: "Relocating to AU",   role: "New chapter",           body: "Left Argentina and moved to Toowoomba, Queensland — while remaining employed at Sovos. A deliberate leap into a new life, without stopping the work.", stack: [] },
     { period: "2020 – 2023",   company: "Sovos Compliance",   role: "Software Engineer III", body: "Started as SE I at a Boston-based global tax compliance company. Grew through two promotions to SE III over 5 years. Part of Grizzlies → Buffaloes → Carpinchos team, maintaining 5 enterprise products including Batch, Filing, SST Model 1, and leading Onboarding from first commit.", stack: ["Java / Spring", "React / TypeScript", "Node.js"] },
     { period: "2020",          company: "mDEVZ",              role: "Full-stack Developer",  body: "A startup with global clients. I handled up to 6 simultaneous projects across PHP/Laravel, Flutter/Dart, .NET C#, React, and Node. Different requirements, different deadlines, different stacks — solo on all of them.", stack: ["PHP / Laravel", "React", "Flutter", ".NET C#"] },
@@ -69,10 +69,10 @@ function ExperienceItem({
              */}
             <div className="grid grid-cols-1 gap-x-10 gap-y-2 sm:grid-cols-[160px_1fr]">
                 <div>
-                    <p className="mb-2 font-mono text-[0.56rem] uppercase tracking-[0.18em]" style={{ color: accent }}>
+                    <p className="mb-2 font-mono text-[0.7rem] uppercase tracking-[0.18em]" style={{ color: accent }}>
                         {item.period}
                     </p>
-                    <p className="font-mono text-[0.52rem] uppercase tracking-[0.1em]" style={{ color: dim }}>
+                    <p className="font-mono text-[0.7rem] uppercase tracking-[0.1em]" style={{ color: dim }}>
                         @ {item.company}
                     </p>
                 </div>
@@ -93,7 +93,7 @@ function ExperienceItem({
                         {item.stack.map((s) => (
                             <span
                                 key={s}
-                                className="rounded-[4px] border px-[0.65rem] py-[0.3rem] font-mono text-[0.46rem] uppercase tracking-[0.14em]"
+                                className="rounded-[4px] border px-[0.65rem] py-[0.3rem] font-mono text-[0.7rem] uppercase tracking-[0.14em]"
                                 style={{ color: dim, borderColor: border }}
                             >
                                 {s}

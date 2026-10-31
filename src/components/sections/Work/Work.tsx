@@ -2,7 +2,7 @@
  * @fileoverview Work section — cursor-alive gallery.
  *
  * Every other section is scroll-driven. This one is MOUSE-driven.
- * The cursor is the protagonist — it's what makes this section feel alive.
+ * The cursor is the protagonist — it’s what makes this section feel alive.
  *
  * Interactions:
  *   • Featured card: smooth 3D tilt follows cursor position (CSS perspective)
@@ -75,20 +75,20 @@ export function Work({ projects }: WorkProps) {
                     }}
                 >
                     <span
-                        className="font-mono text-[0.62rem] tracking-[0.25em] uppercase select-none"
-                        style={{ color: "rgba(255,255,255,0.22)" }}
+                        className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none"
+                        style={{ color: "rgba(255,255,255,0.6)" }}
                     >
                         001
                     </span>
                     <span className="h-px w-7 shrink-0" style={{ background: "rgba(255,255,255,0.12)" }} aria-hidden="true" />
-                    <span className="text-[0.62rem] tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.22)" }}>
+                    <span className="text-[0.7rem] tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.6)" }}>
                         Work
                     </span>
 
                     <h2
                         id="work-heading"
                         className="ml-auto font-serif font-normal tracking-[-0.02em]"
-                        style={{ fontSize: "clamp(0.85rem, 1vw, 1rem)", color: "rgba(255,255,255,0.18)" }}
+                        style={{ fontSize: "clamp(0.9rem, 1vw, 1rem)", color: "rgba(255,255,255,0.72)" }}
                     >
                         Case studies
                     </h2>
@@ -108,11 +108,11 @@ export function Work({ projects }: WorkProps) {
                                 transition: "opacity 600ms ease",
                             }}
                         >
-                            <span className="text-[0.58rem] tracking-[0.22em] uppercase" style={{ color: "rgba(255,255,255,0.2)" }}>
+                            <span className="text-[0.7rem] tracking-[0.22em] uppercase" style={{ color: "rgba(255,255,255,0.6)" }}>
                                 More work
                             </span>
                             <span className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
-                            <span className="font-mono text-[0.58rem]" style={{ color: "rgba(255,255,255,0.18)" }}>
+                            <span className="font-mono text-[0.7rem]" style={{ color: "rgba(255,255,255,0.6)" }}>
                                 {secondary.length} projects
                             </span>
                         </div>
@@ -171,7 +171,8 @@ export function Work({ projects }: WorkProps) {
                             >
                                 See all case studies
                                 <span
-                                    className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[0.65rem] group-hover:rotate-45"
+                                    aria-hidden="true"
+                                    className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[0.7rem] group-hover:rotate-45"
                                     style={{ border: "1.5px solid rgba(255,255,255,0.3)", transition: "transform 0.25s" }}
                                 >
                                     ↗

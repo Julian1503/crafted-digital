@@ -90,7 +90,7 @@ export default async function BlogPage() {
 
                             <Link
                                 href="/#contact"
-                                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-secondary text-secondary-foreground font-medium hover:bg-secondary/90 transition-colors"
+                                className="inline-flex items-center gap-2 px-6 py-3 min-h-[44px] rounded-full text-white font-medium transition-colors bg-[hsl(var(--hero-accent))] hover:bg-[hsl(var(--hero-accent-dark))]"
                             >
                                 Get in touch
                             </Link>

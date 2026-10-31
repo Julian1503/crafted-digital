@@ -7,6 +7,7 @@ import { ContactForm }  from "@/components/sections/Contact/ContactForm";
 import { SuccessState } from "@/components/sections/Contact/SuccessState";
 import { track } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/constants/site";
+import { TESTIMONIALS } from "@/lib/content/testimonials";
 
 const VIDEO_POSTER = "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/lights_bfoa7s.jpg";
 const VIDEO_SRC    = "https://res.cloudinary.com/dpnkr4r6w/video/upload/v1773265024/lights_bfoa7s.webm";
@@ -60,9 +61,9 @@ export function ContactSection({ asPageHeading = false }: ContactSectionProps) {
                     }}
                     aria-hidden="true"
                 >
-                    <span className="font-mono text-[0.68rem] tracking-[0.25em] uppercase select-none" style={{ color: "rgba(10,10,10,0.5)" }}>006</span>
+                    <span className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none" style={{ color: "rgba(10,10,10,0.5)" }}>006</span>
                     <span className="h-px w-7 shrink-0" style={{ background: "rgba(10,10,10,0.15)" }} />
-                    <span className="text-[0.68rem] tracking-[0.2em] uppercase" style={{ color: "rgba(10,10,10,0.5)" }}>Contact</span>
+                    <span className="text-[0.7rem] tracking-[0.2em] uppercase" style={{ color: "rgba(10,10,10,0.5)" }}>Contact</span>
                 </div>
 
                 {/* Split layout */}
@@ -78,7 +79,8 @@ export function ContactSection({ asPageHeading = false }: ContactSectionProps) {
                     >
                         <Heading
                             id="contact-heading"
-                            className="font-serif font-normal leading-[1.04] tracking-[-0.03em] mb-6 text-balance"
+                            tabIndex={-1}
+                            className="font-serif font-normal leading-[1.04] tracking-[-0.03em] mb-6 text-balance outline-none"
                             style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", color: "rgba(10,10,10,0.9)" }}
                         >
                             Tell me what you&rsquo;re{" "}
@@ -113,6 +115,16 @@ export function ContactSection({ asPageHeading = false }: ContactSectionProps) {
                                 </div>
                             ))}
                         </dl>
+
+                        {/* Proof beside the ask */}
+                        <blockquote className="mt-10 pl-5 border-l" style={{ borderColor: "hsl(var(--hero-accent))" }}>
+                            <p className="text-[0.95rem] leading-[1.7] italic font-serif" style={{ color: "rgba(10,10,10,0.8)" }}>
+                                &ldquo;{TESTIMONIALS[1].quote}&rdquo;
+                            </p>
+                            <footer className="mt-3 text-[0.78rem] tracking-[0.04em]" style={{ color: "rgba(10,10,10,0.62)" }}>
+                                {TESTIMONIALS[1].author}, {TESTIMONIALS[1].role}
+                            </footer>
+                        </blockquote>
                     </div>
 
                     {/* Right: form */}

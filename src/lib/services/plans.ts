@@ -1,13 +1,23 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
 import { logAudit } from "@/lib/services/audit";
+import { reviveDates } from "@/lib/db/revive-dates";
+
+export const PLANS_TAG = "plans";
 
 export async function getPlans() {
   return prisma.plan.findMany({ orderBy: { sortOrder: "asc" } });
 }
 
-/** Public pricing: active plans only, in display order. */
+const readActivePlans = unstable_cache(
+  async () => prisma.plan.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" } }),
+  ["active-plans"],
+  { revalidate: 60, tags: [PLANS_TAG] }
+);
+
+/** Public pricing: active plans only, in display order; cached for a minute. */
 export async function getActivePlans() {
-  return prisma.plan.findMany({ where: { active: true }, orderBy: { sortOrder: "asc" } });
+  return reviveDates(await readActivePlans());
 }
 
 export async function getPlan(id: string) {

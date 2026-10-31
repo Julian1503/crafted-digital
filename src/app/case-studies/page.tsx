@@ -100,7 +100,7 @@ function ProjectSlice({
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-3">
                         <span
-                            className="font-mono text-[0.55rem] tracking-[0.28em] uppercase"
+                            className="font-mono text-[0.7rem] tracking-[0.28em] uppercase"
                             style={{ color: "rgba(255,255,255,0.22)" }}
                         >
                             {String(index + 1).padStart(2, "0")}
@@ -110,7 +110,7 @@ function ProjectSlice({
                             style={{ background: "rgba(255,255,255,0.12)" }}
                         />
                         <span
-                            className="text-[0.55rem] tracking-[0.22em] uppercase"
+                            className="text-[0.7rem] tracking-[0.22em] uppercase"
                             style={{ color: "rgba(255,255,255,0.22)" }}
                         >
                             {study.industry ?? study.category ?? "Project"}
@@ -137,7 +137,7 @@ function ProjectSlice({
                     {study.year && (
                         <time
                             dateTime={String(study.year)}
-                            className="block font-mono text-[0.55rem] tracking-[0.22em] mb-4 transition-colors duration-300"
+                            className="block font-mono text-[0.7rem] tracking-[0.22em] mb-4 transition-colors duration-300"
                             style={{ color: "rgba(255,255,255,0.18)" }}
                         >
                             {study.year}
@@ -195,7 +195,7 @@ function ProjectSlice({
                             {study.tags?.slice(0, 4).map((tag) => (
                                 <span
                                     key={tag}
-                                    className="text-[0.58rem] tracking-[0.15em] uppercase border rounded-full px-2.5 py-1"
+                                    className="text-[0.7rem] tracking-[0.15em] uppercase border rounded-full px-2.5 py-1"
                                     style={{
                                         color:       "rgba(255,255,255,0.35)",
                                         borderColor: "rgba(255,255,255,0.1)",
@@ -242,20 +242,20 @@ export default async function CaseStudiesPage() {
                         style={{ color: "rgba(255,255,255,0.28)", fontSize: "0.72rem", letterSpacing: "0.08em" }}
                     >
                         <span aria-hidden="true" style={{ fontSize: "0.8rem" }}>←</span>
-                        <span className="uppercase tracking-[0.15em] text-[0.58rem]">Back</span>
+                        <span className="uppercase tracking-[0.15em] text-[0.7rem]">Back</span>
                     </Link>
 
                     {/* Section label */}
                     <div className="flex items-center gap-3 mb-8">
                         <span
-                            className="font-mono text-[0.62rem] tracking-[0.25em] uppercase select-none"
+                            className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none"
                             style={{ color: "rgba(255,255,255,0.22)" }}
                         >
                             Work
                         </span>
                         <span className="h-px w-7 shrink-0" style={{ background: "rgba(255,255,255,0.1)" }} aria-hidden="true" />
                         <span
-                            className="font-mono text-[0.62rem] tracking-[0.2em] uppercase"
+                            className="font-mono text-[0.7rem] tracking-[0.2em] uppercase"
                             style={{ color: "rgba(255,255,255,0.22)" }}
                         >
                             {caseStudies.length} projects
@@ -318,7 +318,7 @@ export default async function CaseStudiesPage() {
                             className="text-[0.82rem] leading-relaxed"
                             style={{ color: "rgba(255,255,255,0.32)", maxWidth: "40ch" }}
                         >
-                            Let's talk about your project — no commitment, just a 20 min call.
+                            Let’s talk about your project — no commitment, just a 20 min call.
                         </p>
                     </div>
 
@@ -337,7 +337,7 @@ export default async function CaseStudiesPage() {
                     >
                         Start your project
                         <span
-                            className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[0.65rem] group-hover:rotate-45 transition-transform duration-300"
+                            className="inline-flex items-center justify-center w-5 h-5 rounded-full text-[0.7rem] group-hover:rotate-45 transition-transform duration-300"
                             style={{ border: "1.5px solid rgba(255,255,255,0.4)" }}
                             aria-hidden="true"
                         >

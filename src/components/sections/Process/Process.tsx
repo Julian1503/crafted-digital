@@ -27,6 +27,8 @@ import {ChapterTrack} from "@/components/sections/Process/ChapterTrack";
 import {BottomPanel} from "@/components/sections/Process/BottomPanel";
 import GhostNumber from "@/components/sections/Process/GhostNumber";
 import ScrollHint from "@/components/sections/Process/ScrollHint";
+import { StaticSteps } from "@/components/sections/StaticSteps";
+import { useMediaQuery, DESKTOP_QUERY, REDUCED_MOTION_QUERY } from "@/hooks/use-media-query";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -42,7 +44,34 @@ interface Step {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+const STATIC_STEPS = (steps as Step[]).map((s) => ({
+    title: s.title,
+    description: s.description,
+    bullets: s.bullets,
+    eyebrow: s.range,
+}));
+
 export function Process() {
+    const isDesktop      = useMediaQuery(DESKTOP_QUERY, false);
+    const reducedByQuery = useMediaQuery(REDUCED_MOTION_QUERY, false);
+    if (!isDesktop || reducedByQuery) {
+        return (
+            <StaticSteps
+                id="process"
+                label="003 · Process"
+                heading="How a project runs"
+                intro="Four phases, weekly demos, and a handover you own. Most websites ship in 2 to 6 weeks; custom software in 6 to 12."
+                steps={STATIC_STEPS}
+                theme="dark"
+            />
+        );
+    }
+
+    return <ProcessScene />;
+}
+
+/** Desktop-only sticky scene. Owns the scroll hooks so the target ref is always mounted. */
+function ProcessScene() {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const totalSteps   = (steps as Step[]).length;
 
@@ -51,16 +80,18 @@ export function Process() {
     const activeStep = (steps as Step[])[step];
 
     return (
+        <>
+        <StaticSteps id="process-list" label="Process" heading="How a project runs" steps={STATIC_STEPS} theme="dark" srOnly />
         <div
             ref={containerRef}
             id="process"
-            aria-label="Process section"
+            aria-hidden="true"
             style={{ height: `${(totalSteps + 0.5) * 100}vh` }}
         >
             {/* ── Sticky cinematic viewport ────────────────────────────── */}
             <div
                 className="sticky top-0 overflow-hidden"
-                style={{ height: "100vh", background: "#0c0c0c" }}
+                style={{ height: "100svh", background: "#0c0c0c" }}
             >
                 {/* Full-bleed media background */}
                 <FullBleedMedia step={activeStep} />
@@ -79,13 +110,13 @@ export function Process() {
                 {/* Section label — top left (below chapter track) */}
                 <div className="absolute top-7 left-6 sm:left-10 lg:left-16 xl:left-20 z-30 flex items-center gap-3 mt-4">
                     <span
-                        className="font-mono text-[0.62rem] tracking-[0.25em] uppercase select-none"
-                        style={{ color: "rgba(255,255,255,0.22)" }}
+                        className="font-mono text-[0.7rem] tracking-[0.25em] uppercase select-none"
+                        style={{ color: "rgba(255,255,255,0.6)" }}
                     >
                         003
                     </span>
                     <span className="h-px w-7 shrink-0" style={{ background: "rgba(255,255,255,0.12)" }} />
-                    <span className="text-[0.62rem] tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.22)" }}>
+                    <span className="text-[0.7rem] tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.6)" }}>
                         Process
                     </span>
                 </div>
@@ -93,8 +124,8 @@ export function Process() {
                 {/* Step counter — top right */}
                 <div className="absolute top-7 right-16 z-30 flex items-center mt-4">
                     <span
-                        className="font-mono text-[0.58rem] tracking-[0.2em] tabular-nums"
-                        style={{ color: "rgba(255,255,255,0.18)" }}
+                        className="font-mono text-[0.7rem] tracking-[0.2em] tabular-nums"
+                        style={{ color: "rgba(255,255,255,0.6)" }}
                     >
                         {String(step + 1).padStart(2, "0")}&thinsp;/&thinsp;{String(totalSteps).padStart(2, "0")}
                     </span>
@@ -111,5 +142,6 @@ export function Process() {
                 <ScrollHint visible={step === 0} />
             </div>
         </div>
+        </>
     );
 }

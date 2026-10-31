@@ -62,7 +62,7 @@ function ResultRow({ item, index, total, isInView }: ResultRowProps) {
         {/* ── Index number */}
         <div className="flex items-start pt-1 md:pt-0.5">
         <span
-            className="font-mono text-[0.52rem] tracking-[0.26em]"
+            className="font-mono text-[0.7rem] tracking-[0.26em]"
             style={{ color: DARK.label }}
             aria-hidden="true"
         >
@@ -161,7 +161,7 @@ export function ResultsSection({ study }: { study: StudyData }) {
             aria-hidden="true"
         >
         <span
-            className="font-serif italic font-bold leading-none"
+            className="font-serif italic leading-none"
             style={{
               fontSize:       "clamp(10rem, 22vw, 20rem)",
               color:          "rgba(255,255,255,0.025)",

@@ -95,6 +95,7 @@ interface PricingProps {
     plans: PricingType[];
 }
 
+
 export function Pricing({ plans }: PricingProps) {
     const [sectionRef, sectionVisible] = useInView<HTMLElement>(0.05);
     const [gridRef, gridVisible] = useInView<HTMLDivElement>(0.04);
@@ -118,13 +119,13 @@ export function Pricing({ plans }: PricingProps) {
                         transition: "opacity 700ms ease, transform 700ms ease",
                     }}
                 >
-                    <span className="font-mono text-[0.58rem] tracking-[0.24em] text-black/[0.22]">
+                    <span className="font-mono text-[0.7rem] tracking-[0.24em] text-black/[0.55]">
                         004
                     </span>
 
-                    <span className="inline-block h-px w-7 bg-black/[0.10]" />
+                    <span className="inline-block h-px w-7 bg-black/[0.15]" />
 
-                    <span className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-black/[0.22]">
+                    <span className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-black/[0.55]">
                         Pricing
                     </span>
                 </div>
@@ -144,8 +145,8 @@ export function Pricing({ plans }: PricingProps) {
                         Packages
                     </h2>
 
-                    <p className="max-w-[38ch] font-serif text-[clamp(0.82rem,1.2vw,0.95rem)] italic leading-[1.7] text-black/[0.36]">
-                        Starting points — final pricing depends on scope, complexity, and timeline.
+                    <p className="max-w-[44ch] font-serif text-[clamp(0.9rem,1.2vw,1rem)] italic leading-[1.7] text-black/[0.65]">
+                        Prices are starting points in AUD. The written quote fixes the final figure for your scope and timeline.
                     </p>
                 </div>
 

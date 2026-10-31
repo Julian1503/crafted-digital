@@ -12,6 +12,8 @@ export interface Pricing {
     price: string;
     /** Short tagline describing ideal use case */
     tagline: string;
+    /** One line answering "is this the plan for me?" */
+    bestFor?: string;
     /** Detailed description of what's included */
     description: string;
     /** Typical project timeline (e.g., "1–2 weeks", "Monthly") */

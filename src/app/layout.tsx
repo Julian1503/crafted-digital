@@ -1,13 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Serif_Text, Fira_Sans,Cormorant_Garamond, DM_Sans} from "next/font/google";
+import { DM_Serif_Text, Fira_Sans } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import {Providers} from "@/components/ui/providers";
 import {StructuredData} from "@/components/seo/StructuredData";
 import React from "react";
 
-const cormorant = Cormorant_Garamond({ subsets: ['latin'], weight: ['300','600','700'], variable: "--font-cormorant", });
-const dmSans = DM_Sans({ subsets: ['latin'], weight: ['300','400','500'],variable: "--font-dm-sans", },);
 const dmSerif = DM_Serif_Text({
     subsets: ["latin"],
     weight: ["400"],
@@ -18,8 +16,8 @@ const dmSerif = DM_Serif_Text({
 
 const firaSans = Fira_Sans({
     subsets: ["latin"],
-    weight: ["300", "400", "500", "600", "700"],
-    style: ["normal", "italic"],
+    weight: ["300", "400", "500", "600"],
+    style: ["normal"],
     variable: "--font-fira-sans",
     display: "swap",
 });
@@ -108,7 +106,7 @@ export default function RootLayout({
                 />
             </head>
             <body
-                className={`${dmSerif.variable} ${firaSans.variable} ${dmSans.variable} ${cormorant.variable} antialiased`}
+                className={`${dmSerif.variable} ${firaSans.variable} antialiased`}
             >
                 <Providers>
                     {children}

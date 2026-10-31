@@ -57,8 +57,16 @@ export function Header() {
     // ── Render ───────────────────────────────────────────────────────────────
     return (
         <header
-            className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-500")}
-            style={{ height: 64 }}
+            className={cn("fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter] duration-500")}
+            style={{
+                height: 64,
+                // A translucent bar once scrolled so nav text never sits on raw content.
+                background: isScrolled
+                    ? (isLight ? "hsla(210, 20%, 98%, 0.86)" : "rgba(12, 12, 12, 0.78)")
+                    : "transparent",
+                backdropFilter: isScrolled ? "blur(14px)" : "none",
+                WebkitBackdropFilter: isScrolled ? "blur(14px)" : "none",
+            }}
         >
             <div className="h-full mx-auto px-10 max-md:px-6 flex items-center justify-between gap-8">
                 <HeaderLogo opacity={logoOpacity} isLight={isLight} />
@@ -80,10 +88,10 @@ export function Header() {
                 />
             </div>
 
-            {/* Thin accent line when scrolled */}
+            {/* Thin hairline when scrolled */}
             <div
                 className="absolute bottom-0 left-0 right-0 h-px pointer-events-none transition-opacity duration-500"
-                style={{ opacity: isScrolled ? 1 : 0 }}
+                style={{ opacity: isScrolled ? 1 : 0, background: isLight ? "rgba(10,10,10,0.08)" : "rgba(255,255,255,0.08)" }}
             />
 
             {isOpen && (

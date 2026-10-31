@@ -17,14 +17,34 @@ export interface FAQItem {
  */
 export const FAQS: FAQItem[] = [
     {
-        question: "What is your typical project timeline?",
+        question: "How long does a project take?",
         answer:
-            "Most web application projects take between 4–8 weeks from kickoff to launch. Simple websites can be faster (2–3 weeks), while more complex builds may take 3+ months depending on scope. I work with clients Australia-wide, so timezone alignment is never an issue.",
+            "A Starter website ships in about 2 weeks and a Growth website in 4 to 6 weeks. Custom software and web apps take 6 to 12 weeks depending on scope, with a working demo every week along the way. I work with clients Australia-wide, so time zones are never a problem.",
     },
     {
         question: "Do you work with businesses across Australia?",
         answer:
-            "Yes! While I'm based in Toowoomba, Queensland, I work with clients across all of Australia — from Sydney and Melbourne to Brisbane, Perth, Adelaide, and regional areas. All collaboration happens remotely with weekly video calls and clear communication.",
+            "Yes. I’m based in Toowoomba, Queensland, and work with clients across Australia, from Sydney and Melbourne to Brisbane, Perth, Adelaide and regional towns. Everything happens remotely with a weekly video call and written updates in between.",
+    },
+    {
+        question: "I don’t know exactly what I need. Can I still get in touch?",
+        answer:
+            "That is the normal starting point. Send a few lines about the problem and we book a 20-minute call. Discovery is the first phase of every project: we map goals, constraints and a scope you can approve before anything is built.",
+    },
+    {
+        question: "What happens if you get busy or disappear?",
+        answer:
+            "The code, hosting, domain and analytics accounts are set up in your name from day one, so nothing depends on me. You get weekly demos, 30 days of fixes after launch, and the Ongoing Tech Partner plan if you want guaranteed hours each month. Any other developer can pick the project up.",
+    },
+    {
+        question: "What does custom software cost?",
+        answer:
+            "Internal tools, portals and automations start at AUD 8,000 and are quoted as a fixed price after a short discovery workshop. The quote lists what is included, what is not, and the delivery date, so there are no surprises mid-build.",
+    },
+    {
+        question: "How do you use AI in projects?",
+        answer:
+            "Where it saves real time: drafting content, classifying enquiries, answering common questions, pulling data out of documents. Every AI feature I ship keeps a person in control, with an approval step, an audit trail and tests, so nothing goes out to a customer without someone saying yes.",
     },
     {
         question: "Do you provide post-launch support?",
@@ -39,7 +59,7 @@ export const FAQS: FAQItem[] = [
     {
         question: "Do you work with startups and small businesses?",
         answer:
-            "Absolutely. I enjoy working with founders and small business owners to build MVPs quickly, iterate fast, and still keep the codebase clean and scalable. Many of my clients are Australian service businesses — tradies, consultants, clinics, and agencies.",
+            "Yes. I enjoy working with founders and small business owners to build an MVP quickly, iterate fast, and keep the codebase clean enough to grow. Most of my clients are Australian service businesses: tradies, consultants, clinics, training providers and agencies.",
     },
     {
         question: "What do I need to get started?",

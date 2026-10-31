@@ -77,7 +77,7 @@ export function AboutHero() {
                 className="absolute right-10 top-1/2 z-10 hidden -translate-y-1/2 md:block"
                 style={{
                     writingMode: "vertical-rl",
-                    fontSize: "0.62rem",
+                    fontSize: "0.7rem",
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
                     color: "rgba(255,255,255,0.2)",
@@ -98,7 +98,7 @@ export function AboutHero() {
                         initial={{ opacity: 0, x: -12 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2, duration: 0.6, ease: E }}
-                        className="mb-4 inline-block font-mono text-[0.65rem] uppercase tracking-[0.15em]"
+                        className="mb-4 inline-block font-mono text-[0.7rem] uppercase tracking-[0.15em]"
                         style={{ color: accent }}
                     >
                         About Me
@@ -228,7 +228,7 @@ export function AboutHero() {
             >
                 <div className="h-10 w-px"
                      style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.6), rgba(134,34,25,0))", animation: "scrollLine 1.8s ease infinite" }} />
-                <span style={{ fontSize: "0.58rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", writingMode: "vertical-rl", transform: "rotate(180deg)", fontWeight: 400 }}>
+                <span style={{ fontSize: "0.7rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", writingMode: "vertical-rl", transform: "rotate(180deg)", fontWeight: 400 }}>
                     Scroll
                 </span>
             </div>

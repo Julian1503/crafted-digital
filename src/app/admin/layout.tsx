@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth/auth";
+import { requireRole } from "@/lib/auth/rbac";
 import { AdminShell } from "@/components/admin/AdminShell";
 
 export default async function AdminLayout({
@@ -6,7 +6,8 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  // Default deny: a session with no admin role never sees the shell.
+  const session = await requireRole(["admin", "editor", "viewer"]);
 
   return (
     <AdminShell

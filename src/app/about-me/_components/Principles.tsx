@@ -193,7 +193,7 @@ export function Principles({ principles }: { principles: AboutPrinciple[] }) {
                     className="pointer-events-none absolute bottom-[2.2rem] right-[clamp(1.25rem,5vw,5rem)] z-40 flex items-center gap-2"
                     style={{ opacity: hintOpacity }}
                 >
-                    <span className="font-mono text-[0.48rem] uppercase tracking-[0.24em] text-white/[0.28]">Scroll to explore</span>
+                    <span className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-white/[0.28]">Scroll to explore</span>
                     <motion.span
                         animate={{ x: [0, 7, 0] }}
                         transition={{ repeat: Infinity, duration: 1.7, ease: "easeInOut" }}

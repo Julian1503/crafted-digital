@@ -25,16 +25,16 @@ export default function FeatureRow({
             }}
         >
             <span
-                className="font-mono text-[0.68rem] leading-[1.5]"
-                style={{ color: light ? "rgba(255,255,255,0.56)" : "rgba(10,10,10,0.52)" }}
+                className="text-[0.88rem] leading-[1.5]"
+                style={{ color: light ? "rgba(255,255,255,0.86)" : "rgba(10,10,10,0.78)" }}
             >
                 {label}
             </span>
 
             <span
                 aria-hidden
-                className="shrink-0 text-[0.46rem]"
-                style={{ color: light ? "rgba(255,255,255,0.22)" : "hsl(var(--hero-accent))" }}
+                className="shrink-0 text-[0.6rem]"
+                style={{ color: light ? "rgba(255,255,255,0.5)" : "hsl(var(--hero-accent))" }}
             >
                 ✦
             </span>

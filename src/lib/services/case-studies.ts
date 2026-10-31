@@ -1,4 +1,10 @@
+import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/db/prisma";
+import { reviveDates } from "@/lib/db/revive-dates";
+
+/** Cache tag for every public case-study read; call `revalidateTag(CASE_STUDIES_TAG)` after admin writes. */
+export const CASE_STUDIES_TAG = "case-studies";
+const PUBLIC_CACHE_SECONDS = 60;
 import { logAudit } from "@/lib/services/audit";
 import { generateSlug } from "@/lib/utils/slug";
 import { ensureUniqueSlug } from "@/lib/utils/slug.server";
@@ -55,25 +61,40 @@ export async function getCaseStudyBySlug(slug: string) {
  * Public read by slug: only published, non-deleted studies. Returns null when
  * nothing matches so callers can render a real 404 instead of masking errors.
  */
+const readPublishedCaseStudyBySlug = unstable_cache(
+    async (slug: string) =>
+        prisma.caseStudy.findFirst({
+            where: { slug, status: ContentStatus.PUBLISHED, deleted: false },
+            include: { author: { select: { id: true, name: true, email: true } } },
+        }),
+    ["case-study-by-slug"],
+    { revalidate: PUBLIC_CACHE_SECONDS, tags: [CASE_STUDIES_TAG] }
+);
+
 export async function getPublishedCaseStudyBySlug(slug: string) {
-    return prisma.caseStudy.findFirst({
-        where: { slug, status: ContentStatus.PUBLISHED, deleted: false },
-        include: { author: { select: { id: true, name: true, email: true } } },
-    });
+    return reviveDates(await readPublishedCaseStudyBySlug(slug));
 }
 
+const readPublishedCaseStudies = unstable_cache(
+    async () =>
+        prisma.caseStudy.findMany({
+            where:   { status: ContentStatus.PUBLISHED, deleted: false },
+            orderBy: { sortOrder: "asc" },
+            include: {
+                author:                { select: { id: true, name: true, email: true } },
+                customer:              true,
+                caseStudyIndustries:   { include: { industry: true } },
+                caseStudyTools:        { include: { tool: true } },
+                caseStudyTechnologies: { include: { technology: true } },
+            },
+        }),
+    ["published-case-studies"],
+    { revalidate: PUBLIC_CACHE_SECONDS, tags: [CASE_STUDIES_TAG] }
+);
+
+/** Public list, cached for a minute (and until the tag is revalidated). */
 export async function getPublishedCaseStudies() {
-    return prisma.caseStudy.findMany({
-        where:   { status: ContentStatus.PUBLISHED, deleted: false },
-        orderBy: { sortOrder: "asc" },
-        include: {
-            author:                { select: { id: true, name: true, email: true } },
-            customer:              true,
-            caseStudyIndustries:   { include: { industry: true } },
-            caseStudyTools:        { include: { tool: true } },
-            caseStudyTechnologies: { include: { technology: true } },
-        },
-    });
+    return reviveDates(await readPublishedCaseStudies());
 }
 
 

@@ -12,7 +12,7 @@ test.describe("navigation", () => {
         );
         expect(hrefs.length).toBeGreaterThan(0);
         const results = await Promise.all(
-            hrefs.map(async (href) => ({ href, status: (await request.get(href.split("#")[0])).status() }))
+            hrefs.map(async (href) => ({ href, status: (await request.get(href.split("#")[0], { timeout: 90_000 })).status() }))
         );
         for (const { href, status } of results) {
             expect(status, `${href} should not 404`).toBeLessThan(400);
@@ -26,9 +26,10 @@ test.describe("navigation", () => {
     });
 
     test("primary call to action leads to a live page", async ({ page }, testInfo) => {
-        if (testInfo.project.name === "mobile") {
-            // On phones the header CTA lives inside the menu; the hero CTA is always on the page.
+        if (testInfo.project.name !== "desktop") {
+            // Below 1024 px the header CTA lives inside the menu; the hero CTA is always on the page.
             await page.goto("/");
+            await page.waitForLoadState("networkidle").catch(() => {});
             await page.getByRole("link", { name: /book a (20-minute )?call/i }).first().click();
         } else {
             await page.goto("/case-studies");

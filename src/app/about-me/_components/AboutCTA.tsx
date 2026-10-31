@@ -69,7 +69,7 @@ export function AboutCTA() {
                     className="mb-11 max-w-[38ch] text-[clamp(0.92rem,1.5vw,1.1rem)] leading-[1.85]"
                     style={{ color: "rgba(255,255,255,0.38)" }}
                 >
-                    No commitment. Just a 20-minute call to see if we&apos;re the right fit. I&apos;ll be honest if we&apos;re not.
+                    No commitment. Just a 20-minute call to see if we’re the right fit. I’ll be honest if we’re not.
                 </motion.p>
 
                 <motion.div
@@ -80,7 +80,7 @@ export function AboutCTA() {
                 >
                     <Link
                         href="/#contact"
-                        className="inline-flex items-center gap-[0.6rem] rounded-full px-9 py-4 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-white transition-opacity duration-200 hover:opacity-[0.82]"
+                        className="inline-flex items-center gap-[0.6rem] rounded-full px-9 py-4 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-white transition-opacity duration-200 hover:opacity-[0.82]"
                         style={{ background: accent }}
                     >
                         Book a discovery call
@@ -95,7 +95,7 @@ export function AboutCTA() {
 
                     <Link
                         href="/#work"
-                        className="font-mono text-[0.66rem] uppercase tracking-[0.1em] text-white/[0.3] transition-colors duration-200 hover:text-white/[0.92]"
+                        className="font-mono text-[0.7rem] uppercase tracking-[0.1em] text-white/[0.3] transition-colors duration-200 hover:text-white/[0.92]"
                     >
                         View my work →
                     </Link>

@@ -13,6 +13,7 @@ import {
     THRESHOLD
 } from "@/components/sections/Hero/hero.constants";
 import { track } from "@/lib/analytics";
+import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { FIT_CALL_LABEL } from "@/lib/constants/site";
 import {FloatingTitle} from "@/components/sections/Hero/FloatingTitle";
 import {MobileDots} from "@/components/sections/Hero/MobileDots";
@@ -43,6 +44,12 @@ export default function HeroSection() {
     const startTimeRef = useRef<number | null>(null);
     const rafRef       = useRef<number | null>(null);
 
+    // Autoplay stops for reduced motion, on hover/focus, and when the visitor pauses it.
+    const prefersReducedMotion = usePrefersReducedMotion();
+    const [userPaused, setUserPaused] = useState<boolean>(false);
+    const [hovering,   setHovering]   = useState<boolean>(false);
+    const autoplay = !prefersReducedMotion && !userPaused && !hovering;
+
     // ── Slide logic ──────────────────────────────────────────────────────────
     const goTo = (index: number): void => {
         if (animatingRef.current || index === current) return;
@@ -60,6 +67,10 @@ export default function HeroSection() {
     const goNext = (): void => goTo((current + 1) % slides.length);
 
     useEffect(() => {
+        if (!autoplay) {
+            setProgress(0);
+            return;
+        }
         const animate = (ts: number): void => {
             if (!startTimeRef.current) startTimeRef.current = ts;
             const elapsed = ts - startTimeRef.current;
@@ -75,7 +86,7 @@ export default function HeroSection() {
             clearTimeout(timer);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [current]);
+    }, [current, autoplay]);
 
     const getSlideState = (i: number) => {
         if (i === current && prev !== null) return "entering";
@@ -172,9 +183,19 @@ export default function HeroSection() {
             <section
                 className="relative w-full overflow-hidden min-h-[600px] h-svh bg-[hsl(var(--hero-bg))] cursor-default"
                 data-hide-logo
+                aria-roledescription="carousel"
+                aria-label="Selected work"
                 onTouchStart={onTouchStart}
                 onTouchEnd={onTouchEnd}
+                onMouseEnter={() => setHovering(true)}
+                onMouseLeave={() => setHovering(false)}
+                onFocusCapture={() => setHovering(true)}
+                onBlurCapture={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHovering(false); }}
             >
+                {/* Announce the slide only when autoplay is off; silent while rotating. */}
+                <p className="sr-only" aria-live={autoplay ? "off" : "polite"}>
+                    Slide {current + 1} of {slides.length}: {slides[current].tag}
+                </p>
                 {/* Grain */}
                 <div
                     className="absolute inset-0 z-[3] pointer-events-none opacity-[0.04]"
@@ -227,10 +248,10 @@ export default function HeroSection() {
                     className="absolute right-10 top-1/2 -translate-y-1/2 z-10 hidden md:block"
                     style={{
                         writingMode:   "vertical-rl",
-                        fontSize:      "0.62rem",
+                        fontSize:      "0.7rem",
                         letterSpacing: "0.18em",
                         textTransform: "uppercase",
-                        color:         "hsl(var(--primary-foreground) / 0.2)",
+                        color:         "hsl(var(--primary-foreground) / 0.65)",
                         fontWeight:    300,
                     }}
                 >
@@ -246,10 +267,10 @@ export default function HeroSection() {
                         <span
                             className="block md:hidden"
                             style={{
-                                fontSize:      "0.58rem",
+                                fontSize:      "0.7rem",
                                 letterSpacing: "0.18em",
                                 textTransform: "uppercase",
-                                color:         "hsl(var(--primary-foreground) / 0.28)",
+                                color:         "hsl(var(--primary-foreground) / 0.65)",
                                 fontWeight:    300,
                                 paddingTop:    "0.15rem",
                             }}
@@ -257,8 +278,8 @@ export default function HeroSection() {
                             Toowoomba · AU
                         </span>
 
-                        {/* Counter — top right always */}
-                        <div className="text-right ml-auto">
+                        {/* Counter — top right; pushed below the menu button on phones */}
+                        <div className="text-right ml-auto mt-10 md:mt-0" aria-hidden="true">
                             <span
                                 className="block leading-none font-light"
                                 style={{
@@ -273,7 +294,7 @@ export default function HeroSection() {
                                     fontSize:      "0.7rem",
                                     letterSpacing: "0.12em",
                                     textTransform: "uppercase",
-                                    color:         "hsl(var(--primary-foreground) / 0.35)",
+                                    color:         "hsl(var(--primary-foreground) / 0.65)",
                                     fontWeight:    400,
                                 }}
                             >
@@ -302,7 +323,7 @@ export default function HeroSection() {
                                     key={`tag-${current}`}
                                     style={{
                                         display:       "inline-block",
-                                        fontSize:      "0.65rem",
+                                        fontSize:      "0.7rem",
                                         letterSpacing: "0.15em",
                                         textTransform: "uppercase",
                                         color:         "hsl(var(--hero-accent))",
@@ -344,7 +365,7 @@ export default function HeroSection() {
                                 }}
                             >
                                 <h1
-                                    className="font-medium leading-[1.3] tracking-[-0.01em] text-balance"
+                                    className="font-sans font-medium leading-[1.3] tracking-[-0.01em] text-balance"
                                     style={{
                                         fontSize: "clamp(1rem, 2.4vw, 1.2rem)",
                                         color:    "hsl(var(--primary-foreground) / 0.92)",
@@ -371,22 +392,25 @@ export default function HeroSection() {
                             style={{ opacity: 0, transition: "opacity 0.5s ease", willChange: "opacity" }}
                         >
                             {/* Desktop: progress bars / Mobile: dots inline with CTA */}
-                            <div className="hidden md:flex flex-col gap-[0.6rem] items-end">
-                                {slides.map((_, i) => (
-                                    <div
+                            <div className="hidden md:flex flex-col gap-[0.25rem] items-end" role="group" aria-label="Choose slide">
+                                {slides.map((slide, i) => (
+                                    <button
                                         key={i}
-                                        className="flex items-center gap-[0.6rem] cursor-pointer"
+                                        type="button"
+                                        aria-label={`Show slide ${i + 1}: ${slide.tag}`}
+                                        aria-current={i === current ? "true" : undefined}
+                                        className="flex items-center gap-[0.6rem] cursor-pointer min-h-[28px] px-1 -mx-1 rounded-sm"
                                         onClick={() => goTo(i)}
                                     >
                                         <span
                                             style={{
-                                                fontSize:      "0.62rem",
+                                                fontSize:      "0.7rem",
                                                 letterSpacing: "0.12em",
                                                 textTransform: "uppercase",
                                                 fontWeight:    400,
                                                 color:         i === current
                                                     ? "hsl(var(--primary-foreground) / 0.8)"
-                                                    : "hsl(var(--primary-foreground) / 0.3)",
+                                                    : "hsl(var(--primary-foreground) / 0.65)",
                                                 transition: "color 0.3s",
                                             }}
                                         >
@@ -408,18 +432,37 @@ export default function HeroSection() {
                                                 }}
                                             />
                                         </div>
-                                    </div>
+                                    </button>
                                 ))}
+                                <button
+                                    type="button"
+                                    onClick={() => setUserPaused(p => !p)}
+                                    aria-pressed={userPaused}
+                                    className="mt-2 min-h-[32px] px-2 -mx-2 rounded-sm text-[0.7rem] tracking-[0.12em] uppercase"
+                                    style={{ color: "hsl(var(--primary-foreground) / 0.75)" }}
+                                >
+                                    {userPaused || prefersReducedMotion ? "Play slides" : "Pause slides"}
+                                </button>
                             </div>
 
                             {/* Mobile: dots on the left of CTA */}
-                            <div className="md:hidden">
+                            <div className="md:hidden flex items-center gap-3">
                                 <MobileDots
                                     slides={slides}
                                     current={current}
                                     progress={progress}
                                     onDotTap={goTo}
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setUserPaused(p => !p)}
+                                    aria-pressed={userPaused}
+                                    aria-label={userPaused || prefersReducedMotion ? "Play slides" : "Pause slides"}
+                                    className="inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-full"
+                                    style={{ color: "hsl(var(--primary-foreground) / 0.8)", border: "1px solid hsl(var(--primary-foreground) / 0.25)" }}
+                                >
+                                    <span aria-hidden="true" className="text-[0.7rem]">{userPaused || prefersReducedMotion ? "▶" : "❚❚"}</span>
+                                </button>
                             </div>
 
                             {/* CTA */}
@@ -481,10 +524,10 @@ export default function HeroSection() {
                     />
                     <span
                         style={{
-                            fontSize:      "0.58rem",
+                            fontSize:      "0.7rem",
                             letterSpacing: "0.18em",
                             textTransform: "uppercase",
-                            color:         "hsl(var(--primary-foreground) / 0.3)",
+                            color:         "hsl(var(--primary-foreground) / 0.65)",
                             writingMode:   "vertical-rl",
                             transform:     "rotate(180deg)",
                             fontWeight:    400,
@@ -503,10 +546,10 @@ export default function HeroSection() {
                     }}
                 >
                     <span style={{
-                        fontSize:      "0.55rem",
+                        fontSize:      "0.7rem",
                         letterSpacing: "0.18em",
                         textTransform: "uppercase",
-                        color:         "hsl(var(--primary-foreground) / 0.28)",
+                        color:         "hsl(var(--primary-foreground) / 0.65)",
                     }}>
                         ← swipe →
                     </span>

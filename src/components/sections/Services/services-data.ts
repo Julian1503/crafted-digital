@@ -12,25 +12,25 @@ import { Palette, Code2, LineChart, Workflow } from "lucide-react";
 export const services: Service[] = [
     {
         title: "Custom Websites & Web Apps",
-        outcome: "A fast, professional website that converts.",
+        outcome: "A fast, professional website that turns visitors into enquiries.",
         description:
-            "High-performance websites and web applications built with Next.js, React, and TypeScript. Ideal for Australian service businesses, tradies, and professionals who need a site that works hard for them.",
+            "Websites and web apps built with Next.js, React and TypeScript, live in 2 to 6 weeks from AUD 2,450. For Australian service businesses, tradies and professionals who need a site that loads fast, ranks and books work.",
         bullets: ["Business websites", "Lead generation sites", "Client portals & dashboards"],
         icon: Code2,
     },
     {
         title: "Product Design & UX",
-        outcome: "Polished interfaces that build trust.",
+        outcome: "Interfaces people understand in one look.",
         description:
-            "User-focused design that balances aesthetics with usability. I create interfaces that feel intuitive and professional, helping your Australian business stand out from the competition.",
+            "User flows, UI direction and clickable prototypes before a line of code, so the build starts from a design you have already approved. Included in Growth websites and software projects, or on its own.",
         bullets: ["UI design systems", "Interactive prototypes", "UX improvements"],
         icon: Palette,
     },
     {
         title: "MVP Development",
-        outcome: "Launch your idea faster with expert guidance.",
+        outcome: "A production-ready first version in 6 to 12 weeks.",
         description:
-            "Strategic guidance and rapid development to help Australian startups and businesses validate ideas quickly. From initial concept to production-ready MVP.",
+            "Roadmap, architecture and build for a first version you can put in front of real users, with weekly demos and a codebase that will not need rewriting when it works.",
         bullets: ["MVP roadmaps", "Architecture planning", "Scalable foundations"],
         icon: LineChart,
     },
@@ -45,15 +45,15 @@ export const services: Service[] = [
 ];
 
 export const L = {
-    label:       "rgba(10,10,10,0.22)",
-    labelMid:    "rgba(10,10,10,0.38)",
-    body:        "rgba(10,10,10,0.45)",
+    label:       "rgba(10,10,10,0.55)",
+    labelMid:    "rgba(10,10,10,0.62)",
+    body:        "rgba(10,10,10,0.7)",
     heading:     "rgba(10,10,10,0.9)",
-    headingWeak: "rgba(10,10,10,0.55)",
+    headingWeak: "rgba(10,10,10,0.65)",
     border:      "rgba(10,10,10,0.08)",
     borderSub:   "rgba(10,10,10,0.06)",
     accent:      "hsl(var(--hero-accent))",
     accentBorder:"hsla(var(--hero-accent) / 0.35)",
     bg:          "hsl(var(--background))",
-    mono:        "rgba(10,10,10,0.22)",
+    mono:        "rgba(10,10,10,0.55)",
 };

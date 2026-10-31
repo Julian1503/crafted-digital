@@ -97,7 +97,7 @@ export function SolutionSection({ study }: SolutionSectionProps) {
                 <motion.span
                   key={tech}
                   variants={pillItem}
-                  className="font-mono text-[0.65rem] tracking-[0.04em] px-3 py-1.5 rounded-full border"
+                  className="font-mono text-[0.7rem] tracking-[0.04em] px-3 py-1.5 rounded-full border"
                   style={{
                     color: DARK.mid,
                     borderColor: DARK.border,

@@ -12,7 +12,7 @@ export function MobileToggle({ isOpen, onClick, buttonRef, isLight }: MobileTogg
     return (
         <button
             ref={buttonRef}
-            className="md:hidden p-2 ml-auto"
+            className="lg:hidden p-2 ml-auto min-h-[44px] min-w-[44px] inline-flex items-center justify-center"
             style={{ color: isLight ?  "#0a0a0a"  : "hsl(var(--primary-foreground) / 0.75)" }}
             onClick={onClick}
             aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}

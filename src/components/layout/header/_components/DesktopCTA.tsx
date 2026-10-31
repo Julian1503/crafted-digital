@@ -15,12 +15,12 @@ export function DesktopCTA({ visible, isLight }: DesktopCTAProps) {
         ? "hsl(var(--hero-accent)/0.04)"
         : "hsl(var(--primary-foreground) / 0.04)";
     const color       = isLight
-        ? "hsl(var(--hero-accent)/0.8)"
-        : "hsl(var(--primary-foreground) / 0.8)";
+        ? "hsl(var(--hero-accent-dark))"
+        : "hsl(var(--primary-foreground) / 0.92)";
 
     return (
         <div
-            className="hidden md:flex shrink-0"
+            className="hidden lg:flex shrink-0"
             style={{
                 opacity:       visible ? 1 : 0,
                 transform:     visible ? "translateY(0)" : "translateY(-6px)",
@@ -37,7 +37,8 @@ export function DesktopCTA({ visible, isLight }: DesktopCTAProps) {
                     border:        borderColor,
                     background,
                     color,
-                    padding:       "0.5rem 1.2rem",
+                    padding:       "0.7rem 1.2rem",
+                    minHeight:     "44px",
                     fontSize:      "0.78rem",
                     letterSpacing: "0.06em",
                     textTransform: "uppercase",
