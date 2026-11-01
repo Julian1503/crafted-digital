@@ -181,9 +181,9 @@ export default function PlanCard({
                         }}
                         className={`flex w-full min-h-[44px] items-center justify-center gap-[0.6rem] rounded-full px-[1.4rem] py-[0.9rem] font-mono text-[0.72rem] uppercase tracking-[0.12em] transition-[opacity,transform] duration-[220ms] ${
                             plan.featured
-                                ? "border border-white/[0.18] bg-white/[0.10] text-white/[0.88] backdrop-blur-[8px]"
+                                ? "border border-white/[0.18] bg-white/[0.10] text-white/[0.88]"
                                 : light
-                                    ? "border border-white/[0.14] bg-white/[0.10] text-white/[0.80] backdrop-blur-[6px]"
+                                    ? "border border-white/[0.14] bg-white/[0.10] text-white/[0.80]"
                                     : "border border-black/[0.12] bg-black/[0.08] text-black/[0.72]"
                         }`}
                         onMouseEnter={e => {

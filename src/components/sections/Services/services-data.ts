@@ -44,6 +44,28 @@ export const services: Service[] = [
     },
 ];
 
+/** Linear copy of the services for phones, reduced motion and screen readers. */
+export const SERVICE_STATIC_STEPS = services.map((s) => ({
+    title: s.title,
+    description: s.description,
+    bullets: s.bullets,
+    eyebrow: s.outcome,
+}));
+
+/** Extras listed in the marquee under the services. */
+export const ADD_ONS = [
+    "SEO optimisation",
+    "Performance Audits",
+    "CMS Integration",
+    "API Development",
+    "Auth & Roles",
+    "Monitoring & Alerts",
+    "Analytics Setup",
+    "Speed Optimisation",
+    "Accessibility Audit",
+    "Hosting & DevOps",
+];
+
 export const L = {
     label:       "rgba(10,10,10,0.62)",
     labelMid:    "rgba(10,10,10,0.62)",

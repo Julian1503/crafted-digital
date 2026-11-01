@@ -6,7 +6,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useInView } from "framer-motion";
+import { useInView } from "@/hooks/use-in-view";
 import { setUrlClean } from "@/lib/utils";
 import { FOOTER_GROUPS } from "@/components/layout/footer/footer.data";
 import { track } from "@/lib/analytics";
@@ -55,8 +55,8 @@ export function Footer() {
     const pathname = usePathname();
     const isHome   = pathname === "/";
 
-    const nameRef = React.useRef<HTMLAnchorElement>(null);
-    const inView  = useInView(nameRef, { once: true, margin: "-60px" });
+    // Own fire-once observer: keeps framer-motion out of every page's footer.
+    const [nameRef, inView] = useInView<HTMLAnchorElement>(0.2);
 
     return (
         <footer

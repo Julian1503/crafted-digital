@@ -70,7 +70,9 @@ export default function ProjectRow({ project, index, total, isHovered, onHover, 
                                     transform:  isHovered ? "translateY(0) skewX(0deg)" : "translateY(0.15em) skewX(-2deg)",
                                     transition: `transform 420ms cubic-bezier(0.16,1,0.3,1) ${cd(i)}ms,
                                                  color 320ms ease ${cd(i) * 0.3}ms`,
-                                    willChange: "transform",
+                                    // No permanent will-change: one layer per letter (~290 on the
+                                    // home page) made phones composite hundreds of layers for a
+                                    // hover effect touch screens never trigger.
                                 }}
                             >
                                 {char}

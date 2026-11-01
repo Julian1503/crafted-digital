@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Serif_Text, Fira_Sans } from "next/font/google";
 import "./globals.css";
-import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
+import Script from "next/script";
+import { GoogleAnalytics } from '@next/third-parties/google'
 import {Providers} from "@/components/ui/providers";
 import {StructuredData} from "@/components/seo/StructuredData";
 import React from "react";
@@ -94,7 +95,6 @@ export default function RootLayout({
     const googleTagManagerId = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID || '';
     return (
         <html lang="en-AU">
-            {googleTagManagerId && <GoogleTagManager gtmId={googleTagManagerId} />}
             <head>
                 <StructuredData />
                 {/* The hero slides and section videos come from Cloudinary */}
@@ -107,6 +107,13 @@ export default function RootLayout({
                     {children}
                 </Providers>
                 {googleAnalyticsId && !googleTagManagerId && <GoogleAnalytics gaId={googleAnalyticsId} />}
+                {/* GTM (~330 KB) loads once the page is idle instead of competing with
+                    hydration. Events pushed before then wait in window.dataLayer. */}
+                {googleTagManagerId && /^GTM-[A-Z0-9]+$/.test(googleTagManagerId) && (
+                    <Script id="gtm-loader" strategy="lazyOnload">
+                        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${googleTagManagerId}');`}
+                    </Script>
+                )}
             </body>
         </html>
     );

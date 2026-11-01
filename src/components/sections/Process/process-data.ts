@@ -47,3 +47,11 @@ export const steps: Process[] = [
         image: "https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
     },
 ];
+
+/** Linear copy of the process for phones, reduced motion and screen readers. */
+export const PROCESS_STATIC_STEPS = steps.map((s) => ({
+    title: s.title,
+    description: s.description,
+    bullets: s.bullets,
+    eyebrow: s.range,
+}));

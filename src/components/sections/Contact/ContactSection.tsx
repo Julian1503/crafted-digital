@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useInView } from "@/hooks/use-in-view";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
-import { ContactForm }  from "@/components/sections/Contact/ContactForm";
+import dynamic from "next/dynamic";
 import { SuccessState } from "@/components/sections/Contact/SuccessState";
 import { track } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/constants/site";
@@ -33,8 +33,36 @@ interface ContactSectionProps {
     bookingHref?: string;
 }
 
+/** Same height as the form at each breakpoint, so loading it causes no layout shift. */
+function FormPlaceholder() {
+    return <div aria-hidden="true" className="min-h-[775px] min-[360px]:min-h-[731px] sm:min-h-[544px]" />;
+}
+
+// The form brings zod, react-hook-form and Cloudflare Turnstile (~450 KB). It
+// sits at the bottom of the home page, so it loads when the section approaches.
+const ContactForm = dynamic(
+    () => import("@/components/sections/Contact/ContactForm").then((m) => m.ContactForm),
+    { ssr: false, loading: FormPlaceholder }
+);
+
+/** True once the element is within `margin` of the viewport (fire-once). */
+function useNearViewport<T extends Element>(ref: React.RefObject<T | null>, margin = "800px"): boolean {
+    const [near, setNear] = React.useState(false);
+    React.useEffect(() => {
+        const el = ref.current;
+        if (!el || near) return;
+        const io = new IntersectionObserver(([entry]) => {
+            if (entry?.isIntersecting) { setNear(true); io.disconnect(); }
+        }, { rootMargin: `${margin} 0px` });
+        io.observe(el);
+        return () => io.disconnect();
+    }, [ref, margin, near]);
+    return near;
+}
+
 export function ContactSection({ asPageHeading = false, bookingHref }: ContactSectionProps) {
     const [sectionRef, sectionVisible] = useInView<HTMLElement>(0.04);
+    const loadForm                     = useNearViewport(sectionRef);
     const [isSuccess, setIsSuccess]    = React.useState(false);
     const reducedMotion                = usePrefersReducedMotion();
     const isDesktop                    = useIsDesktop();
@@ -171,7 +199,9 @@ export function ContactSection({ asPageHeading = false, bookingHref }: ContactSe
                         <div className="relative z-10 p-6 md:p-10">
                             {isSuccess
                                 ? <SuccessState onReset={() => setIsSuccess(false)} />
-                                : <ContactForm onSuccess={() => setIsSuccess(true)} dark />
+                                : loadForm
+                                    ? <ContactForm onSuccess={() => setIsSuccess(true)} dark />
+                                    : <FormPlaceholder />
                             }
                         </div>
                     </div>
