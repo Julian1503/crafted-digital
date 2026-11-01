@@ -31,13 +31,7 @@ export function FloatingPreview({ src, title, visible, pos }: FloatingPreviewPro
                     transition: "opacity 300ms ease, transform 300ms cubic-bezier(0.16,1,0.3,1)",
                 }}
             >
-                {src && (
-                    <Image src={src} alt={title} fill sizes="260px" className="object-cover" style={{ filter: "saturate(0.88) brightness(0.85)" }} />
-                )}
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.6) 100%)" }} />
-                <span className="absolute bottom-3 left-3 font-serif text-[0.75rem] leading-tight tracking-[-0.01em] text-white" style={{ maxWidth: "20ch" }}>
-                    {title}
-                </span>
+                {src && <Image src={src} alt={title} fill sizes="260px" className="object-cover" />}
             </div>
         </div>
     );

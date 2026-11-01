@@ -80,7 +80,7 @@ interface BodyV2 {
   approach: { title: string; body: string }[];
   solution: { headline?: string; body: string };
   results:  Array<
-    | { type: "metric"; metric: string; label: string }
+    | { type: "metric"; metric: string; label: string; estimate?: boolean }
     | { type: "text";   body: string }
   >;
   stack:       string[];
@@ -130,7 +130,7 @@ export function parseCaseStudyBody(raw: string): {
       const approachSteps: ApproachStep[] = b.approach.map(s => ({ title: s.title, body: s.body }));
       const resultsRich: ResultItem[] = b.results.map(r =>
         r.type === "metric"
-          ? { type: "metric" as const, metric: r.metric, label: r.label }
+          ? { type: "metric" as const, metric: r.metric, label: r.label, ...(r.estimate === true ? { estimate: true } : {}) }
           : { type: "text"   as const, body: (r as { type: "text"; body: string }).body }
       );
 

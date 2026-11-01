@@ -15,6 +15,7 @@ import { SolutionSection }    from "@/components/sections/Case-study/SolutionSec
 import { ResultsSection }     from "@/components/sections/Case-study/ResultsSection";
 import { TestimonialSection } from "@/components/sections/Case-study/TestimonialSection";
 import { NavSlice }           from "@/components/sections/Case-study/NavSlice";
+import { pickFigures }        from "@/components/sections/Case-study/gallery";
 
 /**
  * Layout rhythm (alternating dark / light):
@@ -36,13 +37,12 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
   // A MotionValue drives the progress bar without re-rendering the view on scroll.
   const { scrollYProgress } = useScroll();
 
-  const g = study.gallery ?? [];
+  // Product screenshots live inside the study; the cover photo is for listings.
+  const { hero: heroFigure, breaks } = pickFigures(study.title, study.gallery ?? [], study.image);
+  const leadFigure = heroFigure ?? (study.image ? { src: study.image, alt: "", photo: true } : undefined);
 
-  // CTA copy
-  const ctaHeading = study.client
-    ? `Got a project like ${study.client}?`
-    : "Ready to build something like this?";
-  const ctaSubcopy = `Let’s talk about your project — no commitment, just a 30 min call to see if we’re a good fit.`;
+  const ctaHeading = "Got a workflow like this in your business?";
+  const ctaSubcopy = "Tell me what takes your team the most time. In a 30-minute call I will tell you honestly whether software would fix it.";
 
   return (
     <motion.div
@@ -59,13 +59,13 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
       />
 
       {/* ① Hero */}
-      <HeroSection study={study} />
+      <HeroSection study={study} figure={leadFigure} />
 
       {/* ② Overview — LIGHT */}
       <OverviewSection study={study} />
 
       {/* ③ Image break */}
-      {g[0] && <ImageBreak src={g[0]} alt={`${study.title}: screenshot 1`} height="65vh" brightness={0.78} saturation={0.7} />}
+      {breaks[0] && <ImageBreak src={breaks[0].src} alt={breaks[0].alt} caption={breaks[0].caption} tone="dark" />}
 
       {/* ④ Problem — DARK */}
       <ProblemSection study={study} />
@@ -74,13 +74,12 @@ export function CaseStudyView({ study, prevStudy, nextStudy }: CaseStudyViewProp
       <ApproachSection study={study} />
 
       {/* ⑥ Image break */}
-      {g[1] && <ImageBreak src={g[1]} alt={`${study.title}: screenshot 2`} height="55vh" brightness={0.80} saturation={0.72} />}
+      {breaks[1] && <ImageBreak src={breaks[1].src} alt={breaks[1].alt} caption={breaks[1].caption} tone="dark" />}
 
       {/* ⑦ Solution — DARK */}
       <SolutionSection study={study} />
 
       {/* ⑧ Image break (wider aspect for solution screenshots) */}
-      {g[2] && <ImageBreak src={g[2]} alt={`${study.title}: screenshot 3`} height="58vh" brightness={0.85} saturation={0.78} />}
 
       {/* ⑨ Results — deep dark */}
       <ResultsSection study={study} />

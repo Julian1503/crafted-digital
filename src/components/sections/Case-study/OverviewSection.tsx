@@ -17,7 +17,7 @@ export function OverviewSection({ study }: OverviewSectionProps) {
     { label: "Client",    value: study.client },
     { label: "Category",  value: study.category },
     { label: "Year",      value: study.year ? String(study.year) : null },
-    { label: "Stack",     value: study.technologies.length ? `${study.technologies.length} technologies` : null },
+    { label: "Built with", value: study.technologies.length ? study.technologies.slice(0, 4).join(", ") : null },
   ].filter(m => m.value);
 
   return (

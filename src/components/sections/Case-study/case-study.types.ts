@@ -22,7 +22,7 @@ export interface ApproachStep {
 
 /** A result item — either a metric (big number) or plain text */
 export type ResultItem =
-  | { type: "metric"; metric: string; label: string }
+  | { type: "metric"; metric: string; label: string; /** True when the figure is an estimate, not a measurement. */ estimate?: boolean }
   | { type: "text"; body: string };
 
 // ─── Main view-model passed to every section component ───────────────────────

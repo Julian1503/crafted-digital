@@ -39,11 +39,16 @@ function ResultRow({ item, index, total, isInView }: ResultRowProps) {
 
   // Metric fields
   const isMetric  = item.type === "metric";
-  const rawNum    = isMetric ? (item as ResultItem & { type: "metric" }).metric.replace(/[^0-9.]/g, "") : "0";
-  const target    = parseFloat(rawNum) || 0;
   const metricStr = isMetric ? (item as ResultItem & { type: "metric" }).metric : "";
-  const prefix    = metricStr.match(/^[+\-]?/)?.[0] ?? "";
-  const suffix    = metricStr.replace(/^[+\-]?[\d,.]+/, "").trim();
+  const estimate  = isMetric && (item as ResultItem & { type: "metric" }).estimate === true;
+  // Count up only plain numbers worth animating (e.g. "120", "+35%"); ranges,
+  // approximations and estimates such as "~5 h" or "4–6 h" are shown as written.
+  const plain     = /^[+\-]?[\d,]+(\.\d+)?\s*[%+]?$/.test(metricStr.trim());
+  const rawNum    = plain ? metricStr.replace(/[^0-9.]/g, "") : "0";
+  const parsed    = parseFloat(rawNum) || 0;
+  const target    = !estimate && parsed >= 10 ? parsed : 0;
+  const prefix    = target > 0 ? (metricStr.match(/^[+\-]?/)?.[0] ?? "") : "";
+  const suffix    = target > 0 ? metricStr.replace(/^[+\-]?[\d,.]+/, "").trim() : "";
   const label     = isMetric ? (item as ResultItem & { type: "metric" }).label : "";
   const bodyText  = !isMetric ? (item as ResultItem & { type: "text" }).body : "";
   const counted   = useCountUp(target, isInView && isMetric);
@@ -87,6 +92,14 @@ function ResultRow({ item, index, total, isInView }: ResultRowProps) {
                     style={{ color: DARK.mid, maxWidth: "46ch" }}
                 >
                   {label}
+                  {estimate && (
+                    <span
+                        className="ml-2 inline-block align-middle text-[0.7rem] tracking-[0.14em] uppercase border rounded-full px-2 py-0.5"
+                        style={{ color: "rgba(255,255,255,0.72)", borderColor: "rgba(255,255,255,0.22)" }}
+                    >
+                      Estimate
+                    </span>
+                  )}
                 </p>
               </div>
           ) : (
@@ -214,6 +227,12 @@ export function ResultsSection({ study }: { study: StudyData }) {
                 />
             ))}
           </div>
+
+          {items.some((it) => it.type === "metric" && it.estimate) && (
+              <p className="mt-10 max-w-[64ch] text-[0.8rem] leading-[1.7]" style={{ color: DARK.dim }}>
+                Figures marked estimate are my estimates of time saved, based on how long the same work took by hand before the tool. They are not measured results.
+              </p>
+          )}
 
         </div>
       </section>

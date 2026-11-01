@@ -1,8 +1,11 @@
-import "dotenv/config";
+import { config } from "dotenv";
+// .env.local (local Docker database) wins over .env, like Next.js.
+config({ path: [".env.local", ".env"], quiet: true });
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { MediaProvider } from "@/generated/prisma/enums";
+import { applyCaseStudyRefresh } from "@/lib/db/content/case-study-refresh";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({
@@ -1254,8 +1257,9 @@ async function main() {
 
   console.log(`✅ Created or updated ${mediaAssets.length} media assets`);
 
-  // Case studies
-  for (const item of caseStudies) {
+  // Case studies (with the 2026-11-01 content refresh applied on create)
+  for (const raw of caseStudies) {
+    const item = applyCaseStudyRefresh(raw);
     await prisma.caseStudy.upsert({
       where: { slug: item.slug },
       update: {}, // create-only: admin edits, status changes and deletions win

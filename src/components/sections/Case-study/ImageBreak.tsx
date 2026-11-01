@@ -1,55 +1,45 @@
-"use client";
-
-import { useRef } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
 
 interface ImageBreakProps {
   src: string;
-  alt?: string;
-  /** Height as a CSS value. Default "60vh" */
-  height?: string;
-  /** 0–1 brightness. Default 0.82 */
-  brightness?: number;
-  /** 0–1 saturation. Default 0.75 */
-  saturation?: number;
+  alt: string;
+  caption?: string;
+  /** Section background: dark sections or the light overview/approach band. */
+  tone?: "dark" | "light";
 }
 
-export function ImageBreak({
-  src,
-  alt = "",
-  height = "60vh",
-  brightness = 0.82,
-  saturation = 0.75,
-}: ImageBreakProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  // Image moves slower than scroll → creates parallax
-  const y = useTransform(scrollYProgress, [0, 1], ["-9%", "9%"]);
-
+/**
+ * A product screenshot shown whole, inside a frame, with a caption. Replaces
+ * the earlier full-bleed parallax crop, which cut screenshots arbitrarily and
+ * darkened them into texture.
+ */
+export function ImageBreak({ src, alt, caption, tone = "dark" }: ImageBreakProps) {
+  const dark = tone === "dark";
   return (
-    <div
-      ref={ref}
-      className="relative overflow-hidden w-full"
-      style={{ height }}
-      aria-hidden={!alt}
+    <figure
+      className="px-5 sm:px-8 md:px-14 lg:px-20 py-14 md:py-20"
+      style={{ background: dark ? "#0c0c0b" : "hsl(var(--background))" }}
     >
-      <motion.div className="absolute inset-[-10%]" style={{ y }}>
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          sizes="100vw"
-          className="object-cover"
+      <div className="mx-auto max-w-6xl">
+        <div
+          className="relative w-full overflow-hidden rounded-xl border"
           style={{
-            filter: `brightness(${brightness}) saturate(${saturation})`,
+            aspectRatio: "16 / 10",
+            borderColor: dark ? "rgba(255,255,255,0.1)" : "rgba(10,10,10,0.1)",
+            background:  dark ? "#141414" : "#ffffff",
           }}
-        />
-      </motion.div>
-    </div>
+        >
+          <Image src={src} alt={alt} fill sizes="(min-width: 1152px) 1100px, 100vw" className="object-contain" loading="lazy" />
+        </div>
+        {caption && (
+          <figcaption
+            className="mt-4 text-[0.8rem] tracking-[0.02em]"
+            style={{ color: dark ? "rgba(255,255,255,0.62)" : "rgba(10,10,10,0.62)" }}
+          >
+            {caption}
+          </figcaption>
+        )}
+      </div>
+    </figure>
   );
 }

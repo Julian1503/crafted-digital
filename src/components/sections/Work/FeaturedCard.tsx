@@ -57,10 +57,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
                     }}
                 >
                     {/* Image area */}
-                    <div
-                        className="relative w-full overflow-hidden"
-                        style={{ aspectRatio: "16/9" }}
-                    >
+                    <div className="relative w-full overflow-hidden aspect-[4/3] sm:aspect-[16/9] rounded-sm">
                         {project.image && (
                             <Image
 
@@ -68,12 +65,12 @@ export default function FeaturedCard({ project, visible, reduced }: {
                                 alt=""
                                 fill
                                 priority
-                                sizes="100vw"
+                                sizes="(min-width: 1280px) 1216px, 100vw"
                                 className="object-cover"
                                 style={{
                                     transform:  visible ? "scale(1)" : "scale(1.06)",
                                     transition: "transform 1.6s cubic-bezier(0.16,1,0.3,1) 200ms",
-                                    filter: "saturate(0.82) brightness(0.62)",
+                                    filter: "saturate(0.95) brightness(0.86)",
                                 }}
                             />
                         )}
@@ -81,7 +78,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
                         <div
                             className="absolute inset-0"
                             style={{
-                                background: "linear-gradient(to bottom, rgba(12,12,12,0.25) 0%, transparent 35%, rgba(12,12,12,0.7) 75%, #0c0c0c 100%)",
+                                background: "linear-gradient(to bottom, rgba(12,12,12,0.45) 0%, transparent 30%, transparent 60%, rgba(12,12,12,0.85) 92%, #0c0c0c 100%)",
                             }}
                         />
 
@@ -132,9 +129,10 @@ export default function FeaturedCard({ project, visible, reduced }: {
                     {/* Title — breaks out of the image, sits on the dark bg */}
                     <div className="pt-6 pb-0 px-0">
                         <h3
-                            className="font-serif font-normal md:text-left text-center leading-[0.95] tracking-[-0.04em]"
+                            className="font-serif font-normal text-left leading-[1] tracking-[-0.035em] text-balance"
                             style={{
-                                fontSize: "clamp(2.8rem, 5vw, 6.5rem)",
+                                fontSize: "clamp(2.2rem, 4.6vw, 5rem)",
+                                maxWidth: "20ch",
                                 color:    "rgba(255,255,255,0.92)",
                                 marginTop: "-0.15em", // pulls title UP into image overlap
                             }}
@@ -143,7 +141,14 @@ export default function FeaturedCard({ project, visible, reduced }: {
                         </h3>
                     </div>
 
-                    {/* Stats + testimonial strip */}
+                    {project.description && (
+                        <p className="mt-5 max-w-[60ch] text-[0.95rem] leading-[1.7] text-pretty" style={{ color: "rgba(255,255,255,0.72)" }}>
+                            {project.description}
+                        </p>
+                    )}
+
+                    {/* Stats + testimonial strip (only when there is something to show) */}
+                    {(!!project.stats?.length || !!project.testimonial) && (
                     <div
                         className="mt-6 pt-6 flex flex-col md:flex-row md:items-start gap-6 md:gap-16 border-t"
                         style={{ borderColor: "rgba(255,255,255,0.07)" }}
@@ -207,6 +212,7 @@ export default function FeaturedCard({ project, visible, reduced }: {
                             </blockquote>
                         )}
                     </div>
+                    )}
                 </div>
             </Link>
         </article>

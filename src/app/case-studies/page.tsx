@@ -11,14 +11,14 @@ import { toCaseStudyCardProps } from "@/lib/mappers/case-study.mappers";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-    title: "Case Studies | Web Development Projects for Australian Businesses",
+    title: "Case Studies: Custom Software, AI Automation and Websites",
     description:
-        "Explore real examples of web development and software projects delivered for Australian businesses. See how Julian Delgado helps service businesses build digital products that convert.",
+        "Internal tools, CRMs, AI agents and websites built by Julian Delgado for Australian small businesses: the problem, the approach and what changed.",
     openGraph: {
         images: [DEFAULT_OG_IMAGE],
-        title: "Case Studies | Web Development Projects for Australian Businesses",
+        title: "Case Studies | Julian Delgado",
         description:
-            "Real examples of web development projects delivered for Australian service businesses.",
+            "Internal tools, CRMs, AI agents and websites built for Australian small businesses.",
         type: "website",
         url: "https://juliandelgado.com.au/case-studies",
     },
@@ -41,182 +41,68 @@ interface CaseStudyCardProps {
     stats?: { label: string; value: string }[];
 }
 
-// ─── Project slice ────────────────────────────────────────────────────────────
-// Server component — all interactivity via CSS :hover
+// ─── Project row ──────────────────────────────────────────────────────────────
+// Server component: text beside a related photo. Product screenshots are kept
+// for the case study itself; here the photo sets the scene and the copy sells.
 
-function ProjectSlice({
-                          study,
-                          index,
-                          featured,
-                      }: {
-    study: CaseStudyCardProps;
-    index: number;
-    featured: boolean;
-}) {
+function ProjectRow({ study, index }: { study: CaseStudyCardProps; index: number }) {
     const href = `/case-studies/${study.slug}`;
+    const flip = index % 2 === 1;
 
     return (
-        <article
-            className="project-slice relative w-full group overflow-hidden border-b"
-            style={{
-                borderColor: "rgba(255,255,255,0.06)",
-                minHeight:   featured ? "72vh" : "44vh",
-            }}
-        >
-            {/* Background image — always present, darkened + desaturated */}
-            {study.image && (
-                <div className="absolute inset-0 z-0 will-change-transform transition-transform duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]">
-                    <Image
-                        src={study.image}
-                        alt={study.title}
-                        fill
-                        sizes="100vw"
-                        className="object-cover transition-[filter,opacity] duration-700 ease-out"
-                        style={{
-                            filter:  "saturate(0.2) brightness(0.35)",
-                        }}
-                        priority={index < 2}
-                    />
-                    {/* Overlay lifts on hover via CSS */}
-                    <div
-                        className="image-overlay absolute inset-0 transition-opacity duration-700"
-                        style={{
-                            background: "linear-gradient(to right, rgba(12,12,12,0.85) 0%, rgba(12,12,12,0.45) 50%, rgba(12,12,12,0.2) 100%)",
-                        }}
-                    />
+        <article className="group border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+            <Link
+                href={href}
+                className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8 py-12 md:py-16 grid gap-8 lg:gap-16 lg:grid-cols-2 items-center rounded-sm"
+            >
+                {/* Photo */}
+                <div className={`relative w-full overflow-hidden rounded-lg aspect-[4/3] ${flip ? "lg:order-2" : ""}`} style={{ background: "#141414" }}>
+                    {study.image && (
+                        <Image
+                            src={study.image}
+                            alt=""
+                            fill
+                            sizes="(min-width: 1024px) 600px, 100vw"
+                            className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+                            priority={index < 2}
+                        />
+                    )}
                 </div>
-            )}
 
-            {/* No image — textured dark fill */}
-            {!study.image && (
-                <div
-                    className="absolute inset-0 z-0"
-                    style={{ background: "linear-gradient(135deg, #111 0%, #0a0a0a 100%)" }}
-                />
-            )}
-
-            {/* Content */}
-            <Link href={href} className="relative z-10 flex flex-col justify-between h-full p-8 md:p-12 lg:p-16" style={{ minHeight: "inherit" }}>
-
-                {/* Top row — index + meta */}
-                <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <span
-                            className="font-mono text-[0.7rem] tracking-[0.28em] uppercase"
-                            style={{ color: "rgba(255,255,255,0.6)" }}
-                        >
+                {/* Copy */}
+                <div className={flip ? "lg:order-1" : ""}>
+                    <div className="flex items-center gap-3 mb-5">
+                        <span className="font-mono text-[0.7rem] tracking-[0.28em]" style={{ color: "rgba(255,255,255,0.6)" }}>
                             {String(index + 1).padStart(2, "0")}
                         </span>
-                        <span
-                            className="h-px w-5 shrink-0"
-                            style={{ background: "rgba(255,255,255,0.12)" }}
-                        />
-                        <span
-                            className="text-[0.7rem] tracking-[0.22em] uppercase"
-                            style={{ color: "rgba(255,255,255,0.6)" }}
-                        >
-                            {study.industry ?? study.category ?? "Project"}
+                        <span className="h-px w-5 shrink-0" style={{ background: "rgba(255,255,255,0.16)" }} aria-hidden="true" />
+                        <span className="text-[0.7rem] tracking-[0.2em] uppercase" style={{ color: "rgba(255,255,255,0.72)" }}>
+                            {study.category ?? "Project"}
                         </span>
                     </div>
 
-                    {/* Arrow — slides in from left on hover */}
-                    <span
-                        className="arrow-icon inline-flex items-center justify-center w-9 h-9 rounded-full text-[0.7rem] shrink-0 transition-[opacity,transform] duration-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
-                        style={{
-                            border: "1px solid rgba(255,255,255,0.2)",
-                            color:  "rgba(255,255,255,0.7)",
-                        }}
-                        aria-hidden="true"
-                    >
-                        ↗
-                    </span>
-                </div>
-
-                {/* Bottom — title + stats */}
-                <div className="mt-auto">
-
-                    {/* Year */}
-                    {study.year && (
-                        <time
-                            dateTime={String(study.year)}
-                            className="block font-mono text-[0.7rem] tracking-[0.22em] mb-4 transition-colors duration-300"
-                            style={{ color: "rgba(255,255,255,0.18)" }}
-                        >
-                            {study.year}
-                        </time>
-                    )}
-
-                    {/* Title — the hero element */}
                     <h2
-                        className="font-serif font-normal leading-[0.96] tracking-[-0.035em] transition-[color,transform] duration-500 group-hover:translate-x-1"
-                        style={{
-                            fontSize: featured
-                                ? "clamp(2.8rem, 7vw, 6.5rem)"
-                                : "clamp(2rem, 4.5vw, 4rem)",
-                            color:    "rgba(255,255,255,0.88)",
-                            maxWidth: "18ch",
-                        }}
+                        className="font-serif font-normal leading-[1.02] tracking-[-0.03em] text-balance transition-colors duration-300"
+                        style={{ fontSize: "clamp(1.9rem, 3.6vw, 3.2rem)", color: "rgba(255,255,255,0.92)", maxWidth: "18ch" }}
                     >
                         {study.title}
                     </h2>
 
-                    {/* Description — only visible on hover */}
                     {study.description && (
-                        <p
-                            className="mt-4 text-[0.82rem] leading-[1.7] max-w-[52ch] transition-[opacity,transform] duration-500 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
-                            style={{ color: "rgba(255,255,255,0.45)" }}
-                        >
+                        <p className="mt-5 text-[0.95rem] leading-[1.75] text-pretty max-w-[52ch]" style={{ color: "rgba(255,255,255,0.72)" }}>
                             {study.description}
                         </p>
                     )}
 
-                    {/* Stats + tags row */}
-                    {(study.stats?.length || study.tags?.length) && (
-                        <div
-                            className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-2 transition-[opacity,transform] duration-500 delay-75 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0"
-                        >
-                            {study.stats?.map((stat) => (
-                                <div key={stat.label} className="flex items-baseline gap-2">
-                                    <span
-                                        className="font-serif font-normal leading-none"
-                                        style={{
-                                            fontSize: "clamp(1.4rem, 2.5vw, 2rem)",
-                                            color:    "hsl(var(--hero-accent))",
-                                        }}
-                                    >
-                                        {stat.value}
-                                    </span>
-                                    <span
-                                        className="text-[0.6rem] tracking-[0.12em] uppercase"
-                                        style={{ color: "rgba(255,255,255,0.3)" }}
-                                    >
-                                        {stat.label}
-                                    </span>
-                                </div>
-                            ))}
-                            {study.tags?.slice(0, 4).map((tag) => (
-                                <span
-                                    key={tag}
-                                    className="text-[0.7rem] tracking-[0.15em] uppercase border rounded-full px-2.5 py-1"
-                                    style={{
-                                        color:       "rgba(255,255,255,0.35)",
-                                        borderColor: "rgba(255,255,255,0.1)",
-                                    }}
-                                >
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
-                    )}
+                    <span
+                        className="mt-7 inline-flex items-center gap-2 text-[0.75rem] tracking-[0.12em] uppercase transition-colors duration-300 group-hover:text-white"
+                        style={{ color: "hsl(var(--hero-accent-light))" }}
+                    >
+                        Read the case study
+                        <span aria-hidden="true" className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+                    </span>
                 </div>
             </Link>
-
-            {/* Accent line — slides in from left on hover */}
-            <div
-                className="absolute left-0 top-0 bottom-0 w-[3px] transition-transform duration-500 origin-top scale-y-0 group-hover:scale-y-100"
-                style={{ background: "hsl(var(--hero-accent))" }}
-                aria-hidden="true"
-            />
         </article>
     );
 }
@@ -280,7 +166,7 @@ export default async function CaseStudiesPage() {
                             className="max-w-[38ch] text-[0.85rem] leading-relaxed md:text-right pb-2"
                             style={{ color: "rgba(255,255,255,0.62)" }}
                         >
-                            Real projects, real results. Each one shows the problem, approach, and outcomes delivered for Australian businesses.
+                            Custom software, AI automation and websites I have built. Each one covers the problem, the approach and what changed.
                         </p>
                     </div>
                 </div>
@@ -292,12 +178,7 @@ export default async function CaseStudiesPage() {
                     style={{ borderColor: "rgba(255,255,255,0.06)" }}
                 >
                     {caseStudies.map((study, i) => (
-                        <ProjectSlice
-                            key={study.slug}
-                            study={study}
-                            index={i}
-                            featured={i === 0}
-                        />
+                        <ProjectRow key={study.slug} study={study} index={i} />
                     ))}
                 </section>
 
