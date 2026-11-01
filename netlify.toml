@@ -8,3 +8,8 @@
 [build.environment]
   NODE_VERSION = "24"
   NEXT_TELEMETRY_DISABLED = "1"
+
+# The Next.js adapter. Declared explicitly because the site was created from
+# the CLI, so Netlify did not auto-install it on remote builds.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
