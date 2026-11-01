@@ -5,6 +5,9 @@
 const DATE_KEYS = new Set(["createdAt", "updatedAt", "publishedAt", "date", "expires"]);
 
 export function reviveDates<T>(value: T): T {
+  // A cache hit returns ISO strings, but a fresh read (e.g. during `next build`)
+  // returns real Dates: those must pass through, not be rebuilt as `{}`.
+  if (value instanceof Date) return value;
   if (Array.isArray(value)) return value.map(reviveDates) as unknown as T;
   if (value && typeof value === "object") {
     const out: Record<string, unknown> = {};
