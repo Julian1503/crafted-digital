@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import s from "@/components/lab/lab.module.css";
+import { Grain, HeroActions } from "@/components/lab/LabParts";
 import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 
 interface Task {
@@ -12,19 +12,19 @@ interface Task {
     message: string;
     draft: string;
     checked: string;
-    sentTo: string;
+    logLine: string;
 }
 
 // Fictional examples from the kinds of businesses the site is for.
 const TASKS: Task[] = [
     {
         from: "Priya Nair",
-        kind: "Website enquiry, Northside Physio",
+        kind: "Website enquiry",
         subject: "Anything this Saturday?",
         message: "Hi, my son rolled his ankle at footy. Do you have anything Saturday morning? And can I claim it?",
         draft: "Hi Priya, sorry to hear about the ankle. Sam has 8:30 and 10:15 free this Saturday and sees a lot of footy injuries. We can claim your private health cover on the spot. Want me to hold 8:30 for you?",
-        checked: "Checked the Saturday calendar and the clinic's billing notes",
-        sentTo: "Priya",
+        checked: "Checked the Saturday calendar and the clinic's billing notes.",
+        logLine: "Reply to Priya Nair",
     },
     {
         from: "Riverina Hardware",
@@ -32,31 +32,40 @@ const TASKS: Task[] = [
         subject: "INV-2207 is 14 days late",
         message: "Invoice INV-2207 for $1,840.00 was due on 17 October. Two reminders have gone out.",
         draft: "Hi team, a quick reminder that INV-2207 for $1,840.00 was due on 17 October. The payment link is below. If it is already on its way, thank you and please ignore this.",
-        checked: "Checked the balance in Xero and the last two reminders",
-        sentTo: "Riverina Hardware",
+        checked: "Checked the balance in Xero and the last two reminders.",
+        logLine: "Reminder to Riverina Hardware",
     },
     {
         from: "Tuesday shift, 4 pm",
-        kind: "NDIS shift notes",
-        subject: "Turn rough notes into a progress note",
+        kind: "Shift notes",
+        subject: "Rough notes into a progress note",
         message: "shops w/ J. picked ingredients, paid at self checkout w/ prompting. bit anxious in queue, did breathing.",
         draft: "J attended a community access shift at the local supermarket. J chose ingredients independently and paid at self-checkout with verbal prompting. J showed mild anxiety while queuing and used a breathing strategy to settle. Goal progress: independent shopping, on track.",
-        checked: "Checked J's plan goals and the organisation's note template",
-        sentTo: "J's file",
+        checked: "Checked J's plan goals and the organisation's note template.",
+        logLine: "Progress note for J",
     },
 ];
 
 const TYPE_MS = 18;
+const STAMP_MS = 950;
+const LEAVE_MS = 520;
 
-function useTypewriter(text: string, run: boolean, instant: boolean): string {
-    const [shown, setShown] = React.useState(instant ? text : "");
+type Phase = "drafting" | "stamped" | "leaving";
+interface LogEntry { line: string; time: string }
+
+function clockNow(): string {
+    return new Intl.DateTimeFormat("en-AU", { hour: "numeric", minute: "2-digit" }).format(new Date());
+}
+
+function useTypewriter(text: string, instant: boolean): string {
+    const [shown, setShown] = React.useState("");
     const [prevText, setPrevText] = React.useState(text);
     if (prevText !== text) {
         setPrevText(text);
-        setShown(instant ? text : "");
+        setShown("");
     }
     React.useEffect(() => {
-        if (!run || instant) return;
+        if (instant) return;
         let i = 0;
         const id = window.setInterval(() => {
             i += 2;
@@ -64,136 +73,144 @@ function useTypewriter(text: string, run: boolean, instant: boolean): string {
             if (i >= text.length) window.clearInterval(id);
         }, TYPE_MS);
         return () => window.clearInterval(id);
-    }, [text, run, instant]);
+    }, [text, instant]);
     return instant ? text : shown;
+}
+
+function Stamp({ time }: { time: string }) {
+    return (
+        <div className={s.stamp} aria-hidden="true">
+            <span className={s.stampBig}>Approved</span>
+            <span className={s.stampSmall}>by you, {time}</span>
+        </div>
+    );
+}
+
+function DoneSheet({ onReset }: { onReset: () => void }) {
+    return (
+        <article className={`${s.sheet} ${s.front} ${s.enter}`} aria-label="All caught up">
+            <p className={s.sheetMeta}>All caught up</p>
+            <p className="mt-6 font-serif text-[clamp(1.9rem,3vw,2.5rem)] leading-[1.08] tracking-[-0.02em]">
+                Three replies out. Three times you said yes.
+            </p>
+            <p className={`${s.sheetBody} mt-5 max-w-[40ch]`}>
+                The software did the reading, the checking and the first draft. The decision stayed with you, and the log shows who approved what.
+            </p>
+            <button type="button" className={`${s.sheetLink} mt-8`} onClick={onReset}>Run it again</button>
+        </article>
+    );
 }
 
 export function HeroApprove() {
     const reduced = usePrefersReducedMotion();
     const [index, setIndex] = React.useState(0);
-    const [sent, setSent] = React.useState<number[]>([]);
-    const [toast, setToast] = React.useState<string | null>(null);
+    const [phase, setPhase] = React.useState<Phase>("drafting");
+    const [log, setLog] = React.useState<LogEntry[]>([]);
+    const [stampTime, setStampTime] = React.useState("");
     const [editing, setEditing] = React.useState(false);
     const [edited, setEdited] = React.useState<Record<number, string>>({});
+    const timers = React.useRef<number[]>([]);
 
-    const allDone = sent.length === TASKS.length;
+    React.useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
+
+    const allDone = index >= TASKS.length;
     const task = TASKS[Math.min(index, TASKS.length - 1)];
-    const typed = useTypewriter(task.draft, !allDone, reduced);
+    const typed = useTypewriter(task.draft, reduced || allDone);
     const draft = edited[index] ?? typed;
-    const ready = typed.length >= task.draft.length;
+    const ready = typed.length >= task.draft.length || edited[index] !== undefined;
+    const behind = Math.min(TASKS.length - index - 1, 2);
 
     const approve = () => {
-        if (sent.includes(index)) return;
-        setSent((prev) => [...prev, index]);
+        if (phase !== "drafting" || !ready) return;
+        const time = clockNow();
+        setStampTime(time);
         setEditing(false);
-        setToast(`Sent to ${task.sentTo}. Approved by you, logged with your name.`);
-        window.setTimeout(() => {
-            setToast(null);
-            if (index < TASKS.length - 1) setIndex(index + 1);
-        }, 1400);
+        setPhase("stamped");
+        setLog((prev) => [...prev, { line: task.logLine, time }]);
+        timers.current.push(
+            window.setTimeout(() => setPhase("leaving"), STAMP_MS),
+            window.setTimeout(() => { setIndex((i) => i + 1); setPhase("drafting"); }, STAMP_MS + LEAVE_MS),
+        );
     };
 
+    const reset = () => { setIndex(0); setLog([]); setEdited({}); setPhase("drafting"); };
+
     return (
-        <section
-            aria-labelledby="lab-a-heading"
-            className="relative min-h-[100svh] pt-28 pb-28 md:pt-32"
-            style={{ background: "#0c0c0c", color: "#fff" }}
-        >
-            <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[5fr_7fr] lg:gap-16">
+        <section aria-labelledby="lab-a-heading" className={`${s.dark} relative overflow-hidden`}>
+            <Grain />
+            <div className={s.band} aria-hidden="true" />
+            <div className="relative z-[2] mx-auto grid min-h-[100svh] max-w-7xl gap-x-20 gap-y-14 px-5 pt-32 pb-28 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-[auto_1fr] lg:pt-36">
                 <div>
-                    <h1
-                        id="lab-a-heading"
-                        className="font-serif font-normal leading-[0.98] tracking-[-0.03em]"
-                        style={{ fontSize: "clamp(2.8rem, 6vw, 5.6rem)" }}
-                    >
+                    <h1 id="lab-a-heading" className={s.displayA}>
                         <span className="block">Software that does the busywork.</span>
-                        <span className={`${s.headlineLine2} ${sent.length ? s.done : s.pending}`}>You keep the final say.</span>
+                        <span className={`${s.line2} ${log.length ? s.line2On : ""}`}>You keep the final say.</span>
                     </h1>
-                    <p className="mt-7 max-w-[44ch] text-[1.05rem] leading-[1.7]" style={{ color: "rgba(255,255,255,0.74)" }}>
-                        Custom software and AI automation for Australian small businesses. The AI drafts, you approve, and nothing goes out without a person saying yes. Built by one engineer in Toowoomba.
+                    <p className={`${s.lede} mt-8 max-w-[42ch]`}>
+                        Custom software and AI automation for Australian small businesses. It reads, checks and drafts. Nothing goes out until a person says yes. Built by one engineer in Toowoomba.
                     </p>
-                    <div className="mt-9 flex flex-wrap items-center gap-6">
-                        <Link href="/contact" className={s.primary}>Book a 30-minute call</Link>
-                        <Link href="/case-studies" className={s.quiet} style={{ color: "rgba(255,255,255,0.86)" }}>See the work</Link>
-                    </div>
+                    <div className="mt-10"><HeroActions /></div>
                 </div>
 
-                {/* The demo: a real-looking approval queue */}
-                <div className={s.inbox} role="region" aria-label="Demo: approve an AI draft">
-                    <div className="flex items-center justify-between border-b px-5 py-3" style={{ borderColor: "rgba(0,0,0,0.07)" }}>
-                        <p className="text-[0.9rem] font-medium">Waiting for your approval</p>
-                        <p className="text-[0.85rem]" style={{ color: "#6b6b6b" }}>
-                            {allDone ? "All caught up" : `${TASKS.length - sent.length} left`}
-                        </p>
-                    </div>
-                    <div className="grid md:grid-cols-[230px_1fr]">
-                        <ul className="hidden md:block border-r" style={{ borderColor: "rgba(0,0,0,0.07)", background: "#f1f1ee" }}>
-                            {TASKS.map((t, i) => (
-                                <li key={t.subject}>
-                                    <button
-                                        type="button"
-                                        className={s.task}
-                                        aria-current={i === index ? "true" : undefined}
-                                        onClick={() => { setIndex(i); setEditing(false); }}
-                                    >
-                                        <span className="flex items-center justify-between gap-2">
-                                            <span className="truncate text-[0.85rem] font-medium">{t.from}</span>
-                                            {sent.includes(i) && <span className="text-[0.75rem]" style={{ color: "#2f7d5b" }}>Sent</span>}
-                                        </span>
-                                        <span className="mt-0.5 block truncate text-[0.8rem]" style={{ color: "#6b6b6b" }}>{t.subject}</span>
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
+                <div className={`${s.desk} lg:row-span-2`} role="region" aria-label="Demo: approve a draft written by AI">
+                    {behind >= 2 && <div className={`${s.sheet} ${s.back2}`} aria-hidden="true" />}
+                    {behind >= 1 && <div className={`${s.sheet} ${s.back1}`} aria-hidden="true" />}
+                    {allDone ? (
+                        <DoneSheet onReset={reset} />
+                    ) : (
+                        <article
+                            key={index}
+                            className={`${s.sheet} ${s.front} ${phase === "leaving" ? s.leaving : s.enter}`}
+                            aria-label={`${task.kind}: ${task.subject}`}
+                        >
+                            <header className="flex items-baseline justify-between gap-4">
+                                <p className={s.sheetMeta}>{task.kind}</p>
+                                <p className={s.sheetMeta}>{index + 1} of {TASKS.length}</p>
+                            </header>
+                            <p className="mt-5 font-serif text-[clamp(1.5rem,2.2vw,1.9rem)] leading-[1.1] tracking-[-0.015em]">{task.subject}</p>
+                            <p className={`${s.sheetMeta} mt-1`}>From {task.from}</p>
+                            <blockquote className={s.quote}>{task.message}</blockquote>
 
-                        <div className="min-h-[420px] p-5 md:p-6 flex flex-col">
-                            {allDone ? (
-                                <div className="m-auto max-w-[34ch] text-center">
-                                    <p className="font-serif text-[1.8rem] leading-tight">Three replies sent. Three approved by you.</p>
-                                    <p className="mt-3 text-[0.95rem]" style={{ color: "#5b5b5b" }}>That is the whole idea: the busywork is done for you, and every decision stays yours.</p>
-                                    <button type="button" className={`${s.quiet} mt-4`} onClick={() => { setSent([]); setIndex(0); setEdited({}); }}>
-                                        Run the demo again
-                                    </button>
-                                </div>
+                            <p className={`${s.sheetLabel} mt-7`}>Draft reply, written by AI</p>
+                            {editing ? (
+                                <textarea
+                                    className={`${s.draft} ${s.draftEdit}`}
+                                    value={draft}
+                                    onChange={(e) => setEdited((prev) => ({ ...prev, [index]: e.target.value }))}
+                                    aria-label="Edit the draft reply"
+                                    autoFocus
+                                />
                             ) : (
-                                <>
-                                    <p className="text-[0.8rem]" style={{ color: "#6b6b6b" }}>{task.kind}</p>
-                                    <p className="mt-1 text-[1.05rem] font-medium">{task.subject}</p>
-                                    <blockquote className="mt-4 rounded-lg p-4 text-[0.92rem] leading-[1.6]" style={{ background: "#ecece8" }}>
-                                        {task.message}
-                                    </blockquote>
-
-                                    <p className="mt-5 text-[0.8rem]" style={{ color: "#6b6b6b" }}>Draft reply, written by AI</p>
-                                    {editing ? (
-                                        <textarea
-                                            className="mt-2 min-h-[130px] w-full rounded-lg border p-3 text-[0.92rem] leading-[1.6]"
-                                            style={{ borderColor: "rgba(0,0,0,0.15)", background: "#fff" }}
-                                            value={draft}
-                                            onChange={(e) => setEdited((prev) => ({ ...prev, [index]: e.target.value }))}
-                                            aria-label="Edit the draft reply"
-                                            autoFocus
-                                        />
-                                    ) : (
-                                        <p className="mt-2 min-h-[130px] rounded-lg border bg-white p-3 text-[0.92rem] leading-[1.6]" style={{ borderColor: "rgba(0,0,0,0.1)" }} aria-live="off">
-                                            {draft}
-                                            {!ready && !edited[index] && <span className={s.caret} aria-hidden="true" />}
-                                        </p>
-                                    )}
-                                    <p className="mt-2 text-[0.8rem]" style={{ color: "#6b6b6b" }}>{task.checked}</p>
-
-                                    <div className="mt-auto flex flex-wrap items-center gap-3 pt-5">
-                                        <button type="button" className={s.primary} onClick={approve} disabled={!ready && !edited[index]} style={{ opacity: ready || edited[index] ? 1 : 0.5 }}>
-                                            Approve and send
-                                        </button>
-                                        <button type="button" className={s.quiet} onClick={() => setEditing((v) => !v)}>
-                                            {editing ? "Done editing" : "Edit"}
-                                        </button>
-                                        {toast && <p role="status" className={`${s.toast} text-[0.85rem]`} style={{ color: "#2f7d5b" }}>{toast}</p>}
-                                    </div>
-                                </>
+                                <p className={s.draft}>
+                                    {draft}
+                                    {!ready && <span className={s.caret} aria-hidden="true" />}
+                                </p>
                             )}
-                        </div>
-                    </div>
+                            <p className={`${s.sheetMeta} mt-3`}>{task.checked}</p>
+
+                            <footer className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+                                <button type="button" className={s.approve} onClick={approve} disabled={!ready || phase !== "drafting"}>
+                                    Approve and send
+                                </button>
+                                <button type="button" className={s.sheetLink} onClick={() => setEditing((v) => !v)} disabled={phase !== "drafting"}>
+                                    {editing ? "Done editing" : "Edit first"}
+                                </button>
+                            </footer>
+                            {phase !== "drafting" && <Stamp time={stampTime} />}
+                        </article>
+                    )}
+                </div>
+
+                <div className="lg:self-end">
+                    <p className={s.logLabel}>Sent today. Every one approved by you.</p>
+                    <ol className="mt-3" aria-live="polite">
+                        {log.length === 0 && <li className={s.logEmpty}>Nothing sent yet. The drafts wait for you.</li>}
+                        {log.map((e) => (
+                            <li key={e.line} className={s.logRow}>
+                                <span>{e.line}</span>
+                                <span className={s.logTime}>{e.time}</span>
+                            </li>
+                        ))}
+                    </ol>
                 </div>
             </div>
         </section>
