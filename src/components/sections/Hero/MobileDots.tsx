@@ -1,13 +1,15 @@
 import { Slide } from "@/components/sections/Hero/hero.constants";
+import { ProgressFill } from "@/components/sections/Hero/ProgressFill";
 
 interface MobileDotsProps {
     slides:    Slide[];
     current:   number;
-    progress:  number;
+    running:   boolean;
+    cycle:     number;
     onDotTap:  (i: number) => void;
 }
 
-export function MobileDots({ slides, current, progress, onDotTap }: MobileDotsProps) {
+export function MobileDots({ slides, current, running, cycle, onDotTap }: MobileDotsProps) {
     return (
         <div className="flex items-center gap-1" role="group" aria-label="Choose slide">
             {slides.map((slide, i) => (
@@ -29,14 +31,7 @@ export function MobileDots({ slides, current, progress, onDotTap }: MobileDotsPr
                             transition: "width 0.4s cubic-bezier(0.16,1,0.3,1)",
                         }}
                     >
-                        <span
-                            className="absolute inset-y-0 left-0 rounded-full"
-                            style={{
-                                width:      i === current ? `${progress}%` : "0%",
-                                background: "hsl(var(--hero-accent))",
-                                transition: "width 0.1s linear",
-                            }}
-                        />
+                        <ProgressFill active={i === current} running={running} cycle={cycle} />
                     </span>
                 </button>
             ))}

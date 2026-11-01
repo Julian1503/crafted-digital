@@ -14,6 +14,8 @@ interface WaveCanvasProps {
     mouseRef:  React.RefObject<{ x: number; y: number; active: boolean }>;
 }
 
+const MAX_DPR = 1.5;
+
 export function WaveCanvas({ blobs, baseColor, opacity = 1, mouseRef }: WaveCanvasProps) {
     const canvasRef = React.useRef<HTMLCanvasElement>(null);
     const rafRef    = React.useRef<number>(0);
@@ -25,15 +27,17 @@ export function WaveCanvas({ blobs, baseColor, opacity = 1, mouseRef }: WaveCanv
         if (!ctx) return;
 
         let startTime: number | null = null;
+        let visible = false;
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        // Soft gradients look the same at 1.5x; full 3x DPR quadruples the fill cost on phones.
+        const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
 
         const resize = () => {
             const { width, height } = canvas.getBoundingClientRect();
-            canvas.width  = width  * devicePixelRatio;
-            canvas.height = height * devicePixelRatio;
+            canvas.width  = width  * dpr;
+            canvas.height = height * dpr;
+            if (reducedMotion) rafRef.current = requestAnimationFrame(draw);
         };
-        resize();
-        const ro = new ResizeObserver(resize);
-        ro.observe(canvas);
 
         const draw = (ts: number) => {
             if (startTime === null) startTime = ts;
@@ -83,11 +87,38 @@ export function WaveCanvas({ blobs, baseColor, opacity = 1, mouseRef }: WaveCanv
             }
 
             ctx.globalCompositeOperation = "source-over";
+            // Keep animating only while on screen and the tab is visible;
+            // under reduced motion a single static frame is enough.
+            if (!reducedMotion && visible && document.visibilityState === "visible") {
+                rafRef.current = requestAnimationFrame(draw);
+            }
+        };
+
+        const start = () => {
+            cancelAnimationFrame(rafRef.current);
             rafRef.current = requestAnimationFrame(draw);
         };
 
-        rafRef.current = requestAnimationFrame(draw);
-        return () => { cancelAnimationFrame(rafRef.current); ro.disconnect(); };
+        resize();
+        const ro = new ResizeObserver(resize);
+        ro.observe(canvas);
+
+        const io = new IntersectionObserver(([entry]) => {
+            visible = entry.isIntersecting;
+            if (visible) start();
+        }, { rootMargin: "100px" });
+        io.observe(canvas);
+
+        const onVisibility = () => { if (document.visibilityState === "visible" && visible) start(); };
+        document.addEventListener("visibilitychange", onVisibility);
+
+        if (reducedMotion) start();
+        return () => {
+            cancelAnimationFrame(rafRef.current);
+            ro.disconnect();
+            io.disconnect();
+            document.removeEventListener("visibilitychange", onVisibility);
+        };
     }, [blobs, baseColor, mouseRef]);
 
     return (

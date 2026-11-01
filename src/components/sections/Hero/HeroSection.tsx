@@ -17,6 +17,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { FIT_CALL_LABEL } from "@/lib/constants/site";
 import {FloatingTitle} from "@/components/sections/Hero/FloatingTitle";
 import {MobileDots} from "@/components/sections/Hero/MobileDots";
+import { ProgressFill } from "@/components/sections/Hero/ProgressFill";
 import Image from "next/image";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -25,7 +26,8 @@ import Image from "next/image";
 export default function HeroSection() {
     const [current,  setCurrent]  = useState<number>(0);
     const [prev,     setPrev]     = useState<number | null>(null);
-    const [progress, setProgress] = useState<number>(0);
+    // Bumped on every slide change so the CSS progress animation restarts.
+    const [cycle, setCycle] = useState<number>(0);
 
     // Touch/swipe state
     const touchStartX = useRef<number | null>(null);
@@ -41,8 +43,6 @@ export default function HeroSection() {
     const bottomRowRef  = useRef<HTMLDivElement>(null);
 
     const animatingRef = useRef<boolean>(false);
-    const startTimeRef = useRef<number | null>(null);
-    const rafRef       = useRef<number | null>(null);
 
     // Autoplay stops for reduced motion, on hover/focus, and when the visitor pauses it.
     const prefersReducedMotion = usePrefersReducedMotion();
@@ -56,8 +56,7 @@ export default function HeroSection() {
         animatingRef.current = true;
         setPrev(current);
         setCurrent(index);
-        setProgress(0);
-        startTimeRef.current = null;
+        setCycle(c => c + 1);
         setTimeout(() => {
             setPrev(null);
             animatingRef.current = false;
@@ -66,25 +65,12 @@ export default function HeroSection() {
 
     const goNext = (): void => goTo((current + 1) % slides.length);
 
+    // Autoplay: one timer per slide. The progress bar is a CSS animation of the
+    // same length (ProgressFill), so nothing re-renders while a slide is shown.
     useEffect(() => {
-        if (!autoplay) {
-            setProgress(0);
-            return;
-        }
-        const animate = (ts: number): void => {
-            if (!startTimeRef.current) startTimeRef.current = ts;
-            const elapsed = ts - startTimeRef.current;
-            const p = Math.min((elapsed / INTERVAL) * 100, 100);
-            setProgress(p);
-            if (p < 100) rafRef.current = requestAnimationFrame(animate);
-        };
-        startTimeRef.current = null;
-        rafRef.current = requestAnimationFrame(animate);
+        if (!autoplay) return;
         const timer = setTimeout(goNext, INTERVAL);
-        return () => {
-            if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-            clearTimeout(timer);
-        };
+        return () => clearTimeout(timer);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [current, autoplay]);
 
@@ -205,6 +191,18 @@ export default function HeroSection() {
                 />
 
                 {/* Slides */}
+                {/* Warm the next slide's image so it is cached before its slide mounts. */}
+                <Image
+                    key={`prefetch-${(current + 1) % slides.length}`}
+                    loader={cloudinaryLoader}
+                    src={slides[(current + 1) % slides.length].img}
+                    alt=""
+                    aria-hidden="true"
+                    fill
+                    sizes="100vw"
+                    loading="eager"
+                    className="pointer-events-none opacity-0"
+                />
                 {slides.map((slide, i) => {
                     const state = getSlideState(i);
                     if (!state) return null;
@@ -418,20 +416,13 @@ export default function HeroSection() {
                                             {pad(i)}
                                         </span>
                                         <div
-                                            className="w-14 rounded-sm overflow-hidden"
+                                            className="relative w-14 rounded-sm overflow-hidden"
                                             style={{
                                                 height:     "1.5px",
                                                 background: "hsl(var(--primary-foreground) / 0.12)",
                                             }}
                                         >
-                                            <div
-                                                className="h-full rounded-sm"
-                                                style={{
-                                                    width:      i === current ? `${progress}%` : "0%",
-                                                    background: "hsl(var(--hero-accent))",
-                                                    transition: "width 0.1s linear",
-                                                }}
-                                            />
+                                            <ProgressFill active={i === current} running={autoplay} cycle={cycle} />
                                         </div>
                                     </button>
                                 ))}
@@ -451,7 +442,8 @@ export default function HeroSection() {
                                 <MobileDots
                                     slides={slides}
                                     current={current}
-                                    progress={progress}
+                                    running={autoplay}
+                                    cycle={cycle}
                                     onDotTap={goTo}
                                 />
                                 <button
