@@ -1,6 +1,10 @@
-import { auth } from "@/lib/auth/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth/auth.config";
 import { NextResponse } from "next/server";
 import { isTrustedOrigin } from "@/lib/http/origin";
+
+// Edge-safe instance: decodes the session JWT without touching the database.
+const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
   const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");

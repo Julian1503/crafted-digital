@@ -4,17 +4,16 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db/prisma";
 import { consumeRateLimit, getClientKey, isRateLimited } from "@/lib/http/rate-limit";
+import { authConfig } from "@/lib/auth/auth.config";
 
 /** Pre-computed cost-12 hash (same cost as the seeded admin) so a missing user costs the same as a wrong password. */
 const DUMMY_HASH = "$2b$12$6qiuYFNLDsZmZzcibHj7BO3GPnAL1caC3/GOhoCQ.5aP.Nx5rU6gC";
 const LOGIN_LIMIT = { limit: 10, windowMs: 15 * 60 * 1000 };
 const EMAIL_FAILURE_LIMIT = { limit: 20, windowMs: 15 * 60 * 1000 };
-const SESSION_MAX_AGE_SECONDS = 12 * 60 * 60;
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt", maxAge: SESSION_MAX_AGE_SECONDS },
-  pages: { signIn: "/login" },
   providers: [
     Credentials({
       name: "credentials",
@@ -46,6 +45,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -61,14 +61,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.active = dbUser.active;
       }
       return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string;
-        session.roles = (token.roles as string[]) || [];
-        session.active = token.active as boolean;
-      }
-      return session;
     },
   },
 });
