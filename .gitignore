@@ -55,3 +55,6 @@ prisma_*output.txt
 .idea/
 test-results/
 playwright-report/
+
+# Local Netlify folder
+.netlify

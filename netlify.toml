@@ -1,0 +1,10 @@
+# Netlify build for juliandelgado.com.au (Next.js via the OpenNext adapter,
+# which Netlify installs automatically for Next.js projects).
+[build]
+  # The Prisma client lives in src/generated (gitignored), so generate it first.
+  command = "npx prisma generate && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "24"
+  NEXT_TELEMETRY_DISABLED = "1"
