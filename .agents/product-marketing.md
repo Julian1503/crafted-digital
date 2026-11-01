@@ -236,7 +236,7 @@ Extracted from site copy (hero, about-me, FAQ, process) and case studies.
 | Contact form submitted | Project enquiry | AUD 600 (≈ 25% close × AUD 2,450 Starter) | yes |
 | Fit call booked | 30-minute discovery call | AUD 800 | yes |
 | Case study viewed | Interest signal | low | no |
-**Known tracking weaknesses:** GA4/GTM present but conversion events not yet verified; no CAPI or server-side tagging; no offline (closed deal) feedback loop yet.
+**Known tracking weaknesses:** Verified 2026-11-01: the GTM container GTM-M7L3TVN4 loads but has no tags, so GA4 has received nothing; site events reach the dataLayer only. Setup steps in `docs/marketing/acquisition-plan.md` section 3. No Meta Pixel, CAPI or server-side tagging; no offline (closed deal) feedback loop yet.
 **Good lead vs. form fill:** Good lead = Australian business or professional with a real project and budget in the AUD 2k–5k+ range or an MVP brief; not a recruiter, agency pitch or student.
 **Campaigns:** none yet.
 **Agent may:** read, compare, flag, draft, recommend
@@ -246,10 +246,11 @@ Extracted from site copy (hero, about-me, FAQ, process) and case studies.
 *Decisions and tested lessons. Newest first. Keep it to about 20 active entries.*
 | Date | Learning | Evidence | Applies to | Status |
 |------|----------|----------|------------|--------|
-| | | | | |
+| 2026-11-01 | The "zero visitors" GA4 baseline was not a measurement: GTM had no GA4 tag | Browser check against production: no GA4 requests | Measurement, ads | Fix before any spend |
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v9 (2026-11-01) — Acquisition plan written (`docs/marketing/acquisition-plan.md`): free channels first (referrals, niche outreach, LinkedIn, Toowoomba events), Meta test from week 6 only with verified tracking. Logged that GA4 was never receiving data.
 - v8 (2026-10-31) — Site structure now matches the two-track positioning: `/services`, `/services/websites`, `/services/custom-software` and `/pricing` pages with the offer catalogue in `src/lib/content/offers.ts` (prices, timelines, inclusions), a 4-item nav (Work, Services, Pricing, About) plus the call CTA, `/llms.txt` and `/pricing.md` for AI assistants, and JSON-LD describing Julian, the business and each service with its offers. Keep `offers.ts` in sync with the seeded plans when prices change.
 - v7 (2026-10-30) — SupportLegend confirmed as Julian's own product (not for The Better Day): added to the project record and to the positioning as independent proof for the software track and a possible NDIS product.
 - v6 (2026-10-30) — AI4L approved publishing the work (co-branded). Logged the site changes that implement the v5 decision: new "Custom Software & AI Automation" service and plan (AUD 8,000+), five case studies seeded (compliance platform as draft). Flagged the Better Day support-worker app repo (SupportLegend) as a possible second independent project pending status.
