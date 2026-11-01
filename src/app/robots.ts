@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
             userAgent: "*",
             allow: "/",
             // /login stays crawlable so its noindex meta tag is honoured.
-            disallow: ["/api/", "/admin/"],
+            disallow: ["/api/", "/admin/", "/lab/"],
         },
         sitemap: `${SITE_URL}/sitemap.xml`,
     };
