@@ -236,7 +236,7 @@ Extracted from site copy (hero, about-me, FAQ, process) and case studies.
 | Contact form submitted | Project enquiry | AUD 600 (≈ 25% close × AUD 2,450 Starter) | yes |
 | Fit call booked | 30-minute discovery call | AUD 800 | yes |
 | Case study viewed | Interest signal | low | no |
-**Known tracking weaknesses:** Verified 2026-11-01: the GTM container GTM-M7L3TVN4 loads but has no tags, so GA4 has received nothing; site events reach the dataLayer only. Setup steps in `docs/marketing/acquisition-plan.md` section 3. No Meta Pixel, CAPI or server-side tagging; no offline (closed deal) feedback loop yet.
+**Known tracking weaknesses:** Fixed 2026-11-02: GTM GTM-M7L3TVN4 now sends to GA4 G-D8NF51B2B8 (property 521071327); page_view and site events verified in production; key events contact_form_submitted (600) and fit_call_booked (800). Baseline starts 2026-11-02. Still missing: Meta Pixel/CAPI, server-side tagging, offline (closed deal) feedback loop.
 **Good lead vs. form fill:** Good lead = Australian business or professional with a real project and budget in the AUD 2k–5k+ range or an MVP brief; not a recruiter, agency pitch or student.
 **Campaigns:** none yet.
 **Agent may:** read, compare, flag, draft, recommend

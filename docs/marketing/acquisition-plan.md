@@ -35,6 +35,8 @@ Primero lo gratis y directo, después lo pago. La idea es que los anuncios solo 
 
 ## 3. Paso 0: medición (esta semana, ~1 hora tuya)
 
+> **Hecho el 2026-11-02.** Propiedad GA4 521071327, flujo 13343434356, ID `G-D8NF51B2B8`. GTM publicado con `GA4 base`, `GA4 eventos`, el activador `Eventos del sitio` y las variables `location`, `label`, `plan` y `source`. Eventos clave: `contact_form_submitted` (valor 600) y `fit_call_booked` (valor 800). Verificado en producción con un navegador real: llegan `page_view`, `cta_clicked` y `contact_form_started`. La propiedad duplicada 521093442 no se usa.
+
 Esto se hace en las cuentas de Google, que solo vos podés abrir.
 
 **3.1 Crear la propiedad de GA4** (si no existe): analytics.google.com, Admin, Crear propiedad "juliandelgado.com.au", zona horaria Brisbane, moneda AUD. Agregar un flujo de datos web con `https://juliandelgado.com.au` y copiar el ID que empieza con `G-`.
