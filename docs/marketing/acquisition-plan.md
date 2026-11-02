@@ -121,6 +121,8 @@ Cinco conversaciones, todas por mensaje directo, en este orden:
 >
 > I've built a support-worker app for NDIS teams. It covers shifts, client context, incident reports and AI-drafted shift summaries that a manager reviews before anything is saved. It's ready for a first pilot provider, and I'd set it up around how your team already works.
 >
+> Here's how it works: https://juliandelgado.com.au/case-studies/supportlegend-ndis-support-worker-app
+>
 > If shift notes or incident paperwork take more of your week than they should, would a 30-minute call be useful? If it's not a fit, I'll tell you.
 >
 > Julian Delgado
