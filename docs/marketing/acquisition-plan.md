@@ -101,7 +101,7 @@ Tres conversaciones, todas por mensaje directo, en este orden:
 - Nunca escribir a RTOs, colleges ni institutos de formación. Ese es el sector de AI4L.
 - Un seguimiento a los 7 días si no hay respuesta, y nada más.
 
-**Plantilla NDIS y salud aliada.** El gancho es SupportLegend, tu app propia, ofrecida como producto:
+**Plantilla NDIS y salud aliada.** El gancho es SupportLegend como trabajo terminado: prueba de que conocés el sector y de lo que podés construir. La app no se ofrece a la venta:
 
 > Subject: Shift notes at {Provider}
 >
@@ -109,11 +109,11 @@ Tres conversaciones, todas por mensaje directo, en este orden:
 >
 > I'm Julian, a software engineer in Toowoomba. I build internal tools for small care providers.
 >
-> I've built SupportLegend, a support-worker app for NDIS teams. It covers shifts, medication, incident reports and AI-drafted shift summaries that a manager reviews before anything is saved. It's available now, and I set it up with your organisation's branding, roles and templates.
+> I recently finished SupportLegend, a support-worker app for NDIS teams. It covers shifts, medication, incident reports and AI-drafted shift summaries that a manager reviews before anything is saved. I build tools like this around how a provider already works.
 >
 > Here's how it works: https://juliandelgado.com.au/case-studies/supportlegend-ndis-support-worker-app
 >
-> If shift notes or incident paperwork take more of your week than they should, I'd be happy to show you a demo in a 30-minute call. If it's not a fit, I'll tell you.
+> If shift notes or incident paperwork take more of your week than they should, would a 30-minute call be useful? If it's not a fit, I'll tell you.
 >
 > Julian Delgado
 > juliandelgado.com.au
@@ -227,7 +227,6 @@ Cada mes se anota en la tabla de aprendizajes de `product-marketing.md` qué fun
 
 | # | Decisión | Recomendación |
 |---|----------|---------------|
-| C-02 | SupportLegend: piloto o producto | **Decidido el 2026-11-02: se vende como producto.** |
-| C-03 | Precio y forma de cobro de SupportLegend | Pendiente. Hace falta antes de la primera demo: por ejemplo, costo de puesta en marcha más un abono mensual por trabajador |
+| C-02 | Cómo presentar SupportLegend | **Decidido el 2026-11-02: como proyecto terminado.** No es un piloto y no se vende en el sitio. |
 | C-04 | Presupuesto de anuncios en Meta | Confirmar en la semana 6, con datos de los canales gratuitos |
 | C-05 | Membresía de la Chamber of Commerce | Esperar a ir a dos eventos abiertos |

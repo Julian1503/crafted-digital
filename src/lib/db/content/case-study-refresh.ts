@@ -136,12 +136,12 @@ export const CASE_STUDY_REFRESH: Record<string, Refresh> = {
         },
     },
 
-    // Sold as a product, not offered as a pilot (2026-11-02).
+    // Presented as finished work: no pilot, no sales pitch (2026-11-02).
     "supportlegend-ndis-support-worker-app": {
-        replace: [[
-            "Ready for a first pilot. I am looking for one NDIS provider to try it with a small team and shape it around how they already work.",
-            "Available now for NDIS providers. I set it up with your organisation's branding, roles and templates, and you can see a demo in a 30-minute call.",
-        ]],
+        replace: [
+            ["Ready for a first pilot. I am looking for one NDIS provider to try it with a small team and shape it around how they already work.", "Finished and working end to end: from a worker's first note on shift to a manager closing the incident, on Android, iOS and the web."],
+            ["Available now for NDIS providers. I set it up with your organisation's branding, roles and templates, and you can see a demo in a 30-minute call.", "Finished and working end to end: from a worker's first note on shift to a manager closing the incident, on Android, iOS and the web."],
+        ],
     },
 
     // Unpublished on 2026-11-02 at Julian's request; kept as a draft, not deleted.

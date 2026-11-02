@@ -2,8 +2,8 @@
  * @fileoverview SupportLegend case study (added 2026-11-02).
  *
  * Julian's own product, not client work: no client name, no testimonial and
- * no usage figures, because nobody uses it yet. Sold as a product (decided
- * 2026-11-02), not offered as a pilot. Screenshots are demo data and
+ * no usage figures, because nobody uses it yet. Presented as finished work
+ * (decided 2026-11-02): not offered as a pilot and not sold on the site. Screenshots are demo data and
  * avoid any screen carrying an organisation's branding.
  */
 
@@ -42,7 +42,7 @@ const body = {
         { type: "metric", metric: "5", label: "kinds of support paperwork, each with its own workflow instead of one generic note" },
         { type: "metric", metric: "0", label: "reports submitted by the AI on its own: a person reviews every draft" },
         { type: "metric", metric: "4", label: "kinds of personal details removed before a draft is generated: names, addresses, NDIS numbers and phone numbers" },
-        { type: "text", body: "Available now for NDIS providers. I set it up with your organisation's branding, roles and templates, and you can see a demo in a 30-minute call." },
+        { type: "text", body: "Finished and working end to end: from a worker's first note on shift to a manager closing the incident, on Android, iOS and the web." },
     ],
     stack: [
         "React Native",
