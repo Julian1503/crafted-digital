@@ -59,35 +59,23 @@ Esto se hace en las cuentas de Google, que solo vos podés abrir.
 
 ## 4. Canal 1: red propia y referidos (semanas 1 y 2)
 
-Cinco conversaciones, todas por mensaje directo, en este orden:
+Tres conversaciones, todas por mensaje directo, en este orden:
 
-1. **AI4L.** Proponer por escrito el acuerdo de derivación: lo educativo que te llegue va para ellos, y lo no educativo que les llegue a ellos viene para vos. El porcentaje de comisión, si hay, lo decidís vos.
-2. **The Better Day.** Pedir una presentación a dos o tres proveedores NDIS que conozcan. También pedir una recomendación en LinkedIn.
-3. **Lourdes Ynigo.** Pedir una presentación a otros estudios de arquitectura o diseño, que es el track de websites.
-4. **Ex compañeros de Sovos y mDEVZ que viven en Australia.** Contarles que trabajás por tu cuenta y qué tipo de proyecto buscás.
-5. **Contactos personales en Toowoomba.** La misma idea, en una línea.
+1. **Lourdes Ynigo.** Pedir una presentación a otros estudios de arquitectura o diseño, que es el track de websites.
+2. **Ex compañeros de Sovos y mDEVZ que viven en Australia.** Contarles que trabajás por tu cuenta y qué tipo de proyecto buscás.
+3. **Contactos personales en Toowoomba.** La misma idea, en una línea.
+
+**No se contacta a The Better Day ni a AI4L** para pedir derivaciones ni presentaciones (decisión del 2026-11-02).
 
 **Plantilla para pedir una presentación** (adaptar a cada persona):
 
-> Hi Zoe, hope things are going well at The Better Day.
+> Hi {Name}, hope things are going well.
 >
-> I'm taking on a couple of new projects this summer, mostly internal tools for small providers: rostering, shift notes, incident reports, the admin that ends up in spreadsheets.
+> I'm taking on a couple of new projects this summer: websites for service businesses and small internal tools that take admin out of spreadsheets.
 >
-> Do you know one or two other providers who might be stuck with that? I'd be grateful for an introduction, and happy to have a no-obligation chat with them. If it's easier, here's a short write-up you can forward: https://juliandelgado.com.au/services/custom-software
+> Do you know one or two people who might need that? I'd be grateful for an introduction, and happy to have a no-obligation chat with them. If it's easier, here's my site you can forward: https://juliandelgado.com.au
 >
 > Thanks either way,
-> Julian
-
-**Plantilla para AI4L:**
-
-> Hi Mohammed,
->
-> Now that the case studies are live, I'd like to put our referral arrangement in writing so neither of us steps on the other's toes.
->
-> My proposal: any education or training lead that reaches me goes straight to you, and any non-education lead you come across (small businesses, health, professional services) you send my way. Happy to talk about a referral fee in both directions if that suits you.
->
-> Could we talk it through for 15 minutes this week?
->
 > Julian
 
 ## 5. Canal 2: contacto directo al nicho (desde la semana 2, 10 por semana)
@@ -113,7 +101,7 @@ Cinco conversaciones, todas por mensaje directo, en este orden:
 - Nunca escribir a RTOs, colleges ni institutos de formación. Ese es el sector de AI4L.
 - Un seguimiento a los 7 días si no hay respuesta, y nada más.
 
-**Plantilla NDIS y salud aliada.** El gancho es SupportLegend, tu app propia que busca un primer proveedor piloto:
+**Plantilla NDIS y salud aliada.** El gancho es SupportLegend, tu app propia, ofrecida como producto:
 
 > Subject: Shift notes at {Provider}
 >
@@ -121,11 +109,11 @@ Cinco conversaciones, todas por mensaje directo, en este orden:
 >
 > I'm Julian, a software engineer in Toowoomba. I build internal tools for small care providers.
 >
-> I've built a support-worker app for NDIS teams. It covers shifts, client context, incident reports and AI-drafted shift summaries that a manager reviews before anything is saved. It's ready for a first pilot provider, and I'd set it up around how your team already works.
+> I've built SupportLegend, a support-worker app for NDIS teams. It covers shifts, medication, incident reports and AI-drafted shift summaries that a manager reviews before anything is saved. It's available now, and I set it up with your organisation's branding, roles and templates.
 >
 > Here's how it works: https://juliandelgado.com.au/case-studies/supportlegend-ndis-support-worker-app
 >
-> If shift notes or incident paperwork take more of your week than they should, would a 30-minute call be useful? If it's not a fit, I'll tell you.
+> If shift notes or incident paperwork take more of your week than they should, I'd be happy to show you a demo in a 30-minute call. If it's not a fit, I'll tell you.
 >
 > Julian Delgado
 > juliandelgado.com.au
@@ -216,7 +204,7 @@ Cinco conversaciones, todas por mensaje directo, en este orden:
 
 | Semanas | Fechas | Qué se hace |
 |---------|--------|-------------|
-| 1 | 2 al 8 nov | Paso 0 (medición). Perfil de LinkedIn. Mensajes a AI4L y The Better Day. Primer post. |
+| 1 | 2 al 8 nov | Paso 0 (medición, hecho). Perfil de LinkedIn. Mensajes a Lourdes y ex compañeros. Primer post. |
 | 2 | 9 al 15 nov | Resto de la red propia. Armar la lista de 40 negocios del nicho. Primeros 10 mails. |
 | 3 a 5 | 16 nov al 6 dic | 10 mails por semana más seguimientos. 2 posts por semana. Primer evento en Toowoomba. |
 | 6 | 7 al 13 dic | Revisión: qué canal trajo respuestas. Decisión sobre los anuncios. |
@@ -239,8 +227,7 @@ Cada mes se anota en la tabla de aprendizajes de `product-marketing.md` qué fun
 
 | # | Decisión | Recomendación |
 |---|----------|---------------|
-| C-01 | Comisión por derivación con AI4L | Proponer un acuerdo recíproco y dejar el porcentaje para la charla |
-| C-02 | Ofrecer SupportLegend como piloto a proveedores NDIS | Sí. Es el mejor gancho que tenés para el nicho, y un piloto con un proveedor real vale más que otro caso de estudio |
-| C-03 | Precio del piloto de SupportLegend | Gratis o a costo los primeros 3 meses, a cambio de feedback y permiso para contar el caso |
+| C-02 | SupportLegend: piloto o producto | **Decidido el 2026-11-02: se vende como producto.** |
+| C-03 | Precio y forma de cobro de SupportLegend | Pendiente. Hace falta antes de la primera demo: por ejemplo, costo de puesta en marcha más un abono mensual por trabajador |
 | C-04 | Presupuesto de anuncios en Meta | Confirmar en la semana 6, con datos de los canales gratuitos |
 | C-05 | Membresía de la Chamber of Commerce | Esperar a ir a dos eventos abiertos |

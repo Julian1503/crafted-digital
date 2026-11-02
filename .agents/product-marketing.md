@@ -250,6 +250,7 @@ Extracted from site copy (hero, about-me, FAQ, process) and case studies.
 
 ## Changelog
 *Newest first. One line per revision: what changed and why.*
+- v11 (2026-11-02) — Julian's decisions: SupportLegend is sold as a product (not a pilot; pricing still to set), and there is no outreach to The Better Day or AI4L for referrals or introductions. The Better Day case study is unpublished (draft). Measurement is live (GA4 G-D8NF51B2B8).
 - v10 (2026-11-02) — SupportLegend published as a case study (`/case-studies/supportlegend-ndis-support-worker-app`, client "Own product", category "Mobile app", not featured). No usage claims; the last result invites one NDIS provider to pilot it. Use this URL in NDIS outreach.
 - v9 (2026-11-01) — Acquisition plan written (`docs/marketing/acquisition-plan.md`): free channels first (referrals, niche outreach, LinkedIn, Toowoomba events), Meta test from week 6 only with verified tracking. Logged that GA4 was never receiving data.
 - v8 (2026-10-31) — Site structure now matches the two-track positioning: `/services`, `/services/websites`, `/services/custom-software` and `/pricing` pages with the offer catalogue in `src/lib/content/offers.ts` (prices, timelines, inclusions), a 4-item nav (Work, Services, Pricing, About) plus the call CTA, `/llms.txt` and `/pricing.md` for AI assistants, and JSON-LD describing Julian, the business and each service with its offers. Keep `offers.ts` in sync with the seeded plans when prices change.
