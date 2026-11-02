@@ -58,7 +58,6 @@ export const WEBSITES_PAGE: ServicePageContent = {
     plans: [STARTER_WEBSITE, GROWTH_WEBSITE],
     testimonials: [1, 2],
     caseStudies: [
-        { slug: "the-better-day-support-platform", label: "The Better Day: a clearer platform for an NDIS provider" },
         { slug: "architect-portfolio-website", label: "An architecture portfolio with an editorial feel" },
     ],
     faqs: ["timeline", "australia-wide", "if-you-disappear", "post-launch-support", "payments"],

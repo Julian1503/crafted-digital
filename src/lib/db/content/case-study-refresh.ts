@@ -136,9 +136,10 @@ export const CASE_STUDY_REFRESH: Record<string, Refresh> = {
         },
     },
 
+    // Unpublished on 2026-11-02 at Julian's request; kept as a draft, not deleted.
     "the-better-day-support-platform": {
         title: "A calmer website for an NDIS provider",
-        status: "published",
+        status: "draft",
         set: { client: "The Better Day", category: "Website" },
     },
 
