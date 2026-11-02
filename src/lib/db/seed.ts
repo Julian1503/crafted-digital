@@ -6,6 +6,7 @@ import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { MediaProvider } from "@/generated/prisma/enums";
 import { applyCaseStudyRefresh } from "@/lib/db/content/case-study-refresh";
+import { SUPPORTLEGEND_CASE_STUDY } from "@/lib/db/content/supportlegend-case-study";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({
@@ -920,6 +921,7 @@ const caseStudies = [
     createdAt: new Date("2026-10-30T00:00:00.000+00:00"),
     updatedAt: new Date("2026-10-30T00:00:00.000+00:00"),
   },
+  SUPPORTLEGEND_CASE_STUDY,
 ];
 
 const plans = [
