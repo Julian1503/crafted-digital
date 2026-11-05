@@ -15,13 +15,13 @@ const csp = [
     "frame-ancestors 'none'",
     "form-action 'self'",
     // 'unsafe-eval' is required by React/Turbopack in development only.
-    `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"} https://www.googletagmanager.com https://*.google-analytics.com https://*.googletagmanager.com https://app.cal.com https://challenges.cloudflare.com https://static.cloudflareinsights.com`,
+    `script-src 'self' 'unsafe-inline'${isProd ? "" : " 'unsafe-eval'"} https://www.googletagmanager.com https://*.google-analytics.com https://*.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://app.cal.com https://challenges.cloudflare.com https://static.cloudflareinsights.com`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
     "media-src 'self' https://res.cloudinary.com blob:",
-    "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://www.google.com https://res.cloudinary.com https://ik.imagekit.io https://upload.imagekit.io https://api.cloudinary.com https://app.cal.com https://cal.com https://cloudflareinsights.com" + (isProd ? "" : " ws: wss:"),
-    "frame-src https://www.googletagmanager.com https://*.g.doubleclick.net https://app.cal.com https://cal.com https://challenges.cloudflare.com",
+    "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://www.google.com https://www.google.com.au https://www.googleadservices.com https://res.cloudinary.com https://ik.imagekit.io https://upload.imagekit.io https://api.cloudinary.com https://app.cal.com https://cal.com https://cloudflareinsights.com" + (isProd ? "" : " ws: wss:"),
+    "frame-src https://www.googletagmanager.com https://*.g.doubleclick.net https://td.doubleclick.net https://app.cal.com https://cal.com https://challenges.cloudflare.com",
     "worker-src 'self' blob:",
     ...(isProd ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
